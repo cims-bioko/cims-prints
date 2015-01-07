@@ -181,12 +181,12 @@ ADDED from AndroidManifest.xml:97:9
 		ADDED from AndroidManifest.xml:98:13
 activity#com.biometrac.core.ScanningActivity
 ADDED from AndroidManifest.xml:107:3
-	android:screenOrientation
-		ADDED from AndroidManifest.xml:110:13
 	android:noHistory
-		ADDED from AndroidManifest.xml:111:13
+		ADDED from AndroidManifest.xml:110:13
 	android:label
 		ADDED from AndroidManifest.xml:109:13
+	android:configChanges
+		ADDED from AndroidManifest.xml:111:13
 	android:name
 		ADDED from AndroidManifest.xml:108:13
 activity#com.biometrac.core.EnrollActivity

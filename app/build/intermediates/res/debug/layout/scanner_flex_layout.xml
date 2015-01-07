@@ -111,7 +111,7 @@
         android:layout_height="0dp"
         android:layout_weight=".15">
 
-		<Button
+		<ImageButton
             android:id="@+id/scan_btn_skip"
             style="@style/button_light"
             android:layout_width="0dp"
@@ -120,9 +120,10 @@
 			android:layout_marginTop="10dip"
 			android:layout_marginBottom="10dip"
             android:layout_height="match_parent"
-            android:text="SKIP"
-            android:layout_weight=".40" />
-		<Button
+            android:layout_weight=".40"
+            android:src="@drawable/error_icon"
+            android:scaleType="fitCenter"/>
+		<ImageButton
 			android:id="@+id/scan_btn_proceed"
 			style="@style/button_dark"
 			android:layout_width="0dp"
@@ -131,8 +132,10 @@
 			android:layout_marginRight="10dip"
 			android:layout_marginTop="10dip"
 			android:layout_marginBottom="10dip"
-			android:text="Submit"
-			android:layout_weight=".60"/>
+            android:layout_weight=".60"
+            android:scaleType="fitCenter"
+            android:src="@drawable/okay_icon"
+            />
 
 	</LinearLayout>
 	

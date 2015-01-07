@@ -19,17 +19,19 @@ public class FingerScanInterface extends AsyncTask<Void, Void, Void> {
 	 * 
 	 */
 	ImageView view;
+    Bitmap image;
 	Scanner mScanner;
 	String finger;
 	boolean success;
 
 	private final String TAG = "FingerInterface";
 	
-	public FingerScanInterface(String name, Scanner scanner, ImageView spot) {
+	public FingerScanInterface(String name, Scanner scanner, ImageView spot, Bitmap image) {
 		super();
 		view = spot;
 		finger = name;
         mScanner = scanner;
+        this.image = image;
         view.setOnClickListener(null);
 	}
 	
@@ -84,6 +86,7 @@ public class FingerScanInterface extends AsyncTask<Void, Void, Void> {
 	    	Log.i(TAG, "new width: " +Integer.toString(new_width));
 	    	
 	    	Bitmap scaled = Bitmap.createScaledBitmap(result, new_width, new_height, false);
+            this.image = scaled;
 	    	Log.i(TAG, "Scaled BMP width: " + Integer.toString(scaled.getWidth()));
 	        view.setScaleType(ScaleType.CENTER);
 	    	view.setImageBitmap(scaled);
@@ -91,7 +94,7 @@ public class FingerScanInterface extends AsyncTask<Void, Void, Void> {
 	        view.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					new FingerScanInterface(finger, mScanner, view).execute();
+					new FingerScanInterface(finger, mScanner, view, image).execute();
 				}
 			});			
 

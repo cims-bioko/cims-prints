@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="15"
+        android:minSdkVersion="16"
         android:targetSdkVersion="19" />
 	<uses-feature android:name="android.hardware.usb.host" />
 	<uses-permission
@@ -106,9 +106,9 @@
         </activity>
 		<activity
             android:name=".ScanningActivity"
-            android:label="VirtualCohort" 
-            android:screenOrientation="portrait"
-            android:noHistory="false" >
+            android:label="VirtualCohort"
+            android:noHistory="false"
+            android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.View" />
 				<category android:name="android.intent.category.DEFAULT" />

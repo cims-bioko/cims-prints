@@ -26,7 +26,12 @@
 	    <item name="android:textColor">@color/white</item>
 	    <item name="android:typeface">sans</item>
 	    <item name="android:textStyle">normal</item>
-	</style><style name="title_text" parent="@android:style/Widget.TextView">
+	</style><style name="button_dark.vert" parent="@style/button_dark">
+        <item name="android:paddingLeft">3dp</item>
+        <item name="android:paddingRight">3dp</item>
+        <item name="android:paddingTop">25dp</item>
+        <item name="android:paddingBottom">25dp</item>
+    </style><style name="title_text" parent="@android:style/Widget.TextView">
 	    <item name="android:textSize">25sp</item>
 	    <item name="android:paddingLeft">10dp</item>
 	    <item name="android:paddingRight">10dp</item>
@@ -35,7 +40,12 @@
 	    <item name="android:textColor">@color/white</item>
 	    <item name="android:typeface">sans</item>
 	    <item name="android:textStyle">bold</item>
-	</style><style name="NotificationText">
+	</style><style name="button_light.vert" parent="@style/button_light">
+        <item name="android:paddingLeft">3dp</item>
+        <item name="android:paddingRight">3dp</item>
+        <item name="android:paddingTop">25dp</item>
+        <item name="android:paddingBottom">25dp</item>
+    </style><style name="NotificationText">
       <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
     </style><style name="button_dark" parent="@android:style/Widget.Button">
 	    <item name="android:background">@drawable/btn_dark_shape</item>
@@ -46,7 +56,7 @@
 	    <item name="android:paddingBottom">3dp</item>
 	    <item name="android:textColor">@color/white</item>
 	    <item name="android:typeface">sans</item>
-	</style><style name="NotificationTitle">
+    </style><style name="NotificationTitle">
       <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
       <item name="android:textStyle">bold</item>
     </style><style name="AppTheme" parent="android:Theme">
@@ -56,6 +66,6 @@
 		<item name="android:colorBackground">@color/light_blue</item>
 	</style></file><file path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/values/strings.xml" qualifiers=""><string name="action_settings">Settings</string><string name="app_name">BiometracCore</string><string name="hello_world">Hello world!</string></file><file path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/values-sw720dp-land/dimens.xml" qualifiers="sw720dp-land-v13"><dimen name="activity_horizontal_margin">128dp</dimen></file><file path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/values-v11/styles.xml" qualifiers="v11"><style name="AppBaseTheme" parent="android:Theme.Holo.Light">
         <!-- API 11 theme customizations can go here. -->
-    </style></file><file name="ic_launcher" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/drawable-mdpi/ic_launcher.png" qualifiers="mdpi-v4" type="drawable"/><file name="ic_launcher" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/drawable-xxhdpi/ic_launcher.png" qualifiers="xxhdpi-v4" type="drawable"/><file name="main" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/menu/main.xml" qualifiers="" type="menu"/><file name="pop_up_wait" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/layout/pop_up_wait.xml" qualifiers="" type="layout"/><file name="scanner_flex_layout" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/layout/scanner_flex_layout.xml" qualifiers="" type="layout"/><file name="headbar_blank" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/layout/headbar_blank.xml" qualifiers="" type="layout"/><file name="activity_main" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/layout/activity_main.xml" qualifiers="" type="layout"/><file name="scanner_view_layout" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/layout/scanner_view_layout.xml" qualifiers="" type="layout"/><file name="_old_scanner_flex_layout" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/layout/_old_scanner_flex_layout.xml" qualifiers="" type="layout"/><file name="headbar_layout_scanner" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/layout/headbar_layout_scanner.xml" qualifiers="" type="layout"/><file name="activity_main_wait" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/layout/activity_main_wait.xml" qualifiers="" type="layout"/><file name="activity_sync" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/layout/activity_sync.xml" qualifiers="" type="layout"/><file name="spinner_view" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/layout/spinner_view.xml" qualifiers="" type="layout"/><file name="notification_with_cancel" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/layout/notification_with_cancel.xml" qualifiers="" type="layout"/><file path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/values-v14/styles.xml" qualifiers="v14"><style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+    </style></file><file name="ic_launcher" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/drawable-mdpi/ic_launcher.png" qualifiers="mdpi-v4" type="drawable"/><file name="ic_launcher" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/drawable-xxhdpi/ic_launcher.png" qualifiers="xxhdpi-v4" type="drawable"/><file name="main" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/menu/main.xml" qualifiers="" type="menu"/><file name="scanner_flex_layout_landscape" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/layout/scanner_flex_layout_landscape.xml" qualifiers="" type="layout"/><file name="pop_up_wait" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/layout/pop_up_wait.xml" qualifiers="" type="layout"/><file name="scanner_flex_layout" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/layout/scanner_flex_layout.xml" qualifiers="" type="layout"/><file name="headbar_blank" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/layout/headbar_blank.xml" qualifiers="" type="layout"/><file name="activity_main" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/layout/activity_main.xml" qualifiers="" type="layout"/><file name="scanner_view_layout" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/layout/scanner_view_layout.xml" qualifiers="" type="layout"/><file name="_old_scanner_flex_layout" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/layout/_old_scanner_flex_layout.xml" qualifiers="" type="layout"/><file name="headbar_layout_scanner" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/layout/headbar_layout_scanner.xml" qualifiers="" type="layout"/><file name="activity_main_wait" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/layout/activity_main_wait.xml" qualifiers="" type="layout"/><file name="activity_sync" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/layout/activity_sync.xml" qualifiers="" type="layout"/><file name="spinner_view" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/layout/spinner_view.xml" qualifiers="" type="layout"/><file name="notification_with_cancel" path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/layout/notification_with_cancel.xml" qualifiers="" type="layout"/><file path="/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/values-v14/styles.xml" qualifiers="v14"><style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar">
         <!-- API 14 theme customizations can go here. -->
     </style></file></source><source path="/home/sarwar/workspace/biometrac/BMTCore/app/build/generated/res/rs/debug"/><source path="/home/sarwar/workspace/biometrac/BMTCore/app/build/generated/res/generated/debug"/></dataSet><dataSet config="debug"><source path="/home/sarwar/workspace/biometrac/BMTCore/app/src/debug/res"/></dataSet><mergedItems/></merger>

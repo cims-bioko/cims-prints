@@ -128,8 +128,9 @@ public final class R {
         public static final int notification_with_cancel=0x7f030006;
         public static final int pop_up_wait=0x7f030007;
         public static final int scanner_flex_layout=0x7f030008;
-        public static final int scanner_view_layout=0x7f030009;
-        public static final int spinner_view=0x7f03000a;
+        public static final int scanner_flex_layout_landscape=0x7f030009;
+        public static final int scanner_view_layout=0x7f03000a;
+        public static final int spinner_view=0x7f03000b;
     }
     public static final class menu {
         public static final int main=0x7f080000;
@@ -143,14 +144,16 @@ public final class R {
         /**  API 11 theme customizations can go here. 
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f070008;
+        public static final int AppBaseTheme=0x7f07000a;
         public static final int AppTheme=0x7f070000;
         public static final int NotificationText=0x7f070001;
         public static final int NotificationTitle=0x7f070002;
         public static final int button_dark=0x7f070003;
-        public static final int button_light=0x7f070004;
-        public static final int button_red=0x7f070005;
-        public static final int text_norm=0x7f070006;
-        public static final int title_text=0x7f070007;
+        public static final int button_dark_vert=0x7f070004;
+        public static final int button_light=0x7f070005;
+        public static final int button_light_vert=0x7f070006;
+        public static final int button_red=0x7f070007;
+        public static final int text_norm=0x7f070008;
+        public static final int title_text=0x7f070009;
     }
 }
