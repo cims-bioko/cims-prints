@@ -834,12 +834,30 @@ public class ScanningActivity extends Activity{
 		}
 		@Override
 		protected Void doInBackground(Void... params) {
-			while(true){
-				HashMap<String, UsbDevice> deviceList = Controller.mUsbManager.getDeviceList();
-                Iterator<UsbDevice> deviceIterator = deviceList.values().iterator();
+            HashMap<String, UsbDevice> deviceList;
+            Iterator<UsbDevice> deviceIterator;
+            while(true){
+                try {
+                    deviceList = Controller.mUsbManager.getDeviceList();
+                }catch (NullPointerException e){
+                    Log.i(TAG, "No UsbManager Active");
+                    return null;
+                }
+                deviceIterator = deviceList.values().iterator();
                 if (deviceIterator.hasNext()==false){
                 	Log.i(TAG,"Device Unplugged");
                 	break;
+                }else{
+                    boolean foundValid = false;
+                    while (deviceIterator.hasNext()){
+                        UsbDevice device = deviceIterator.next();
+                        if(!HostUsbManager.vendor_blacklist.contains(device.getVendorId())){
+                            foundValid = true;
+                        }
+                    }
+                    if (!foundValid){
+                        break;
+                    }
                 }
 				try {
 					Thread.sleep(250);
