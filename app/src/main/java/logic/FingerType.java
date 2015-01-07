@@ -27,52 +27,52 @@ public class FingerType {
 		finger_key = f.toString();
 		switch(f){
 		case left_thumb:
-			finger_name = "Left Thumb";
+			finger_name = String.format("%s %s",R.string.left, R.string.thumb);
 			finger_code = 4;
 			finger_image_location = R.drawable.l_thumb;
 			break;
 		case right_thumb:
-			finger_name = "Right Thumb";
+            finger_name = String.format("%s %s",R.string.right, R.string.thumb);
 			finger_code = 5;
 			finger_image_location = R.drawable.r_thumb; 
 			break;
 		case left_index:
-			finger_name = "Left Index Finger";
+            finger_name = String.format("%s %s %s",R.string.left, R.string.index, R.string.finger);
 			finger_code = 3;
 			finger_image_location = R.drawable.l_index;
 			break;
 		case right_index:
-			finger_name = "Right Index Finger";
+            finger_name = String.format("%s %s %s",R.string.right, R.string.index, R.string.finger);
 			finger_code = 6;
 			finger_image_location = R.drawable.r_index;
 			break;
 		case left_middle:
-			finger_name = "Left Middle Finger";
+            finger_name = String.format("%s %s %s",R.string.left, R.string.middle, R.string.finger);
 			finger_code = 2;
 			finger_image_location = R.drawable.l_middle;
 			break;
 		case right_middle:
-			finger_name = "Right Middle Finger";
+            finger_name = String.format("%s %s %s",R.string.right, R.string.middle, R.string.finger);
 			finger_code = 7;
 			finger_image_location = R.drawable.r_middle;
 			break;
 		case left_ring:
-			finger_name = "Left Ring Finger";
+            finger_name = String.format("%s %s %s",R.string.left, R.string.ring, R.string.finger);
 			finger_code = 1;
 			finger_image_location = R.drawable.l_ring;
 			break;
 		case right_ring:
-			finger_name = "Right Ring Finger";
+            finger_name = String.format("%s %s %s",R.string.right, R.string.ring, R.string.finger);
 			finger_code = 8;
 			finger_image_location = R.drawable.r_ring;
 			break;
 		case left_pinky:
-			finger_name = "Left Pinky Finger";
+            finger_name = String.format("%s %s %s",R.string.left, R.string.pinky, R.string.finger);
 			finger_code = 0;
-			finger_image_location = R.drawable.l_pinky;
+            finger_image_location = R.drawable.l_pinky;
 			break;
 		case right_pinky:
-			finger_name = "Right Pinky Finger";
+            finger_name = String.format("%s %s %s",R.string.right, R.string.pinky, R.string.finger);
 			finger_code = 9;
 			finger_image_location = R.drawable.r_pinky;
 			break;

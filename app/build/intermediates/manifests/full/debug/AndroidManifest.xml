@@ -25,22 +25,22 @@
                 <action android:name="com.biometrac.screentest.ScanningActivity.USB_PERMISSION" />
             </intent-filter>
         </receiver>
-        <receiver
-            android:name="com.biometrac.core.CommcareReceiver"
-            android:enabled="true" >
+        <!--
+        Don't need these receivers
+        <receiver android:name="com.biometrac.core.CommcareReceiver" 
+            android:enabled="true">
             <intent-filter>
-                <action android:name="org.commcare.dalvik.api.action.data.update" />
-                <action android:name="org.commcare.dalvik.api.action.session.login" />
+                <action android:name="org.commcare.dalvik.api.action.data.update"></action>
+                <action android:name="org.commcare.dalvik.api.action.session.login"></action>
             </intent-filter>
-        </receiver>
-        <receiver
-            android:name="com.biometrac.core.BootReceiver"
-            android:enabled="true" >
+		</receiver>
+        <receiver android:name="com.biometrac.core.BootReceiver" 
+            android:enabled="true">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
             </intent-filter>
-        </receiver>
-
+		</receiver>
+        -->
         <activity
             android:name="com.biometrac.core.IntentFilterTest"
             android:label="AIntentFilterTest" >
