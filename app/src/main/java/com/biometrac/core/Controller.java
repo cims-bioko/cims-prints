@@ -20,7 +20,7 @@ public class Controller extends Application {
 
 	private static final String TAG = "ApplicationController";
 	public static Scanner mScanner = null;
-	protected static UsbDevice mDevice;
+	public static UsbDevice mDevice;
 	public static UsbManager mUsbManager;
 	public static HostUsbManager mHostUsbManager;
 	

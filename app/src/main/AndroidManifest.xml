@@ -20,6 +20,11 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:theme="@style/AppTheme" >
+        <receiver android:name="broadcast.ScannerReceiver">
+            <intent-filter>
+                <action android:name="com.biometrac.screentest.ScanningActivity.USB_PERMISSION"/>
+            </intent-filter>
+        </receiver>
         <receiver android:name="com.biometrac.core.CommcareReceiver" 
             android:enabled="true">
             <intent-filter>

@@ -53,7 +53,7 @@ public class ScanningActivity extends Activity{
 	//GETTING USB Permission
 	private BroadcastReceiver mUsbReceiver;
 	private PendingIntent mPermissionIntent;
-	boolean waiting_for_permission = true;
+	public static boolean waiting_for_permission = true;
 	private static final String ACTION_USB_PERMISSION =
 	    "com.biometrac.screentest.ScanningActivity.USB_PERMISSION";
 	
@@ -243,6 +243,7 @@ public class ScanningActivity extends Activity{
 		});
         
       //USB Permission Setup
+        /*
         mUsbReceiver = new BroadcastReceiver() {
 			@Override
 		    public void onReceive(Context context, Intent intent) {
@@ -263,9 +264,12 @@ public class ScanningActivity extends Activity{
 		        }
 		    }
 		};
+		*/
         mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
+        /*
         IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
         registerReceiver(mUsbReceiver, filter);
+        */
         
 	}
     
@@ -381,12 +385,14 @@ public class ScanningActivity extends Activity{
 	@Override
 	protected void onPause() {
 	 	if (waiting_for_permission == false){
+            /*
 	 		try{
 	 			unregisterReceiver(mUsbReceiver);
 	 			Log.i(TAG,"Unregistered receiver!");
 	 		}catch(Exception e){
 	 			Log.i(TAG,"Couldn't unregister receiver");
-	 		}	 
+	 		}
+             */
 	 	}
 		super.onPause();
 	}
@@ -636,12 +642,14 @@ public class ScanningActivity extends Activity{
 	}
 	
 	protected void finish_cancel(){
-		try{
+		/*
+        try{
  			unregisterReceiver(mUsbReceiver);
  			Log.i(TAG,"Unregistered receiver!");
  		}catch(Exception e){
  			Log.i(TAG,"Couldn't unregister receiver");
- 		}	 
+ 		}
+        */
  		Intent i = new Intent();
 		setResult(RESULT_CANCELED, i);
 		this.finish();
