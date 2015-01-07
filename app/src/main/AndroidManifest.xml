@@ -25,6 +25,7 @@
                 <action android:name="com.biometrac.screentest.ScanningActivity.USB_PERMISSION"/>
             </intent-filter>
         </receiver>
+        <!-- Don't need these receivers
         <receiver android:name="com.biometrac.core.CommcareReceiver" 
             android:enabled="true">
             <intent-filter>
@@ -38,6 +39,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED"></action>
             </intent-filter>
 		</receiver>
+		-->
         <activity
             android:name="com.biometrac.core.IntentFilterTest"
             android:label="AIntentFilterTest" >

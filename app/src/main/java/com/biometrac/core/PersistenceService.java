@@ -55,13 +55,16 @@ public class PersistenceService extends Service {
 		builder.setContentText(message);
 		builder.setSmallIcon(R.drawable.bmt_icon);
 		//builder.setContentIntent(kill_intent);
-		
+
+        //Don't need killswitch
+        /*
 		//builder.addAction(R.drawable.error_icon, "Stop Service", kill_intent);
 		builder.addAction(android.R.drawable.ic_input_delete, "Stop Service", kill_intent);
 		//builder.addAction(R.drawable.error_icon, "Kill BMT", kill_intent);
 		Intent notificationIntent = new Intent(this, PersistenceService.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 		builder.setContentIntent(pendingIntent);
+		*/
 		Notification n = builder.build();
 		return n;
 	}
