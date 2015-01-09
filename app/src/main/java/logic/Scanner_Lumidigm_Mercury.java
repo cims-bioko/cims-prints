@@ -66,6 +66,7 @@ public class Scanner_Lumidigm_Mercury extends Scanner{
 		new Thread(new Runnable() {
 	        public void run() {
         		try{
+                    isInInit = true;
 		        	usbIf = dev.getInterface(0);
 	        		Log.i("Endpoint Count",Integer.toString(usbIf.getEndpointCount()));
 		        	
@@ -137,10 +138,12 @@ public class Scanner_Lumidigm_Mercury extends Scanner{
 		    		read_buffer = new byte[1024];
 		    		
 		    		Log.i("Scanner Ops", "Finished Init Process");
+                    isInInit = false;
 		    		ready = true;
         		}catch(Exception e){
         			scan_cancelled = true;
         			Log.i(TAG,"INIT FAILED");
+                    isInInit = false;
         			e.printStackTrace();
         		}
 	    	}

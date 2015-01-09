@@ -13,6 +13,7 @@
     <uses-permission android:name="org.commcare.dalvik.provider.cases.read" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="android.permission.USB_PERMISSION" />
 
     <application
         android:name="com.biometrac.core.Controller"
@@ -23,6 +24,12 @@
         <receiver android:name="broadcast.ScannerReceiver" >
             <intent-filter>
                 <action android:name="com.biometrac.screentest.ScanningActivity.USB_PERMISSION" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="broadcast.USBReceiver" >
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+                <action android:name="android.hardware.usb.action.USB_DEVICE_DETACHED" />
             </intent-filter>
         </receiver>
         <!--

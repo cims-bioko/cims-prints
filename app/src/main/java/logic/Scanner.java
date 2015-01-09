@@ -19,7 +19,8 @@ public class Scanner {
 	public UsbDevice dev;
 	public UsbEndpoint epIN;
 	public UsbEndpoint epOUT;
-	public boolean ready;
+	public static boolean isInInit = false;
+    public boolean ready;
 	public static boolean finger_sensed = false;
 	public static boolean scan_cancelled = false;
 	

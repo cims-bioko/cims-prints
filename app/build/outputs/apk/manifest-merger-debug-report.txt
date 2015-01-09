@@ -39,153 +39,171 @@ uses-permission#android.permission.KILL_BACKGROUND_PROCESSES
 ADDED from AndroidManifest.xml:15:2
 	android:name
 		ADDED from AndroidManifest.xml:16:7
-application
+uses-permission#android.permission.USB_PERMISSION
 ADDED from AndroidManifest.xml:17:5
-	android:label
-		ADDED from AndroidManifest.xml:19:9
-	android:allowBackup
-		ADDED from AndroidManifest.xml:20:9
-	android:icon
-		ADDED from AndroidManifest.xml:21:9
-	android:theme
-		ADDED from AndroidManifest.xml:22:9
 	android:name
 		ADDED from AndroidManifest.xml:18:9
-receiver#broadcast.ScannerReceiver
-ADDED from AndroidManifest.xml:23:9
-	android:name
-		ADDED from AndroidManifest.xml:23:19
-intent-filter#com.biometrac.screentest.ScanningActivity.USB_PERMISSION
-ADDED from AndroidManifest.xml:24:13
-action#com.biometrac.screentest.ScanningActivity.USB_PERMISSION
-ADDED from AndroidManifest.xml:25:17
-	android:name
-		ADDED from AndroidManifest.xml:25:25
-activity#com.biometrac.core.IntentFilterTest
-ADDED from AndroidManifest.xml:43:9
+application
+ADDED from AndroidManifest.xml:19:5
 	android:label
-		ADDED from AndroidManifest.xml:45:13
+		ADDED from AndroidManifest.xml:21:9
+	android:allowBackup
+		ADDED from AndroidManifest.xml:22:9
+	android:icon
+		ADDED from AndroidManifest.xml:23:9
+	android:theme
+		ADDED from AndroidManifest.xml:24:9
 	android:name
-		ADDED from AndroidManifest.xml:44:13
-intent-filter#android.intent.action.View+android.intent.category.DEFAULT
-ADDED from AndroidManifest.xml:46:13
-action#android.intent.action.View
-ADDED from AndroidManifest.xml:47:5
+		ADDED from AndroidManifest.xml:20:9
+receiver#broadcast.ScannerReceiver
+ADDED from AndroidManifest.xml:25:9
 	android:name
-		ADDED from AndroidManifest.xml:47:13
-category#android.intent.category.DEFAULT
-ADDED from AndroidManifest.xml:48:5
+		ADDED from AndroidManifest.xml:25:19
+intent-filter#com.biometrac.screentest.ScanningActivity.USB_PERMISSION
+ADDED from AndroidManifest.xml:26:13
+action#com.biometrac.screentest.ScanningActivity.USB_PERMISSION
+ADDED from AndroidManifest.xml:27:17
 	android:name
-		ADDED from AndroidManifest.xml:48:15
-activity#com.biometrac.core.TestEngine
+		ADDED from AndroidManifest.xml:27:25
+receiver#broadcast.USBReceiver
+ADDED from AndroidManifest.xml:30:9
+	android:name
+		ADDED from AndroidManifest.xml:30:19
+intent-filter#android.hardware.usb.action.USB_DEVICE_ATTACHED+android.hardware.usb.action.USB_DEVICE_DETACHED
+ADDED from AndroidManifest.xml:31:13
+action#android.hardware.usb.action.USB_DEVICE_ATTACHED
+ADDED from AndroidManifest.xml:32:17
+	android:name
+		ADDED from AndroidManifest.xml:32:25
+action#android.hardware.usb.action.USB_DEVICE_DETACHED
+ADDED from AndroidManifest.xml:33:17
+	android:name
+		ADDED from AndroidManifest.xml:33:25
+activity#com.biometrac.core.IntentFilterTest
 ADDED from AndroidManifest.xml:51:9
 	android:label
 		ADDED from AndroidManifest.xml:53:13
 	android:name
 		ADDED from AndroidManifest.xml:52:13
-intent-filter#android.intent.category.DEFAULT
+intent-filter#android.intent.action.View+android.intent.category.DEFAULT
 ADDED from AndroidManifest.xml:54:13
-activity#com.biometrac.core.CCSyncActivity
-ADDED from AndroidManifest.xml:58:3
+action#android.intent.action.View
+ADDED from AndroidManifest.xml:55:5
+	android:name
+		ADDED from AndroidManifest.xml:55:13
+category#android.intent.category.DEFAULT
+ADDED from AndroidManifest.xml:56:5
+	android:name
+		ADDED from AndroidManifest.xml:56:15
+activity#com.biometrac.core.TestEngine
+ADDED from AndroidManifest.xml:59:9
 	android:label
+		ADDED from AndroidManifest.xml:61:13
+	android:name
 		ADDED from AndroidManifest.xml:60:13
-	android:name
-		ADDED from AndroidManifest.xml:59:13
-activity#com.biometrac.core.MainActivity
-ADDED from AndroidManifest.xml:65:9
+intent-filter#android.intent.category.DEFAULT
+ADDED from AndroidManifest.xml:62:13
+activity#com.biometrac.core.CCSyncActivity
+ADDED from AndroidManifest.xml:66:3
 	android:label
+		ADDED from AndroidManifest.xml:68:13
+	android:name
 		ADDED from AndroidManifest.xml:67:13
+activity#com.biometrac.core.MainActivity
+ADDED from AndroidManifest.xml:73:9
+	android:label
+		ADDED from AndroidManifest.xml:75:13
 	android:name
-		ADDED from AndroidManifest.xml:66:13
+		ADDED from AndroidManifest.xml:74:13
 intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
-ADDED from AndroidManifest.xml:68:13
-action#android.intent.action.MAIN
-ADDED from AndroidManifest.xml:69:17
-	android:name
-		ADDED from AndroidManifest.xml:69:25
-category#android.intent.category.LAUNCHER
-ADDED from AndroidManifest.xml:70:5
-	android:name
-		ADDED from AndroidManifest.xml:70:15
-intent-filter#android.intent.category.DEFAULT+com.biometrac.core.SCAN
-ADDED from AndroidManifest.xml:72:13
-action#com.biometrac.core.SCAN
-ADDED from AndroidManifest.xml:73:17
-	android:name
-		ADDED from AndroidManifest.xml:73:25
-intent-filter#android.intent.category.DEFAULT+com.biometrac.core.ENROLL
 ADDED from AndroidManifest.xml:76:13
-action#com.biometrac.core.ENROLL
+action#android.intent.action.MAIN
 ADDED from AndroidManifest.xml:77:17
 	android:name
 		ADDED from AndroidManifest.xml:77:25
-intent-filter#android.intent.category.DEFAULT+com.biometrac.core.IDENTIFY
+category#android.intent.category.LAUNCHER
+ADDED from AndroidManifest.xml:78:5
+	android:name
+		ADDED from AndroidManifest.xml:78:15
+intent-filter#android.intent.category.DEFAULT+com.biometrac.core.SCAN
 ADDED from AndroidManifest.xml:80:13
-action#com.biometrac.core.IDENTIFY
+action#com.biometrac.core.SCAN
 ADDED from AndroidManifest.xml:81:17
 	android:name
 		ADDED from AndroidManifest.xml:81:25
-intent-filter#android.intent.category.DEFAULT+com.biometrac.core.PIPE
+intent-filter#android.intent.category.DEFAULT+com.biometrac.core.ENROLL
 ADDED from AndroidManifest.xml:84:13
-action#com.biometrac.core.PIPE
+action#com.biometrac.core.ENROLL
 ADDED from AndroidManifest.xml:85:17
 	android:name
 		ADDED from AndroidManifest.xml:85:25
+intent-filter#android.intent.category.DEFAULT+com.biometrac.core.IDENTIFY
+ADDED from AndroidManifest.xml:88:13
+action#com.biometrac.core.IDENTIFY
+ADDED from AndroidManifest.xml:89:17
+	android:name
+		ADDED from AndroidManifest.xml:89:25
+intent-filter#android.intent.category.DEFAULT+com.biometrac.core.PIPE
+ADDED from AndroidManifest.xml:92:13
+action#com.biometrac.core.PIPE
+ADDED from AndroidManifest.xml:93:17
+	android:name
+		ADDED from AndroidManifest.xml:93:25
 activity#com.biometrac.core.PipeActivity
-ADDED from AndroidManifest.xml:89:9
+ADDED from AndroidManifest.xml:97:9
 	android:screenOrientation
-		ADDED from AndroidManifest.xml:92:13
-	android:noHistory
-		ADDED from AndroidManifest.xml:93:13
-	android:label
-		ADDED from AndroidManifest.xml:91:13
-	android:name
-		ADDED from AndroidManifest.xml:90:13
-activity#com.biometrac.core.CleanupActivity
-ADDED from AndroidManifest.xml:99:9
-	android:screenOrientation
-		ADDED from AndroidManifest.xml:102:13
-	android:noHistory
-		ADDED from AndroidManifest.xml:103:13
-	android:label
-		ADDED from AndroidManifest.xml:101:13
-	android:name
 		ADDED from AndroidManifest.xml:100:13
-activity#com.biometrac.core.ScanningActivity
-ADDED from AndroidManifest.xml:109:3
 	android:noHistory
-		ADDED from AndroidManifest.xml:112:13
+		ADDED from AndroidManifest.xml:101:13
 	android:label
-		ADDED from AndroidManifest.xml:111:13
-	android:configChanges
-		ADDED from AndroidManifest.xml:113:13
+		ADDED from AndroidManifest.xml:99:13
 	android:name
+		ADDED from AndroidManifest.xml:98:13
+activity#com.biometrac.core.CleanupActivity
+ADDED from AndroidManifest.xml:107:9
+	android:screenOrientation
 		ADDED from AndroidManifest.xml:110:13
+	android:noHistory
+		ADDED from AndroidManifest.xml:111:13
+	android:label
+		ADDED from AndroidManifest.xml:109:13
+	android:name
+		ADDED from AndroidManifest.xml:108:13
+activity#com.biometrac.core.ScanningActivity
+ADDED from AndroidManifest.xml:117:3
+	android:noHistory
+		ADDED from AndroidManifest.xml:120:13
+	android:label
+		ADDED from AndroidManifest.xml:119:13
+	android:configChanges
+		ADDED from AndroidManifest.xml:121:13
+	android:name
+		ADDED from AndroidManifest.xml:118:13
 activity#com.biometrac.core.EnrollActivity
-ADDED from AndroidManifest.xml:125:3
+ADDED from AndroidManifest.xml:133:3
 	android:screenOrientation
-		ADDED from AndroidManifest.xml:128:13
+		ADDED from AndroidManifest.xml:136:13
 	android:label
-		ADDED from AndroidManifest.xml:127:13
+		ADDED from AndroidManifest.xml:135:13
 	android:name
-		ADDED from AndroidManifest.xml:126:13
+		ADDED from AndroidManifest.xml:134:13
 activity#com.biometrac.core.IdentifyActivity
-ADDED from AndroidManifest.xml:130:3
+ADDED from AndroidManifest.xml:138:3
 	android:screenOrientation
-		ADDED from AndroidManifest.xml:133:13
+		ADDED from AndroidManifest.xml:141:13
 	android:label
-		ADDED from AndroidManifest.xml:132:13
+		ADDED from AndroidManifest.xml:140:13
 	android:name
-		ADDED from AndroidManifest.xml:131:13
+		ADDED from AndroidManifest.xml:139:13
 service#com.biometrac.core.PersistenceService
-ADDED from AndroidManifest.xml:135:3
+ADDED from AndroidManifest.xml:143:3
 	android:name
-		ADDED from AndroidManifest.xml:135:12
+		ADDED from AndroidManifest.xml:143:12
 service#com.biometrac.core.CommCareSyncService
-ADDED from AndroidManifest.xml:136:3
+ADDED from AndroidManifest.xml:144:3
 	android:name
-		ADDED from AndroidManifest.xml:136:12
+		ADDED from AndroidManifest.xml:144:12
 service#com.biometrac.core.NotificationReceiver
-ADDED from AndroidManifest.xml:137:3
+ADDED from AndroidManifest.xml:145:3
 	android:name
-		ADDED from AndroidManifest.xml:137:12
+		ADDED from AndroidManifest.xml:145:12

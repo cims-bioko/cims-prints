@@ -16,7 +16,15 @@
     <eat-comment/>
     <string name="action_settings">Settings</string>
     <string name="app_name">BiometracCore</string>
+    <string name="finger">Finger</string>
     <string name="hello_world">Hello world!</string>
+    <string name="index">Index</string>
+    <string name="left">Left</string>
+    <string name="middle">Middle</string>
+    <string name="pinky">Pinky</string>
+    <string name="right">Right</string>
+    <string name="ring">Ring</string>
+    <string name="thumb">Thumb</string>
     <!-- From: file:/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/values/styles.xml -->
     <eat-comment/>
     <style name="AppTheme" parent="android:Theme">

@@ -649,6 +649,7 @@ public class ScanningActivity extends Activity{
 		Scanner mScanner;
 		String finger;
 		boolean success = false;
+        boolean reconnect = false;
         Drawable image;
 		
 	private FingerScanInterface(String name, Scanner scanner, ImageButton spot, View parent) {
@@ -658,8 +659,25 @@ public class ScanningActivity extends Activity{
 			finger = name;
 	        mScanner = scanner;
 		}
-		@Override
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if (Controller.mScanner == null){
+                Log.d(TAG, "Reconnect pre!");
+                reconnect = true;
+                cancel(true);
+            }
+        }
+
+        @Override
 		protected Void doInBackground(Void... params) {
+            if (isCancelled()){
+                Log.d(TAG, "Canceled background!");
+                success = false;
+                return null;
+            }
+
 			new Thread(new Runnable() {
 		        public void run() {
 		        	try{
@@ -742,6 +760,10 @@ public class ScanningActivity extends Activity{
 				Log.i(TAG,"Scan failed!");
 				popUp.dismiss();
 			}
+            if (reconnect){
+                Log.d(TAG, "Reconnect post!");
+                unplug_scanner(view);
+            }
 			
 	    }
 	}
