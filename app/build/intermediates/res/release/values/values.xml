@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- From: file:/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/values/colors.xml -->
+    <eat-comment/>
+    <color name="dark_blue">#095080</color>
+    <color name="dark_grey">#6d6e71</color>
+    <color name="light_blue">#98def2</color>
+    <color name="light_grey">#bcd2da</color>
+    <color name="text_color">#0a5080</color>
+    <color name="white">#FFFFFF</color>
+    <!-- From: file:/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/values/dimens.xml -->
+    <eat-comment/>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <!-- From: file:/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/values/strings.xml -->
+    <eat-comment/>
+    <string name="action_settings">Settings</string>
+    <string name="app_name">BiometracCore</string>
+    <string name="finger">Finger</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="index">Index</string>
+    <string name="left">Left</string>
+    <string name="middle">Middle</string>
+    <string name="pinky">Pinky</string>
+    <string name="right">Right</string>
+    <string name="ring">Ring</string>
+    <string name="thumb">Thumb</string>
+    <!-- From: file:/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/values/styles.xml -->
+    <eat-comment/>
+    <style name="AppTheme" parent="android:Theme">
+		<item name="android:windowAnimationStyle">@null</item>
+		<item name="android:windowEnterAnimation">@null</item>
+		<item name="android:windowExitAnimation">@null</item>
+		<item name="android:colorBackground">@color/light_blue</item>
+	</style>
+    <style name="NotificationText">
+      <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+    </style>
+    <style name="NotificationTitle">
+      <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+      <item name="android:textStyle">bold</item>
+    </style>
+    <style name="button_dark" parent="@android:style/Widget.Button">
+	    <item name="android:background">@drawable/btn_dark_shape</item>
+	    <item name="android:textSize">25dp</item>
+	    <item name="android:paddingLeft">25dp</item>
+	    <item name="android:paddingRight">25dp</item>
+	    <item name="android:paddingTop">3dp</item>
+	    <item name="android:paddingBottom">3dp</item>
+	    <item name="android:textColor">@color/white</item>
+	    <item name="android:typeface">sans</item>
+    </style>
+    <style name="button_dark.vert" parent="@style/button_dark">
+        <item name="android:paddingLeft">3dp</item>
+        <item name="android:paddingRight">3dp</item>
+        <item name="android:paddingTop">25dp</item>
+        <item name="android:paddingBottom">25dp</item>
+    </style>
+    <style name="button_light" parent="@android:style/Widget.Button">
+	    <item name="android:background">@drawable/btn_light_shape</item>
+	    <item name="android:textSize">25dp</item>
+	    <item name="android:paddingLeft">25dp</item>
+	    <item name="android:paddingRight">25dp</item>
+	    <item name="android:paddingTop">3dp</item>
+	    <item name="android:paddingBottom">3dp</item>
+	    <item name="android:textColor">@color/dark_blue</item>
+	    <item name="android:typeface">sans</item>
+	</style>
+    <style name="button_light.vert" parent="@style/button_light">
+        <item name="android:paddingLeft">3dp</item>
+        <item name="android:paddingRight">3dp</item>
+        <item name="android:paddingTop">25dp</item>
+        <item name="android:paddingBottom">25dp</item>
+    </style>
+    <style name="button_red" parent="@android:style/Widget.Button">
+	    <item name="android:background">@drawable/btn_red_shape</item>
+	    <item name="android:textSize">25dp</item>
+	    <item name="android:paddingLeft">25dp</item>
+	    <item name="android:paddingRight">25dp</item>
+	    <item name="android:paddingTop">3dp</item>
+	    <item name="android:paddingBottom">3dp</item>
+	    <item name="android:textColor">#444444</item>
+	    <item name="android:typeface">sans</item>
+	</style>
+    <style name="text_norm" parent="@android:style/Widget.TextView">
+	    <item name="android:textSize">20dp</item>
+	    <item name="android:paddingLeft">10dp</item>
+	    <item name="android:paddingRight">10dp</item>
+	    <item name="android:paddingTop">3dp</item>
+	    <item name="android:paddingBottom">3dp</item>
+	    <item name="android:textColor">@color/white</item>
+	    <item name="android:typeface">sans</item>
+	    <item name="android:textStyle">normal</item>
+	</style>
+    <style name="title_text" parent="@android:style/Widget.TextView">
+	    <item name="android:textSize">25sp</item>
+	    <item name="android:paddingLeft">10dp</item>
+	    <item name="android:paddingRight">10dp</item>
+	    <item name="android:paddingTop">3dp</item>
+	    <item name="android:paddingBottom">3dp</item>
+	    <item name="android:textColor">@color/white</item>
+	    <item name="android:typeface">sans</item>
+	    <item name="android:textStyle">bold</item>
+	</style>
+</resources>

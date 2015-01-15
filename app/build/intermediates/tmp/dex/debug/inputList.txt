@@ -1,0 +1,5 @@
+/home/sarwar/workspace/biometrac/BMTCore/app/build/intermediates/classes/debug
+/home/sarwar/workspace/biometrac/BMTCore/app/build/intermediates/pre-dexed/debug/json_simple-1.1-293fa5dd23acc40025528145bc6e8025ff9284aa.jar
+/home/sarwar/workspace/biometrac/BMTCore/app/build/intermediates/pre-dexed/debug/sourceafis-4b270f0349ea0281def6077b21adb342f47a64f3.jar
+/home/sarwar/workspace/biometrac/BMTCore/app/build/intermediates/pre-dexed/debug/bmtafis-8d4778e2cb5b9a171e24fc6adf488405e77fe53a.jar
+/home/sarwar/workspace/biometrac/BMTCore/app/build/intermediates/pre-dexed/debug/support-v4-19.1.0-7669b3e407504cef736671444e8e5ace2ff3fa66.jar

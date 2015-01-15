@@ -352,7 +352,7 @@ public class Scanner_Lumidigm_Mercury extends Scanner{
 					
 					for (int y = 0; y < 352; y++){
 						for (int x = 279; x >= 0; x--){
-							complete_image.setPixel(x, y, image_ints[pix]);
+							complete_image.setPixel(x, y, (0xFFFFFF - image_ints[pix]));
 							
 							pix +=1;
 						}
