@@ -2,4 +2,4 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android" >
       <item android:state_checked="true" android:drawable="@color/dark_blue"/>
       <item android:state_checked="false" android:drawable="@color/light_grey" />
-</selector><!-- From: file:/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/drawable-hdpi/radio_select.xml -->
+</selector><!-- From: file:/C:/Users/sarwar/Documents/biometraccore/app/src/main/res/drawable-hdpi/radio_select.xml -->

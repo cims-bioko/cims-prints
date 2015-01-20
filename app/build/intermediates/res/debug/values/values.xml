@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/values/colors.xml -->
+    <!-- From: file:/C:/Users/sarwar/Documents/biometraccore/app/src/main/res/values/colors.xml -->
     <eat-comment/>
     <color name="dark_blue">#095080</color>
     <color name="dark_grey">#6d6e71</color>
@@ -8,24 +8,36 @@
     <color name="light_grey">#bcd2da</color>
     <color name="text_color">#0a5080</color>
     <color name="white">#FFFFFF</color>
-    <!-- From: file:/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/values/dimens.xml -->
+    <!-- From: file:/C:/Users/sarwar/Documents/biometraccore/app/src/main/res/values/dimens.xml -->
     <eat-comment/>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <!-- From: file:/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/values/strings.xml -->
+    <!-- From: file:/C:/Users/sarwar/Documents/biometraccore/app/src/main/res/values/strings.xml -->
     <eat-comment/>
     <string name="action_settings">Settings</string>
     <string name="app_name">BiometracCore</string>
+    <string name="attach_scanner">Please Attach the Scanner</string>
     <string name="finger">Finger</string>
     <string name="hello_world">Hello world!</string>
     <string name="index">Index</string>
     <string name="left">Left</string>
+    <string name="left_index">Left Index Finger</string>
+    <string name="left_thumb">Left Thumb</string>
     <string name="middle">Middle</string>
     <string name="pinky">Pinky</string>
+    <string name="please_wait">Please Wait...</string>
     <string name="right">Right</string>
+    <string name="right_index">Right Index Finger</string>
+    <string name="right_thumb">Right Thumb</string>
     <string name="ring">Ring</string>
+    <string name="scan_all_fingers">Please ensure all fingers\nhave been scanned.</string>
+    <string name="scan_complete">Scan Complete.\nProcessing Image.</string>
+    <string name="scan_prompt">Please Scan the</string>
+    <string name="scan_quality">Please ensure all fingers \nare of Good Quality! \nPlease Try Again.</string>
+    <string name="scanner_not_connected">Scanner isn\'t connected...</string>
     <string name="thumb">Thumb</string>
-    <!-- From: file:/home/sarwar/workspace/biometrac/BMTCore/app/src/main/res/values/styles.xml -->
+    <string name="unplug_scanner">Please Unplug the Scanner</string>
+    <!-- From: file:/C:/Users/sarwar/Documents/biometraccore/app/src/main/res/values/styles.xml -->
     <eat-comment/>
     <style name="AppTheme" parent="android:Theme">
 		<item name="android:windowAnimationStyle">@null</item>

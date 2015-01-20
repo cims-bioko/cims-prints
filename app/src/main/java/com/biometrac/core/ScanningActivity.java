@@ -133,7 +133,7 @@ public class ScanningActivity extends Activity{
             public void onClick(View arg0) {
                 if(Controller.mScanner==null){
                     restart_scanner(arg0);
-                    Toast.makeText(mContext, "Scanner is not connected...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, getResources().getString(R.string.scanner_not_connected), Toast.LENGTH_SHORT).show();
                     return;
                 }else{
                     HashMap<String, UsbDevice> deviceList = Controller.mUsbManager.getDeviceList();
@@ -141,13 +141,13 @@ public class ScanningActivity extends Activity{
                     if (deviceIterator.hasNext()==false){
                         Log.i(TAG,"Device Unplugged");
                         restart_scanner(arg0);
-                        Toast.makeText(mContext, "Scanner is not connected...", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, getResources().getString(R.string.scanner_not_connected), Toast.LENGTH_SHORT).show();
                         return;
                     }
                 }
                 if (Controller.mScanner.get_ready()==true){
                     //TODO
-                    pop_prompt.setText("Please Scan the "+ left_finger.finger_name);
+                    pop_prompt.setText(getResources().getString(R.string.scan_prompt)+" "+ left_finger.finger_name);
                     popUp.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
                     popUp.showAtLocation(arg0, Gravity.CENTER_VERTICAL, 0, 0);
@@ -175,7 +175,7 @@ public class ScanningActivity extends Activity{
             public void onClick(View arg0) {
                 if(Controller.mScanner==null){
                     restart_scanner(arg0);
-                    Toast.makeText(mContext, "Scanner is not connected...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, getResources().getString(R.string.scanner_not_connected), Toast.LENGTH_SHORT).show();
                     return;
                 }else{
                     HashMap<String, UsbDevice> deviceList = Controller.mUsbManager.getDeviceList();
@@ -183,7 +183,7 @@ public class ScanningActivity extends Activity{
                     if (deviceIterator.hasNext()==false){
                         Log.i(TAG,"Device Unplugged");
                         restart_scanner(arg0);
-                        Toast.makeText(mContext, "Scanner is not connected...", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, getResources().getString(R.string.scanner_not_connected), Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -212,14 +212,14 @@ public class ScanningActivity extends Activity{
             public void onClick(View arg0) {
                 if(Controller.mScanner==null){
                     restart_scanner(arg0);
-                    Toast.makeText(mContext, "Scanner is not connected...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, getResources().getString(R.string.scanner_not_connected), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (Controller.mScanner.get_ready()==true){
                     check_nfiq_scores();
                 }
                 else{
-                    Toast.makeText(mContext, "Please Wait...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, getResources().getString(R.string.please_wait), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -474,7 +474,7 @@ public class ScanningActivity extends Activity{
 		Iterator<String> keys = nfiqScores.keySet().iterator();
 		boolean pass = true;
 		if (nfiqScores.keySet().size() < 2){
-			Toast t = Toast.makeText(mContext, "Please ensure all fingers \nhave been scanned.", Toast.LENGTH_LONG);			
+			Toast t = Toast.makeText(mContext, getResources().getString(R.string.scan_all_fingers), Toast.LENGTH_LONG);
 			t.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
 			t.show();
 			Log.i("scanning","quality not enough keys");
@@ -488,7 +488,7 @@ public class ScanningActivity extends Activity{
 					Log.i("scanning","score > 2");
 					Log.i("scanning","score = "+score);
 					pass = false;
-					Toast t = Toast.makeText(mContext, "Please ensure all fingers \nare of Good Quality! \nPlease Try Again.", Toast.LENGTH_LONG);			
+					Toast t = Toast.makeText(mContext, getResources().getString(R.string.scan_quality), Toast.LENGTH_LONG);
 					t.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
 					t.show();
 				}
@@ -707,7 +707,7 @@ public class ScanningActivity extends Activity{
 		                public void run() {
 		                	//FIX
 		                	popUp.dismiss();
-		                	pop_prompt.setText("Scan Complete.\nProcessing Image.");
+		                	pop_prompt.setText(getResources().getString(R.string.scan_complete));
 		                	Button b = pop_cancel;
 		                	b.setVisibility(View.GONE);
 		                	popUp.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -841,7 +841,7 @@ public class ScanningActivity extends Activity{
 		@Override
 		protected void onPreExecute() {
 			//popUp.setBackgroundDrawable(grey_box);
-			pop_prompt.setText("Please Unplug the Scanner");
+			pop_prompt.setText(getResources().getString(R.string.unplug_scanner));
 			pop_cancel.setVisibility(View.GONE);
 			popUp.showAtLocation(parent, Gravity.CENTER_VERTICAL, 0, 0);
 			popUp.update();
@@ -903,7 +903,7 @@ public class ScanningActivity extends Activity{
 			oldContext = context;
 		}
 		protected void onPreExecute() {
-			pop_prompt.setText("Please Attach the Scanner");
+			pop_prompt.setText(getResources().getString(R.string.attach_scanner));
 			pop_cancel.setVisibility(View.VISIBLE);
 			pop_cancel.setOnClickListener(new Button.OnClickListener() {
 				

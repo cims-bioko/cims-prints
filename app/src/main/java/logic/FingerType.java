@@ -30,22 +30,22 @@ public class FingerType {
 		finger_key = f.toString();
 		switch(f){
 		case left_thumb:
-			finger_name = String.format("%s %s",res.getString((R.string.left)), res.getString(R.string.thumb));
+			finger_name = String.format("%s",res.getString((R.string.left_thumb)));
 			finger_code = 4;
 			finger_image_location = R.drawable.l_thumb;
 			break;
 		case right_thumb:
-            finger_name = String.format("%s %s",res.getString(R.string.right), res.getString(R.string.thumb));
+            finger_name = String.format("%s",res.getString(R.string.right_thumb));
 			finger_code = 5;
 			finger_image_location = R.drawable.r_thumb; 
 			break;
 		case left_index:
-            finger_name = String.format("%s %s %s",res.getString(R.string.left), res.getString(R.string.index), res.getString(R.string.finger));
+            finger_name = String.format("%s",res.getString(R.string.left_index));
 			finger_code = 3;
 			finger_image_location = R.drawable.l_index;
 			break;
 		case right_index:
-            finger_name = String.format("%s %s %s",res.getString(R.string.right), res.getString(R.string.index), res.getString(R.string.finger));
+            finger_name = String.format("%s",res.getString(R.string.right_index));
 			finger_code = 6;
 			finger_image_location = R.drawable.r_index;
 			break;

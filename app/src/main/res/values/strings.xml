@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
 
     <string name="app_name">BiometracCore</string>
     <string name="action_settings">Settings</string>
@@ -12,5 +13,17 @@
     <string name="ring">Ring</string>
     <string name="pinky">Pinky</string>
     <string name="finger">Finger</string>
+    <string name="left_thumb">Left Thumb</string>
+    <string name="right_thumb">Right Thumb</string>
+    <string name="left_index">Left Index Finger</string>
+    <string name="right_index">Right Index Finger</string>
+    <string name="scan_prompt">Please Scan the</string>
+    <string name="scanner_not_connected">Scanner isn\'t connected...</string>
+    <string name="please_wait">Please Wait...</string>
+    <string name="scan_all_fingers">Please ensure all fingers\nhave been scanned.</string>
+    <string name="scan_quality">Please ensure all fingers \nare of Good Quality! \nPlease Try Again.</string>
+    <string name="scan_complete">Scan Complete.\nProcessing Image.</string>
+    <string name="unplug_scanner">Please Unplug the Scanner</string>
+    <string name="attach_scanner">Please Attach the Scanner</string>
 
 </resources>

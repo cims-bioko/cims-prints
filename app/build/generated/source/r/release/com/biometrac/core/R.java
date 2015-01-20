@@ -138,15 +138,27 @@ public final class R {
     public static final class string {
         public static final int action_settings=0x7f060000;
         public static final int app_name=0x7f060001;
-        public static final int finger=0x7f060002;
-        public static final int hello_world=0x7f060003;
-        public static final int index=0x7f060004;
-        public static final int left=0x7f060005;
-        public static final int middle=0x7f060006;
-        public static final int pinky=0x7f060007;
-        public static final int right=0x7f060008;
-        public static final int ring=0x7f060009;
-        public static final int thumb=0x7f06000a;
+        public static final int attach_scanner=0x7f060002;
+        public static final int finger=0x7f060003;
+        public static final int hello_world=0x7f060004;
+        public static final int index=0x7f060005;
+        public static final int left=0x7f060006;
+        public static final int left_index=0x7f060007;
+        public static final int left_thumb=0x7f060008;
+        public static final int middle=0x7f060009;
+        public static final int pinky=0x7f06000a;
+        public static final int please_wait=0x7f06000b;
+        public static final int right=0x7f06000c;
+        public static final int right_index=0x7f06000d;
+        public static final int right_thumb=0x7f06000e;
+        public static final int ring=0x7f06000f;
+        public static final int scan_all_fingers=0x7f060010;
+        public static final int scan_complete=0x7f060011;
+        public static final int scan_prompt=0x7f060012;
+        public static final int scan_quality=0x7f060013;
+        public static final int scanner_not_connected=0x7f060014;
+        public static final int thumb=0x7f060015;
+        public static final int unplug_scanner=0x7f060016;
     }
     public static final class style {
         /**  API 11 theme customizations can go here. 
