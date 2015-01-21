@@ -1001,10 +1001,13 @@ public class ScanningActivity extends Activity{
 	    	    			//if scan init failed
 	                		try {
 	    						Thread.sleep(250);
-	    					} catch (InterruptedException e) {
+                                if(Controller.mScanner == null){
+                                    break;
+                                }
+                            } catch (InterruptedException e) {
 	    						e.printStackTrace();
 	    					}
-	                		Log.i(TAG,"Scanner isn't ready...");
+                            Log.i(TAG,"Scanner isn't ready...");
 	                	}
 	    	    		break;
 	                }
