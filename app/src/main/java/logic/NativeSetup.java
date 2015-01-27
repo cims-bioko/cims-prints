@@ -17,7 +17,8 @@ import android.content.Context;
  */
 
 public class NativeSetup {
-	
+	//TODO KILL
+    /*
 	private static void copyFile(String assetPath, String localPath, Context context) {
 				
 		try {
@@ -186,4 +187,5 @@ public class NativeSetup {
 		}
 		System.out.println("Finished Native System Install");
 	}
+	*/
 }

@@ -1,22 +1,14 @@
 package com.biometrac.core;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 
 import logic.FingerType;
 import logic.HostUsbManager;
-import logic.NativeClass;
-import logic.NativeSetup;
 import logic.Scanner;
 import logic.Scanner_Lumidigm_Mercury;
 import android.app.Activity;
@@ -24,10 +16,8 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
@@ -65,7 +55,8 @@ public class ScanningActivity extends Activity{
     Map<String, Bitmap> scanImages;
 	ImageButton left_thumb_btn;
 	ImageButton right_thumb_btn;
-	Map<String,String> nfiqScores;
+	//Map<String,String> nfiqScores;
+    Map <String, Boolean> scannedFingers;
 	Map<String,String> template_cache;
 	Map<String,String> iso_template_cache;
     ImageButton proceed;
@@ -95,7 +86,7 @@ public class ScanningActivity extends Activity{
         setCorrectContentView(getResources().getConfiguration());
 
         scanImages = new HashMap<String, Bitmap>();
-        nfiqScores = new HashMap<String,String>();
+        scannedFingers = new HashMap<>();
         template_cache = new HashMap<String,String>();
         iso_template_cache = new HashMap<String,String>();
         load_options(getIntent().getExtras());
@@ -273,7 +264,7 @@ public class ScanningActivity extends Activity{
             default_options();
         }
         setupUI();
-        publish_nfiq();
+        colorFinger();
         for (String key: scanImages.keySet()){
             Log.d(TAG, "found in scan Images: " + key);
         }
@@ -435,34 +426,14 @@ public class ScanningActivity extends Activity{
 		super.onDestroy();
 	}
 	*/
-	public void publish_nfiq(){
-		String l_score = nfiqScores.get(left_finger.finger_key);
-		String r_score = nfiqScores.get(right_finger.finger_key);
-		try{
-			if (Integer.parseInt(r_score)>2){
-				//right_thumb_btn.setBackgroundColor(Color.RED);
-				right_thumb_btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_shape_red_round));
-			}else{
-				//right_thumb_btn.setBackgroundColor(Color.GREEN);
-				right_thumb_btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_shape_green_round));
-			}
-		}catch(Exception e){
-			//parse error for no score...
-			Log.i(TAG,"No Right Score...");
-		}
-		try{
-			if (Integer.parseInt(l_score)>2){
-				//left_thumb_btn.setBackgroundColor(Color.RED);	
-				left_thumb_btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_shape_red_round));
-			}else{
-				//left_thumb_btn.setBackgroundColor(Color.GREEN);
-				left_thumb_btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_shape_green_round));
-			}
-		}catch(Exception e){
-			//parse error for no score...
-			Log.i(TAG,"No Left Score...");
-		}
-		
+	public void colorFinger(){
+
+        if (scannedFingers.get(left_finger.finger_key)!= null) {
+            left_thumb_btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_shape_green_round));
+        }
+        if (scannedFingers.get(right_finger.finger_key)!= null) {
+            right_thumb_btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_shape_green_round));
+        }
 	}
 	
 	//On press of confirm in skip dialog
@@ -471,130 +442,38 @@ public class ScanningActivity extends Activity{
 	}
 	
 	public void check_nfiq_scores(){
-		Iterator<String> keys = nfiqScores.keySet().iterator();
 		boolean pass = true;
-		if (nfiqScores.keySet().size() < 2){
+		if (scannedFingers.keySet().size() < 2){
 			Toast t = Toast.makeText(mContext, getResources().getString(R.string.scan_all_fingers), Toast.LENGTH_LONG);
 			t.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
 			t.show();
 			Log.i("scanning","quality not enough keys");
-			pass = false;
+			return;
 		}
-		else{
-			while(keys.hasNext()){
-				String key = keys.next();
-				int score = Integer.parseInt(nfiqScores.get(key));
-				if (score > 2){
-					Log.i("scanning","score > 2");
-					Log.i("scanning","score = "+score);
-					pass = false;
-					Toast t = Toast.makeText(mContext, getResources().getString(R.string.scan_quality), Toast.LENGTH_LONG);
-					t.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-					t.show();
-				}
-			}
-		}
-		if (!pass){
-			//
-			if (easy_skip == false){
-				skip.setVisibility(View.VISIBLE);
-				skip.setOnClickListener(new Button.OnClickListener() {
-					@Override
-					public void onClick(View arg0) {
-						finish_cancel();
-						//TODO Reimplement exit with cancelled return code...
-						/*
-						e_pop.showAtLocation(callback, Gravity.CENTER_VERTICAL, 0, 0);
-						e_exit.setOnClickListener(new Button.OnClickListener() {
-							@Override
-							public void onClick(View v) {
-								skip_scanning();
-							}
-						});
-						e_prompt.setText("Are you sure that you want\nto Skip Fingerprint Scanning?");
-						e_pop.update();
-						*/
-						
-					}
-				});
-			}
-			
-			
-		}
-		else{
-			if (easy_skip == false){
-				skip.setVisibility(View.GONE);
-				skip.setOnClickListener(null);
-			}
-			//skip.setVisibility(View.GONE);
-			//skip.setOnClickListener(null);
-			Map<String,String>biometrics = Controller.mScanner.getBiometrics();
-			Map<String,String> iso_set = Controller.mScanner.get_iso_biometrics();
-			for(String key: biometrics.keySet()){
-				//TODO return keyset to caller intent
-				/*
-				Controller.mParticipant.put_info(key, biometrics.get(key));
-				*/
-			}
-			try{
-				
-				if (iso_set != null){
-					for (String k:iso_set.keySet()){
-						String field_name = k +"_iso";
-						//TODO return keyset to caller intent
-						/*
-						Controller.mParticipant.put_info(field_name, iso_set.get(k));
-						*/
-					}
-				}
-			}catch (Exception e){
-				Log.i(TAG,"Couldn't set iso_templates in part_info");
-			}
-			
-					/*
-					Log.i("Debug","Tag Entered");
-					Map<String,String>bmt = Controller.mParticipant.get_biometrics();
-					Log.i(TAG,"to parse for boolean "+ opts.get("name_fingers"));
-					String rename = opts.get("name_fingers");
-					Map<String,String> out = new HashMap<String,String>();
-					if (rename != null){
-						if (rename.equals("true") == true){
-							Log.i(TAG,"WTF WE'RE HERE!");
-							for(String key: biometrics.keySet()){
-								Log.i("Debug","Found Key: "+key);
-								Log.i("Debug","Val: "+biometrics.get(key));
-								if (opts.get(key) != null){
-									String new_name = opts.get(key);
-									Log.i(TAG, "New name! :" +new_name);
-									out.put(new_name, biometrics.get(key));	
-								}else{
-									Log.i(TAG,"No rename rule for " + key);
-								}
-								
-							}
-							*/
-			Map<String,String> out = new HashMap<String,String>();
-			for(String key: iso_set.keySet()){
-				String iso_key = key+"_iso";
-				Log.i("Debug","Found Key: "+iso_key);
-				Log.i("Debug","Val: "+iso_set.get(key));
-				if (opts != null){
-					if (opts.get(key) != null){
-						String new_name = opts.get(iso_key);
-						Log.i(TAG, "New name! :" +new_name);
-						out.put(new_name, iso_set.get(key));
-					}else{
-						Log.i(TAG,"No rename rule for " + key);
-						out.put(key, iso_set.get(key));
-					}
-				}else{
-					Log.i(TAG,"No rename rule for " + key);
-					out.put(key, iso_set.get(key));
-				}
-				
-			}
-			finish_ok(out);
-		}
+        Map<String,String> iso_set = Controller.mScanner.get_iso_biometrics();
+
+        Map<String,String> out = new HashMap<String,String>();
+        for(String key: iso_set.keySet()){
+            String iso_key = key+"_iso";
+            Log.i("Debug","Found Key: "+iso_key);
+            Log.i("Debug","Val: "+iso_set.get(key));
+            if (opts != null){
+                if (opts.get(key) != null){
+                    String new_name = opts.get(iso_key);
+                    Log.i(TAG, "New name! :" +new_name);
+                    out.put(new_name, iso_set.get(key));
+                }else{
+                    Log.i(TAG,"No rename rule for " + key);
+                    out.put(key, iso_set.get(key));
+                }
+            }else{
+                Log.i(TAG,"No rename rule for " + key);
+                out.put(key, iso_set.get(key));
+            }
+
+        }
+        finish_ok(out);
+
 	}
 	
 	public void cancel_scan(FingerScanInterface inter, View parent){
@@ -719,6 +598,45 @@ public class ScanningActivity extends Activity{
 		        }
 	        }).start();
 			success = mScanner.run_scan(finger);
+            if (success==true) {
+                //in case of disconnect, cache items locally
+                template_cache = Controller.mScanner.getBiometrics();
+                iso_template_cache = Controller.mScanner.get_iso_biometrics();
+
+                Log.i("PostExec", "Started");
+                Bitmap result = mScanner.get_image(finger);
+                Log.i("bmp_info", Integer.toString(result.getHeight()));
+                Log.i("bmp_info", Integer.toString(result.getWidth()));
+                int starting_image_height = view.getHeight();
+                int starting_image_width = view.getWidth();
+
+                Log.i(TAG, "Max Image width: " + starting_image_width + " Height: " + starting_image_height);
+
+                int new_height = (int) Math.round(starting_image_height * .92);
+                int new_width = (int) Math.round(starting_image_width * .92);
+                Log.i(TAG, "new height: " + Integer.toString(new_height));
+                Log.i(TAG, "new width: " + Integer.toString(new_width));
+
+                final Bitmap scaled = Bitmap.createScaledBitmap(result, new_width, new_height, true);
+                scanImages.put(finger, scaled);
+                Log.i(TAG, "Scaled BMP width: " + Integer.toString(scaled.getWidth()));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        view.setScaleType(ScaleType.CENTER);
+                        view.setImageBitmap(scaled);
+                    }
+                });
+
+                scannedFingers.put(finger, true);
+            }
+            while(! mScanner.ready){
+                try{
+                    Thread.sleep(200);
+                }catch (Exception e){
+                    Log.d(TAG, "Waiting for scanner to complete flush.");
+                }
+            }
 			return null;
 		}
 		
@@ -730,35 +648,10 @@ public class ScanningActivity extends Activity{
 		}
 		
 		protected void onPostExecute(Void res) {
-			if (success==true){
-				//in case of disconnect, cache items locally
-				template_cache = Controller.mScanner.getBiometrics();
-				iso_template_cache = Controller.mScanner.get_iso_biometrics();
-				
-				Log.i("PostExec", "Started");
-				Bitmap result = mScanner.get_image(finger);
-		    	Log.i("bmp_info", Integer.toString(result.getHeight()));
-		    	Log.i("bmp_info", Integer.toString(result.getWidth()));
-		    	int starting_image_height = view.getHeight();
-				int starting_image_width = view.getWidth();
-				
-				Log.i(TAG, "Max Image width: " + starting_image_width + " Height: " + starting_image_height);
-				
-				int new_height = (int) Math.round(starting_image_height*.92);
-		    	int new_width = (int) Math.round(starting_image_width*.92);
-		    	Log.i(TAG, "new height: " + Integer.toString(new_height));
-		    	Log.i(TAG, "new width: " +Integer.toString(new_width));
-		    	
-		    	Bitmap scaled = Bitmap.createScaledBitmap(result, new_width, new_height, true);
-                scanImages.put(finger, scaled);
-		    	Log.i(TAG, "Scaled BMP width: " + Integer.toString(scaled.getWidth()));
-		        view.setScaleType(ScaleType.CENTER);
-		    	view.setImageBitmap(scaled);
-				WritePhoto w = new WritePhoto(result, finger);
-		        w.execute();
-			}else{
+            popUp.dismiss();
+            colorFinger();
+            if(!success){
 				Log.i(TAG,"Scan failed!");
-				popUp.dismiss();
 			}
             if (reconnect){
                 Log.d(TAG, "Reconnect post!");
@@ -767,71 +660,7 @@ public class ScanningActivity extends Activity{
 			
 	    }
 	}
-	private class WritePhoto extends AsyncTask<byte[], Void, String> {
-		
-		Bitmap img;
-		String finger;
-		String template;
-		public WritePhoto(Bitmap img, String finger){
-			super();
-			this.img = img;
-			this.finger = finger;
-			template = "";
-		}
-		protected void onPreExecute() {
-		}
-		@Override
-		protected String doInBackground(byte[]... data) {
 
-			String image1Path = "/data/data/com.biometrac.core/nbis/img/"+finger+"1.jpg";
-			String image2Path = "/data/data/com.biometrac.core/nbis/img/"+finger+"2.jpg";
-			OutputStream fOut = null;
-			File file = new File(image1Path);
-			try {
-				fOut = new FileOutputStream(file);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-			img.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
-			try {
-				fOut.flush();
-				fOut.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			NativeClass.jpegtran(image1Path, image2Path);
-			NativeSetup.dropPermission(image2Path);
-			String nfiqOut = NativeClass.nfiq(image2Path, false);
-			template = NativeClass.mindtct(finger);
-			while (Controller.mScanner.get_ready() == false){
-				try {
-					Thread.sleep(250);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				Log.i(TAG,"Waiting for scanner to finish...");
-			}
-			return nfiqOut;
-		}
-		protected void onPostExecute(final String nfiqOut) {
-				StringTokenizer nfiqTokens = new StringTokenizer(nfiqOut);
-				String[] nfiqTerm = new String[15];
-				int termCount = 0;
-				while(nfiqTokens.hasMoreTokens()){
-					nfiqTerm[termCount] = nfiqTokens.nextToken();
-					termCount +=1;
-				}
-			System.out.println(nfiqTerm[11]);
-			nfiqScores.put(finger, nfiqTerm[11]);
-			Controller.mScanner.setBiometrics(finger, template);
-			publish_nfiq();
-	        popUp.dismiss();
-
-		}
-		
-	}
 	
 	private class ScannerUnplug extends AsyncTask<Void, Void, Void> {
 		View parent;
@@ -1132,20 +961,6 @@ public class ScanningActivity extends Activity{
 			return out;
 		
 	}
-	
-	
-	/*
-	public static int get_current_scan_number_from_bundle(Bundle data){
-		int x = 0;
-		for (x = 0; x < 10; x++){
-			String left = data.getString("left_finger_assignment_" + Integer.toString(x));
-			if (left != null){
-				break;
-			}
-		}
-		return x;
-	}
-	*/
 }
 
 
