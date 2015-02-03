@@ -33,8 +33,7 @@
                 <action android:name="android.hardware.usb.action.USB_DEVICE_DETACHED" />
             </intent-filter>
         </receiver>
-        <!-- Don't need these receivers
-        <receiver android:name="com.biometrac.core.CommcareReceiver" 
+        <receiver android:name="com.biometrac.core.CommcareReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="org.commcare.dalvik.api.action.data.update"></action>
@@ -47,7 +46,6 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED"></action>
             </intent-filter>
 		</receiver>
-		-->
         <activity
             android:name="com.biometrac.core.IntentFilterTest"
             android:label="AIntentFilterTest" >

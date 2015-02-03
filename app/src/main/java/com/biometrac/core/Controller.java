@@ -27,8 +27,7 @@ public class Controller extends Application {
 	
 	public static Engine mEngine = null;
 	public static Random mRandom = new Random();
-
-    public static LocalDatabaseHandler db_handle = null;
+	public static LocalDatabaseHandler db_handle = null;
 	public static CommCareContentHandler commcare_handler = null;
 	public static SharedPreferencesManager preference_manager = null;
 	
@@ -37,16 +36,13 @@ public class Controller extends Application {
     public void onCreate(){
         super.onCreate();
         Controller.context = getApplicationContext();
-        //Don't need DB
         db_handle = new LocalDatabaseHandler(context);
-        //No engine needed
-        //mEngine = new Engine(Controller.context, 27.0f);
+        mEngine = new Engine(Controller.context, 27.0f);
         preference_manager = new SharedPreferencesManager(context);
         //Start foreground service
         Intent i = new Intent(context, PersistenceService.class);
         context.startService(i);
-        //Don't need CommcareSync
-        //sync_commcare_default();
+        sync_commcare_default();
         
         //db_help = new LocalDatabaseHelper(context);
         
