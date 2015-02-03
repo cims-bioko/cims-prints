@@ -93,16 +93,34 @@ public class Scanner_Lumidigm_Mercury extends Scanner{
 		        	int k = 0;
 		    		
 		    		byte[] comm = write_buff("get_command");
-		    		k = conn.bulkTransfer(epOUT, comm, comm.length , 1000);
-		    		/*
-		    		try{
-		    			k = conn.bulkTransfer(epOUT, comm, comm.length , 1000);
-		    		}catch(Exception e){
-		    			Log.i(TAG,"1st Init Failure");
-		    			e.printStackTrace();
-		    			k = conn.bulkTransfer(epOUT, comm, comm.length , 1000);
-		    		}
-		    		*/
+		    		//k = conn.bulkTransfer(epOUT, comm, comm.length , 1000);
+		    		int c = 0;
+                    while(true){
+                        try{
+                            k = conn.bulkTransfer(epOUT, comm, comm.length , 1000);
+                            Log.i(TAG, String.format("get_command length %s bytes", k));
+                            break;
+                        }catch(Exception e){
+                            c+=1;
+                            Log.i(TAG,"Init Failure " + Integer.toString(c));
+                            Thread.sleep(250);
+                            e.printStackTrace();
+                            if (c>10){
+                                throw new NullPointerException();
+                            }else{
+                                Log.i(TAG,"Flushing Buffer");
+                                byte[] fake_buff = new byte[512];
+                                for(int i = 0; i < 4; i++){
+                                    k = conn.bulkTransfer(epIN, fake_buff, 512, 1000);
+                                    Log.i(TAG,"FlushSize " + Integer.toString(k));
+                                }
+                                Log.i(TAG, "Trying init again");
+                            }
+
+                        }
+                    }
+
+
 		    		byte[] read_buffer;
 		    		try{
 		    			read_buffer = new byte[k];	

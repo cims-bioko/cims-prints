@@ -72,6 +72,7 @@ public class ScanningActivity extends Activity{
 	Layout mainView;
 	Map<String,String> opts = null;
 	Map<String,Object> binary_opts = null;
+    public boolean kill_switch = false;
     operation_type type;
     private boolean setupDone = false;
 	
@@ -237,6 +238,13 @@ public class ScanningActivity extends Activity{
                 unplug_scanner(v);
             }
         });
+        restart_scanner.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                bash_scanner(v);
+                return true;
+            }
+        });
         mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
     }
 
@@ -288,7 +296,35 @@ public class ScanningActivity extends Activity{
 	public void onBackPressed() {
 	    finish_cancel();
 	}
-	
+
+
+    public boolean check_kill_switch(){
+        if (!kill_switch){
+            return kill_switch;
+        }
+        kill_switch = false;
+        return true;
+    }
+
+    protected void bash_scanner(View v) {
+        Toast.makeText(mContext, "BASH", Toast.LENGTH_SHORT).show();
+        Log.i(TAG, "Bashing Scanner...");
+        try{
+            Controller.mScanner.cancel_scan();
+        }catch (Exception e){
+            Log.i(TAG, "Scanner is null, can't cancel scan...");
+        }
+        Controller.mDevice = null;
+        Controller.mScanner.cancel_scan();
+        Controller.mScanner = null;
+        Controller.mUsbManager = null;
+        kill_switch = true;
+        popUp.dismiss();
+        ScannerSetup s = new ScannerSetup(mContext, v);
+        s.execute();
+
+    }
+
 	private void load_options(Bundle extras) {
 		 try{
 			 if (opts == null || binary_opts == null){
@@ -551,7 +587,7 @@ public class ScanningActivity extends Activity{
 
         @Override
 		protected Void doInBackground(Void... params) {
-            if (isCancelled()){
+            if (isCancelled() == true|| check_kill_switch() == true){
                 Log.d(TAG, "Canceled background!");
                 success = false;
                 return null;
@@ -561,7 +597,7 @@ public class ScanningActivity extends Activity{
 		        public void run() {
 		        	try{
 			        	while (Controller.mScanner.finger_sensed()==false){
-			        		if (isCancelled()==true){
+			        		if (isCancelled()==true || check_kill_switch() == true){
 			        			Controller.mScanner.cancel_scan();
 			        			return;
 			        		}
@@ -651,7 +687,7 @@ public class ScanningActivity extends Activity{
             popUp.dismiss();
             colorFinger();
             if(!success){
-				Log.i(TAG,"Scan failed!");
+				Log.i(TAG, "Scan failed!");
 			}
             if (reconnect){
                 Log.d(TAG, "Reconnect post!");
@@ -758,7 +794,7 @@ public class ScanningActivity extends Activity{
 			waiting_for_permission = true;
 			while(true){
             	try{
-            		if (isCancelled() == true){
+            		if (isCancelled() == true || check_kill_switch() == true){
     					Log.i(TAG, "Fingerprint Scanner Not Needed -- Canceling Receiver");
     					Controller.mHostUsbManager = null;
     					Controller.mDevice = null;
@@ -791,17 +827,22 @@ public class ScanningActivity extends Activity{
 			while (true){
 				Log.i(TAG,"In loop...");
 	        	if (isCancelled() == false){
-	        		while(waiting_for_permission == true){
+                    int c = 0;
+	        		while(waiting_for_permission == true && kill_switch == false){
 	    				try {
 	    					Thread.sleep(500);
-	    					Log.i(TAG, "waiting still for permission...");
+	    					Log.i(TAG, String.format("waiting still for permission... killed: %s", kill_switch));
 	    				} catch (InterruptedException e) {
 	    					// TODO Auto-generated catch block
 	    					e.printStackTrace();
 	    				}
-	    				if(isCancelled()==true){
+	    				if(isCancelled()==true || check_kill_switch() == true){
 	    					return null;
 	    				}
+                        c+=1;
+                        if (c>50){
+                            cancel(true);
+                        }
 	    			}
 	    			if (Controller.mDevice != null){
 	    				try {
@@ -821,7 +862,7 @@ public class ScanningActivity extends Activity{
 	    					//Controller.mScanner.reset_dicts();
 	    				}
 	    	    		while (Controller.mScanner.get_ready() == false){
-	    	    			if(isCancelled()==true){
+	    	    			if(isCancelled()==true || check_kill_switch() == true){
 		    					return null;
 		    				}
 	    	    			if (Controller.mScanner.scan_cancelled == true){
@@ -850,6 +891,14 @@ public class ScanningActivity extends Activity{
 	        		break;
 	        	}
 			}
+            if(isCancelled()){
+                return null;
+            }
+            try{
+
+                Thread.sleep(1000);
+            }catch (Exception e){
+            }
 	    	return null;
 		}
 
@@ -875,7 +924,8 @@ public class ScanningActivity extends Activity{
 					Controller.mScanner.set_iso_template(k, iso_template_cache.get(k));
 				}	
 			}
-			popUp.dismiss();	
+			popUp.dismiss();
+            Log.d(TAG, "Finished Setup.");
 		}
 	}
 

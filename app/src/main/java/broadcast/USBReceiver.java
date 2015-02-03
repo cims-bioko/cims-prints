@@ -26,6 +26,18 @@ public class USBReceiver extends BroadcastReceiver{
         }
         else if (intent.getAction() == USB_OFF){
             Log.e(TAG, "Caught Scanner unplug signal!!!");
+            try{
+                if(!Controller.mHostUsbManager.scannerConnected()){
+                    Log.i(TAG, "Scanner really isn't connected!");
+                    Controller.mScanner = null;
+                    return;
+                }else{
+                    Log.i(TAG, "psych, scanner's here");
+                    return;
+                }
+            }catch (Exception e){
+                Log.i(TAG, e.toString());
+            }
             if (!Scanner.isInInit){
                 Log.e(TAG, "Killing Scanner");
                 Controller.mScanner = null;

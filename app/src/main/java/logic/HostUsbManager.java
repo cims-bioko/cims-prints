@@ -56,6 +56,26 @@ public class HostUsbManager {
 		status_busy = false;
 		
 	}
+
+    public boolean scannerConnected(){
+        deviceList = mUsbManager.getDeviceList();
+        Iterator<UsbDevice> deviceIterator = deviceList.values().iterator();
+        while(deviceIterator.hasNext()){
+            UsbDevice device = deviceIterator.next();
+            if(!HostUsbManager.vendor_blacklist.contains(device.getVendorId())){
+                Log.i(TAG , "Product ID | " + Integer.toHexString(device.getProductId()));
+                Log.i(TAG , "Vendor ID | " + Integer.toHexString(device.getVendorId()));
+                Log.i(TAG, "Vendor = " + Integer.toString(device.getVendorId()));
+                return true;
+            }
+            else{
+                Log.i(TAG, "Vendor | " + Integer.toHexString(device.getVendorId()) + " | is blacklisted");
+            }
+
+        }
+        return false;
+    }
+
 	public boolean get_status(){
 		return status_busy;
 	}
