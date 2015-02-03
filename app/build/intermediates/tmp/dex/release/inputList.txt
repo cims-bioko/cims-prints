@@ -1,0 +1,5 @@
+C:\Users\sarwar\Documents\biometraccore\app\build\intermediates\classes\release
+C:\Users\sarwar\Documents\biometraccore\app\build\intermediates\pre-dexed\release\json_simple-1.1-788e4b9a2622cfdc07d36ad1db70e97af12cdd51.jar
+C:\Users\sarwar\Documents\biometraccore\app\build\intermediates\pre-dexed\release\sourceafis-ea366ef35fcf60c29b3a633cdc12540ef3ba3de7.jar
+C:\Users\sarwar\Documents\biometraccore\app\build\intermediates\pre-dexed\release\bmtafis-8ee6ef021d25d30c06c8eb52e45940a0eff3097a.jar
+C:\Users\sarwar\Documents\biometraccore\app\build\intermediates\pre-dexed\release\support-v4-19.1.0-049b1117a9a30b1113767ea3ed875c5c1e5bf222.jar

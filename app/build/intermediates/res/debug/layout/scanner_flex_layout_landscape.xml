@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/light_blue"
+    android:orientation="vertical" >
+    <include layout="@layout/headbar_layout_scanner"/>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/scan_flex_frame_fingers"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="6">
+
+
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:background="@color/light_blue" >
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:orientation="vertical"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/light_blue"
+                    android:layout_margin="10dp">
+                    <TextView
+                        android:id="@+id/scanner_txt_finger_1_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dip"
+                        android:layout_marginRight="10dip"
+                        android:text="Left Thumb"
+                        android:textColor="@color/text_color"
+                        android:textSize="25dip"/>
+
+                    <ImageButton
+                        android:id="@+id/scanner_btn_finger_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="right"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/l_thumb" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:background="@color/light_blue"
+                    android:layout_margin="10dp">
+                    <TextView
+                        android:id="@+id/scanner_txt_finger_2_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dip"
+                        android:layout_marginRight="10dip"
+                        android:text="Right Thumb"
+                        android:textColor="@color/text_color"
+                        android:textSize="25dip" />
+                    <ImageButton
+                        android:id="@+id/scanner_btn_finger_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="right"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/r_thumb" />
+                </LinearLayout>
+
+            </LinearLayout>
+    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/scan_flex_frame_title"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="2.5"
+            android:paddingRight="5dip">
+
+            <TextView
+                android:id="@+id/scanner_view_prompt"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center_horizontal"
+                android:paddingLeft="5dip"
+                android:paddingRight="5dip"
+                android:paddingTop="5dip"
+                android:paddingBottom="5dip"
+                android:text="Please Scan The Participant's Thumbs"
+                android:textSize="20dp"
+                android:textColor="@color/text_color"
+                android:textStyle="bold"
+                android:layout_weight=".50" />
+
+            <ImageView
+                android:id="@+id/scanner_view_prompt_image"
+                android:layout_height="0dp"
+                android:layout_width="fill_parent"
+                android:src="@drawable/default_scanning_image_50"
+                android:layout_weight=".50"/>
+            <ImageButton
+                android:id="@+id/scan_btn_skip"
+                style="@style/button_light"
+                android:layout_width="fill_parent"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="10dip"
+                android:layout_marginTop="10dip"
+                android:layout_marginBottom="10dip"
+                android:layout_height="0dp"
+                android:layout_weight=".30"
+                android:src="@drawable/error_icon"
+                android:scaleType="fitCenter"/>
+            <ImageButton
+                android:id="@+id/scan_btn_proceed"
+                style="@style/button_dark"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="10dip"
+                android:layout_marginTop="10dip"
+                android:layout_marginBottom="10dip"
+                android:layout_weight=".40"
+                android:scaleType="fitCenter"
+                android:src="@drawable/okay_icon"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout><!-- From: file:/C:/Users/sarwar/Documents/biometraccore/app/src/main/res/layout/scanner_flex_layout_landscape.xml -->

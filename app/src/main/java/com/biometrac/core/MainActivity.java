@@ -52,13 +52,18 @@ public class MainActivity extends Activity {
 			Log.i(TAG,"Error reading incoming bundle.");
 			Log.i(TAG, e.toString());
 		}
-		Log.i(TAG, "Starting Native Check");
-		boolean isNativeSetup = NativeSetup.checkNativeSystem(this);
+		//TODO KILL
+        /*
+        Log.i(TAG, "Starting Native Check");
+
+        boolean isNativeSetup = NativeSetup.checkNativeSystem(this);
 		if (!isNativeSetup){
 			new NativeSetupBackground(this, incoming).execute();	
 		}else{
 			dispatch_intent(incoming);
 		}
+		*/
+        dispatch_intent(incoming);
 	}
 
 	private boolean is_false_start() {
@@ -209,7 +214,9 @@ public class MainActivity extends Activity {
 			}
 		});
 	}
-	
+
+    //TODO KILL
+    /*
 	//Sets up the NDK file system and utilities on the apps first run
 	class NativeSetupBackground extends AsyncTask<Void, Void, Void> {
 		private Context oldContext;
@@ -237,7 +244,7 @@ public class MainActivity extends Activity {
 		}
 
 	}
-
+    */
 	//Sets up the NDK file system and utilities on the apps first run
 	class Syncronizing extends AsyncTask<Void, Void, Void> {
 		private Context oldContext;
