@@ -12,7 +12,7 @@ import java.nio.charset.Charset;
  */
 
 public class NativeClass {
-	
+    /*
 	public static int bozorth(String databaseTemplate){
 		
 		//TODO make return type int and test.
@@ -138,4 +138,5 @@ public class NativeClass {
 		}
 		return outputString;
 	}
+	*/
 }
