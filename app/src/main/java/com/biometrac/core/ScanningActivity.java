@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 
+import broadcast.USBReceiver;
 import logic.FingerType;
 import logic.HostUsbManager;
 import logic.Scanner;
@@ -42,9 +43,11 @@ import android.widget.ImageView.ScaleType;
 
 public class ScanningActivity extends Activity{
 
+
+    private static UsbDevice freeScanner = null;
 	//Scanner restart variables
 	//GETTING USB Permission
-	private BroadcastReceiver mUsbReceiver;
+    private BroadcastReceiver mUsbReceiver;
 	private PendingIntent mPermissionIntent;
 	public static boolean waiting_for_permission = true;
 	private static final String ACTION_USB_PERMISSION =
@@ -82,7 +85,7 @@ public class ScanningActivity extends Activity{
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE); 
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN );
         setCorrectContentView(getResources().getConfiguration());
 
@@ -306,6 +309,15 @@ public class ScanningActivity extends Activity{
         return true;
     }
 
+    public static void setFreeDevice(UsbDevice device){
+        Log.d(TAG, "Found free device!");
+        freeScanner = device;
+    }
+
+    public static UsbDevice getFreeDevice(){
+        return freeScanner;
+    }
+
     protected void bash_scanner(View v) {
         Toast.makeText(mContext, "BASH", Toast.LENGTH_SHORT).show();
         Log.i(TAG, "Bashing Scanner...");
@@ -315,7 +327,9 @@ public class ScanningActivity extends Activity{
             Log.i(TAG, "Scanner is null, can't cancel scan...");
         }
         Controller.mDevice = null;
-        Controller.mScanner.cancel_scan();
+        try {
+            Controller.mScanner.cancel_scan();
+        }catch (NullPointerException e){}
         Controller.mScanner = null;
         Controller.mUsbManager = null;
         kill_switch = true;
@@ -794,13 +808,27 @@ public class ScanningActivity extends Activity{
 			waiting_for_permission = true;
 			while(true){
             	try{
-            		if (isCancelled() == true || check_kill_switch() == true){
+            		if (isCancelled() == true || kill_switch == true){
     					Log.i(TAG, "Fingerprint Scanner Not Needed -- Canceling Receiver");
     					Controller.mHostUsbManager = null;
     					Controller.mDevice = null;
     					throw new Exception("FP Canceled!");
     				}
-            		Thread.sleep(500);
+            		Thread.sleep(250);
+
+                    if (freeScanner!= null){
+                        Controller.mDevice = freeScanner;
+                        if(Controller.mUsbManager.hasPermission(Controller.mDevice)){
+                            Log.d(TAG, "We have permission, loading attached usb");
+                            waiting_for_permission = false;
+
+                        }else{
+                            Log.e(TAG, "No Scanner permission!!");
+                            Controller.mUsbManager.requestPermission(Controller.mDevice, mPermissionIntent);
+                        }
+                        break;
+                    }
+                    /*
             		HashMap<String, UsbDevice> deviceList = Controller.mUsbManager.getDeviceList();
             		Log.i(TAG, Integer.toString(deviceList.size()) + " | UsbDevices found...");
                     Iterator<UsbDevice> deviceIterator = deviceList.values().iterator();
@@ -809,19 +837,20 @@ public class ScanningActivity extends Activity{
                     	if(!HostUsbManager.vendor_blacklist.contains(tryDevice.getVendorId())){
                     		Controller.mDevice = tryDevice;
                         	Controller.mUsbManager.requestPermission(Controller.mDevice, mPermissionIntent);
-                        	pop_prompt.setText("Scanner Initializing...");
                         	Log.i(TAG,"Device Found!");
                         	break;	
                     	}else{
                     		Log.i(TAG, "Vendor |" + Integer.toString(tryDevice.getVendorId()) + " is blacklisted...");
                     	}
                     }
+                    */
 
             	}catch(NullPointerException e2){
             		Log.i(TAG,"no permission...");
             	}catch(Exception e2){
             		Log.i(TAG,"Cancelled!");
-            		break;
+                    e2.printStackTrace();
+                    break;
             	}
 			}
 			while (true){
@@ -830,7 +859,7 @@ public class ScanningActivity extends Activity{
                     int c = 0;
 	        		while(waiting_for_permission == true && kill_switch == false){
 	    				try {
-	    					Thread.sleep(500);
+	    					Thread.sleep(100);
 	    					Log.i(TAG, String.format("waiting still for permission... killed: %s", kill_switch));
 	    				} catch (InterruptedException e) {
 	    					// TODO Auto-generated catch block

@@ -14,6 +14,9 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.util.Log;
 
+import com.biometrac.core.Controller;
+import com.biometrac.core.ScanningActivity;
+
 public class Scanner_Lumidigm_Mercury extends Scanner{
 
 	String TAG = "LumidigmDriver";
@@ -104,16 +107,16 @@ public class Scanner_Lumidigm_Mercury extends Scanner{
                             c+=1;
                             Log.i(TAG,"Init Failure " + Integer.toString(c));
                             Thread.sleep(250);
+                            if(conn != null){Log.e(TAG, "Connection isn't null... STRANGE!");}
+                            else{Log.e(TAG, "Connection is null.");}
                             e.printStackTrace();
-                            if (c>10){
+                            if (c>3){
                                 throw new NullPointerException();
                             }else{
                                 Log.i(TAG,"Flushing Buffer");
-                                byte[] fake_buff = new byte[512];
-                                for(int i = 0; i < 4; i++){
-                                    k = conn.bulkTransfer(epIN, fake_buff, 512, 1000);
-                                    Log.i(TAG,"FlushSize " + Integer.toString(k));
-                                }
+                                Controller.mDevice = ScanningActivity.getFreeDevice();
+                                dev = Controller.mDevice;
+                                conn = manager.openDevice(dev);
                                 Log.i(TAG, "Trying init again");
                             }
 
@@ -196,7 +199,7 @@ public class Scanner_Lumidigm_Mercury extends Scanner{
 		
 		comm = write_buff("mp2");
 		k = conn.bulkTransfer(epOUT, comm , comm.length, 1000);
-		Log.i("len", Integer.toString(k));
+		//Log.i("len", Integer.toString(k));
 		
 		boolean taken = false;
 		

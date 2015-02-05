@@ -29,9 +29,10 @@
         </receiver>
         <receiver android:name="broadcast.USBReceiver">
             <intent-filter>
-                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+                <action android:name="com.biometrac.core.SCANNER_ATTACHED" />
                 <action android:name="android.hardware.usb.action.USB_DEVICE_DETACHED" />
             </intent-filter>
+            <meta-data android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" android:resource="@xml/usb_filter" />
         </receiver>
         <receiver android:name="com.biometrac.core.CommcareReceiver"
             android:enabled="true">
@@ -118,15 +119,28 @@
             android:noHistory="false"
             android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
-                <action android:name="android.intent.action.View" />
+            <action android:name="android.intent.action.View" />
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
-			<!-- 
+            <!--
 git diff				<action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
             </intent-filter>
             <meta-data android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
         		android:resource="@xml/device_filter" />
        		 -->
+        </activity>
+        <activity android:name=".ScannerCatcher"
+                  android:label="@string/app_name"
+                  android:theme="@style/Theme.Transparent"
+                  android:noHistory="true"
+                  android:excludeFromRecents="true"
+                  android:taskAffinity="com.biometrac.core.taskAffinityScannerCatcher"
+                  android:process=":ScannerCatcherProcess"
+                  android:exported="false">
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
+            <meta-data android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" android:resource="@xml/usb_filter" />
         </activity>
 		<activity
             android:name=".EnrollActivity"

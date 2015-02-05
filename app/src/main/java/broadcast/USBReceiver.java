@@ -3,11 +3,20 @@ package broadcast;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.util.Log;
 
 import com.biometrac.core.Controller;
+import com.biometrac.core.ScannerCatcher;
+import com.biometrac.core.ScanningActivity;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import logic.HostUsbManager;
 import logic.Scanner;
 
 /**
@@ -17,20 +26,65 @@ public class USBReceiver extends BroadcastReceiver{
 
     private final String USB_ON = "android.hardware.usb.action.USB_DEVICE_ATTACHED";
     private final String USB_OFF = "android.hardware.usb.action.USB_DEVICE_DETACHED";
+    private final String LOCAL_USB = ScannerCatcher.USB_ON_BROADCAST;
     private final String TAG = "USBReceiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction()==USB_ON){
-            Log.d(TAG, "Caught Scanner plug signal!!!");
+        if (intent.getAction().equals(USB_ON)) {
+            UsbDevice incomingDevice = (UsbDevice) intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+            Log.e(TAG, String.format("Caught Scanner PLUG signal | %s : %s ", incomingDevice.getProductId(), incomingDevice.getVendorId()));
+            Log.e(TAG, "Ignoring, waiting for redispatch");
+            /*
+            try {
+                Map<String, UsbDevice> deviceList = Controller.mUsbManager.getDeviceList();
+                UsbDevice dev = null;
+                Iterator<UsbDevice> deviceIterator = deviceList.values().iterator();
+                while (deviceIterator.hasNext()) {
+                    UsbDevice device = deviceIterator.next();
+                    if (!HostUsbManager.vendor_blacklist.contains(device.getVendorId())) {
+                        Log.i(TAG, "Product ID | " + Integer.toHexString(device.getProductId()));
+                        Log.i(TAG, "Vendor ID | " + Integer.toHexString(device.getVendorId()));
+                        Log.i(TAG, "Vendor = " + Integer.toString(device.getVendorId()));
+                        dev = device;
+                    } else {
+                        Log.i(TAG, "Vendor | " + Integer.toString(device.getVendorId()) + " | is blacklisted");
+                    }
+
+                }
+                if (dev != null) {
+                    Log.e(TAG, "Live USBHostManager | Setting found scanner");
+                    ScanningActivity.setFreeDevice(dev);
+                }
+            }catch (NullPointerException e){
+                Log.e(TAG, "No live USBHostManager");
+                ScanningActivity.setFreeDevice(incomingDevice);
+            }
+            */
+
         }
+        else if(intent.getAction().equals(LOCAL_USB)){
+            UsbDevice incomingDevice = (UsbDevice) intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+            Log.e(TAG, String.format("Caught LOCAL PLUG signal | %s : %s ", incomingDevice.getProductId(), incomingDevice.getVendorId()));
+            ScanningActivity.setFreeDevice(incomingDevice);
+        }
+
         else if (intent.getAction() == USB_OFF){
-            Log.e(TAG, "Caught Scanner unplug signal!!!");
+            UsbDevice device = (UsbDevice) intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+            Log.e(TAG, String.format("Caught Scanner UNPLUG signal | %s : %s", device.getProductId(), device.getVendorId()));
+
+
+
             try{
                 if(!Controller.mHostUsbManager.scannerConnected()){
                     Log.i(TAG, "Scanner really isn't connected!");
-                    Controller.mScanner = null;
-                    return;
+                    if (!Scanner.isInInit){
+                        Log.e(TAG, "Killing Scanner");
+                        Controller.mScanner = null;
+                        ScanningActivity.setFreeDevice(null);
+                    }else{
+                        Log.e(TAG, "Scanner is initializing, false positive");
+                    }
                 }else{
                     Log.i(TAG, "psych, scanner's here");
                     return;
@@ -38,14 +92,9 @@ public class USBReceiver extends BroadcastReceiver{
             }catch (Exception e){
                 Log.i(TAG, e.toString());
             }
-            if (!Scanner.isInInit){
-                Log.e(TAG, "Killing Scanner");
-                Controller.mScanner = null;
-            }else{
-                Log.e(TAG, "Scanner is initializing, false positive");
-            }
 
         }
+
 
     }
 }

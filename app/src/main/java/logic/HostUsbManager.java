@@ -41,7 +41,7 @@ public class HostUsbManager {
 			    dev = device;	
 		    }
 		    else{
-		    	Log.i(TAG, "Vendor | " + Integer.toHexString(device.getVendorId()) + " | is blacklisted");
+		    	Log.i(TAG, "Vendor | " + Integer.toString(device.getVendorId()) + " | is blacklisted");
 		    }
 		    
 		}
@@ -69,7 +69,7 @@ public class HostUsbManager {
                 return true;
             }
             else{
-                Log.i(TAG, "Vendor | " + Integer.toHexString(device.getVendorId()) + " | is blacklisted");
+                Log.i(TAG, "Vendor | " + Integer.toString(device.getVendorId()) + " | is blacklisted");
             }
 
         }
