@@ -241,6 +241,8 @@ public class ScanningActivity extends Activity{
                 unplug_scanner(v);
             }
         });
+        //Disabled Bash
+        /*
         restart_scanner.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -248,6 +250,7 @@ public class ScanningActivity extends Activity{
                 return true;
             }
         });
+        */
         mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
     }
 
