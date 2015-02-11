@@ -124,6 +124,8 @@ public class PipeActivity extends Activity {
 			
 		}else{
 			if(!intents.hasNext()){
+                Bundle b = output_intent.getExtras();
+                b.putString("pipe_finished", "true");
 				setResult(Activity.RESULT_OK, output_intent);
 			}
 			dispatch_intent(intents.next());
@@ -175,6 +177,7 @@ public class PipeActivity extends Activity {
 		
 		if (!intents.hasNext()){
 			Log.i(TAG, "No more intents, finished with PIPE");
+            MainActivity.pipeFinished = true;
 			setResult(resultCode, output_intent);
 			super.onActivityResult(requestCode, resultCode, data);
 			this.finish();

@@ -19,6 +19,7 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 
 	boolean needs_return = true;
+    public static boolean pipeFinished = false;
 	Button fire_btn;
 	private final String TAG = "LAUNCHER";
 	int REQUEST_CODE = 1;
@@ -26,9 +27,25 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        Log.i(TAG, "onCreate");
 		if (is_false_start()){
 			return;
 		}
+        try{
+            Bundle b = getIntent().getExtras();
+            String pipe_status = b.getString("pipe_finished");
+            if(pipe_status.equals("true")){pipeFinished = true;}
+            Log.i(TAG, "Pipe finished status in intent");
+        }catch(NullPointerException e){
+            Log.i(TAG, "No pipe status in intent");
+            pipeFinished = false;
+        }
+
+        if(pipeFinished){
+            Log.i(TAG, "Pipe sent finished signal, aborting onCreate dispatches.");
+            pipeFinished = false;
+            return;
+        }else{Log.i(TAG, "Pipe didn't send finished signal, continuing.");}
 		
 		Intent incoming = getIntent();
 		try{
