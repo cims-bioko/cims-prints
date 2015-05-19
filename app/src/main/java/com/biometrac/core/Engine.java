@@ -32,7 +32,7 @@ public class Engine {
 	private float threshold;
 	private Context mContext;
 	
-	private final String TAG = "AFISEngine";
+	private final static String TAG = "AFISEngine";
 	private AfisEngine mEngine;
 	private static JSONParser parser = null;
 	private double MATCH_THRESOLD = 70.0;
@@ -55,15 +55,20 @@ public class Engine {
 	}
 	
 	public void add_candidate_to_cache(String uuid_in, Map<String, String> templates){
-		
-		int _ref_id = _id_generator.getAndIncrement();
-		int_alias.put(uuid_in, _ref_id);
-		string_alias.put(_ref_id, uuid_in);
-		Person p = map_to_person(_ref_id, templates);
-		Log.i(TAG, "Adding uuid:"+ uuid_in+" as _id" + Integer.toString(_ref_id));
-		candidates.add(p);
-		candidates_map.put(_ref_id, p);
-	}
+
+            try {
+                int _ref_id = _id_generator.getAndIncrement();
+                Person p = map_to_person(_ref_id, templates);
+                int_alias.put(uuid_in, _ref_id);
+                string_alias.put(_ref_id, uuid_in);
+                Log.i(TAG, "Adding uuid:" + uuid_in + " as _id" + Integer.toString(_ref_id));
+                candidates.add(p);
+                candidates_map.put(_ref_id, p);
+            }catch (Exception e){
+                Log.e(TAG, "Couldn't add "+ uuid_in);
+                throw new IllegalArgumentException(e.toString());
+            }
+    }
 	
 	public void cache_candidates(Map<String,Map<String,String>> candidates_in){
 		is_ready = false;
@@ -71,7 +76,12 @@ public class Engine {
 		candidates_map = new HashMap<Integer, Person>();
 		Log.i(TAG, "Loading Gallery with " + Integer.toString(candidates_in.size()) + " candidates.");
 		for (String uuid_in: candidates_in.keySet()){
-			add_candidate_to_cache(uuid_in, candidates_in.get(uuid_in));
+            try{
+                add_candidate_to_cache(uuid_in, candidates_in.get(uuid_in));
+            }catch (IllegalArgumentException e){
+                Log.e(TAG, e.getMessage());
+            }
+
 			/*
 			int _ref_id = _id_generator.getAndIncrement();
 			int_alias.put(uuid_in, _ref_id);
@@ -256,15 +266,26 @@ public class Engine {
 				add("right_index");
 		}}; 
 		if (templates != null){
+            int c = 0;
 			for (String finger:fingers){
 				String temp = templates.get(finger);
 				if (temp != null){
 					Fingerprint f = new Fingerprint();
-					f.setIsoTemplate(hexStringToByteArray(temp));
-					f.setFinger(Finger.valueOf(finger.toUpperCase()));
-					prints.add(f);
+                    try{
+                        f.setIsoTemplate(hexStringToByteArray(temp));
+                        f.setFinger(Finger.valueOf(finger.toUpperCase()));
+                        prints.add(f);
+                        c+=1;
+                    }
+                    catch (Exception e){
+                        Log.e(TAG, String.format("Error parsing iso template: %s | %s | size(%s)", finger, e.toString(), temp.length()));
+                        //throw new IllegalArgumentException(e.getMessage());
+                    }
 				}
 			}
+            if (c==0){
+                throw new IllegalArgumentException("No Valid Fingerprints found for " + uuid);
+            }
 			p.setFingerprints(prints);
 			return p;
 		}

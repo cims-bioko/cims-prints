@@ -45,6 +45,8 @@ public class CommCareSyncService extends Service {
 					}catch (Exception e){
 						Log.i(TAG, "Couldn't Sync to CC");
 						show_message("Couldn't sync with Commcare.");
+                        Log.e(TAG,e.getMessage());
+                        e.printStackTrace();
 						handler.died();
 						Log.i(TAG, "Sync Failed.");
 						stopSelf();
