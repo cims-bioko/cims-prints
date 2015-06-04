@@ -17,6 +17,8 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -24,6 +26,7 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Layout;
 import android.util.Log;
 import android.view.Gravity;
@@ -87,6 +90,13 @@ public class ScanningActivity extends Activity{
         super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN );
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String rotation = prefs.getString("bmt.rotation", "Horizontal");
+        if(rotation.equals("Horizontal")){
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }else{
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
         setCorrectContentView(getResources().getConfiguration());
 
         scanImages = new HashMap<String, Bitmap>();
@@ -270,6 +280,7 @@ public class ScanningActivity extends Activity{
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+
         Log.e(TAG, "Redrawing for Rotation");
         setCorrectContentView(newConfig);
         if (opts != null || binary_opts != null){
@@ -296,6 +307,7 @@ public class ScanningActivity extends Activity{
         } else {
             Log.i(TAG, "Right image is null");
         }
+
     }
 
     @Override

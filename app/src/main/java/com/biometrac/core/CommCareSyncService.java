@@ -1,6 +1,8 @@
 package com.biometrac.core;
 
 import data.CommCareContentHandler;
+import data.SharedPreferencesManager;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -8,7 +10,9 @@ import android.app.Service;
 import android.app.Notification.Builder;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -101,15 +105,34 @@ public class CommCareSyncService extends Service {
 	}
 	
 	private Notification get_notification(String message){
-		Builder builder = new Builder(getApplicationContext());
-		builder.setContentTitle("BiometracCore");
-		builder.setContentText(message);
-		builder.setSmallIcon(R.drawable.bmt_icon);
-		Intent notificationIntent = new Intent(this, PersistenceService.class);
-		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-		builder.setContentIntent(pendingIntent);
-		Notification n = builder.build();
-		return n;
+        Intent kill = new Intent(this, NotificationReceiver.class);
+        kill.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        kill.setAction("KILL");
+        Intent crash = new Intent(this, NotificationReceiver.class);
+        crash.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        crash.setAction("CRASH");
+        PendingIntent kill_intent = PendingIntent.getService(this, 0, kill, 0);
+        PendingIntent crash_intent = PendingIntent.getService(this, 0, crash, 0);
+        Builder builder = new Builder(getApplicationContext());
+        builder.setContentTitle("BiometracCore");
+        builder.setContentText(message);
+        builder.setSmallIcon(R.drawable.bmt_icon);
+        //builder.setContentIntent(kill_intent);
+
+        //builder.addAction(R.drawable.error_icon, "Stop Service", kill_intent);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        if(sharedPref.getBoolean("bmt.allowkill", false)) {
+            builder.addAction(android.R.drawable.ic_input_delete, "Stop Service", kill_intent);
+        }
+        if(sharedPref.getBoolean("acra.verbose", false)){
+            builder.addAction(android.R.drawable.ic_delete, "Send Error Report", crash_intent);
+        }
+        //builder.addAction(R.drawable.error_icon, "Kill BMT", kill_intent);
+        Intent notificationIntent = new Intent(this, PersistenceService.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        builder.setContentIntent(pendingIntent);
+        Notification n = builder.build();
+        return n;
 	}
 
 }

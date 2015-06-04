@@ -83,4 +83,5 @@
       <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
       <item name="android:textStyle">bold</item>
     </style>
+    <style name="Theme.Dialog" parent="@android:style/Theme.Dialog" />
 </resources>

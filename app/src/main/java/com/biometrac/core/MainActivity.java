@@ -179,6 +179,15 @@ public class MainActivity extends Activity {
 					
 				}
 			});
+            Button advanced = (Button) findViewById(R.id.advanced_settings_btn);
+            advanced.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(getBaseContext(), AdvancedPreferences.class);
+                    startActivity(i);
+
+                }
+            });
 		}
 		
 	}

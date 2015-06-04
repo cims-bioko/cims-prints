@@ -7,11 +7,15 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
+
+import data.SharedPreferencesManager;
 
 public class PersistenceService extends Service {
 
-	private boolean is_foreground =false;
+	public boolean is_foreground =false;
 	public static int NOTE_ID = 70503;
 	
 	public PersistenceService() {
@@ -44,12 +48,17 @@ public class PersistenceService extends Service {
 		nm.notify(NOTE_ID, n);
 	}
 	
-	private Notification get_notification(String message){
+	public Notification get_notification(String message){
 		is_foreground=true;
 		
-		Intent intent = new Intent(this, NotificationReceiver.class);
-		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-	    PendingIntent kill_intent = PendingIntent.getService(this, 0, intent, 0);
+		Intent kill = new Intent(this, NotificationReceiver.class);
+		kill.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        kill.setAction("KILL");
+        Intent crash = new Intent(this, NotificationReceiver.class);
+        crash.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        crash.setAction("CRASH");
+	    PendingIntent kill_intent = PendingIntent.getService(this, 0, kill, 0);
+        PendingIntent crash_intent = PendingIntent.getService(this, 0, crash, 0);
 	    Builder builder = new Builder(getApplicationContext());
 		builder.setContentTitle("BiometracCore");
 		builder.setContentText(message);
@@ -57,7 +66,13 @@ public class PersistenceService extends Service {
 		//builder.setContentIntent(kill_intent);
 		
 		//builder.addAction(R.drawable.error_icon, "Stop Service", kill_intent);
-		builder.addAction(android.R.drawable.ic_input_delete, "Stop Service", kill_intent);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        if(sharedPref.getBoolean("bmt.allowkill", false)) {
+            builder.addAction(android.R.drawable.ic_input_delete, "Stop Service", kill_intent);
+        }
+        if(sharedPref.getBoolean("acra.verbose", false)){
+            builder.addAction(android.R.drawable.ic_delete, "Send Error Report", crash_intent);
+        }
 		//builder.addAction(R.drawable.error_icon, "Kill BMT", kill_intent);
 		Intent notificationIntent = new Intent(this, PersistenceService.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
