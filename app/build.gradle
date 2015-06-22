@@ -8,12 +8,21 @@ android {
         applicationId "com.biometrac.core"
         minSdkVersion 15
         targetSdkVersion 19
+        versionName "BiometracCore"
     }
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+    productFlavors{
+        vaxtrac{
+            versionName  = versionName +".vaxtrac"
+        }
+        commcare{
+            versionName = versionName + ".ccodk"
         }
     }
 }

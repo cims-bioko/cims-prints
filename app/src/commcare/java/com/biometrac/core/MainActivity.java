@@ -107,16 +107,16 @@ public class MainActivity extends Activity {
 		Log.i(TAG,"Started via... " + action);
 		if (action.equals("com.biometrac.core.SCAN")){
 			if(ScanningActivity.get_total_scans_from_bundle(incoming.getExtras())>1){
-				incoming.setClass(this, com.biometrac.core.PipeActivity.class);
+				incoming.setClass(this, PipeActivity.class);
 				startActivityForResult(incoming, REQUEST_CODE);
 			}else{
-				incoming.setClass(this, com.biometrac.core.ScanningActivity.class);
+				incoming.setClass(this, ScanningActivity.class);
 				startActivityForResult(incoming, REQUEST_CODE);	
 			}
 			
 		}
 		else if (action.equals("com.biometrac.core.ENROLL")){
-			incoming.setClass(this, com.biometrac.core.EnrollActivity.class);
+			incoming.setClass(this, EnrollActivity.class);
 			startActivityForResult(incoming, REQUEST_CODE);
 		}
 		else if(action.equals("com.biometrac.core.VERIFY")){
@@ -131,14 +131,14 @@ public class MainActivity extends Activity {
 					return;
 				}
 			}
-			incoming.setClass(this, com.biometrac.core.IdentifyActivity.class);
+			incoming.setClass(this, IdentifyActivity.class);
 			startActivityForResult(incoming, REQUEST_CODE);
 		}
 		else if(action.equals("com.biometrac.core.LOAD")){
 			
 		}
 		else if(action.equals("com.biometrac.core.PIPE")){
-			incoming.setClass(this, com.biometrac.core.PipeActivity.class);
+			incoming.setClass(this, PipeActivity.class);
 			startActivityForResult(incoming, REQUEST_CODE);
 		}
 		else{
@@ -170,7 +170,7 @@ public class MainActivity extends Activity {
 				@Override
 				public void onClick(View v) {
 					if(!Controller.commcare_handler.isWorking()){
-						Intent i = new Intent(getBaseContext(), com.biometrac.core.CCSyncActivity.class);
+						Intent i = new Intent(getBaseContext(), CCSyncActivity.class);
 						startActivity(i);
 						finish_self();	
 					}else{
@@ -222,7 +222,7 @@ public class MainActivity extends Activity {
 	}
 	
 	private void fire_intent(){
-		Intent i = new Intent(this, com.biometrac.core.ScanningActivity.class);
+		Intent i = new Intent(this, ScanningActivity.class);
 		Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.biometraclogo);
 		i.putExtra("image", bmp);
 		i.putExtra("prompt", "This is a\nTest Prompt!");
@@ -233,7 +233,7 @@ public class MainActivity extends Activity {
 	}
 	
 	public void enable_fire(){
-		fire_btn.setOnClickListener(new Button.OnClickListener() {
+		fire_btn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				fire_intent();

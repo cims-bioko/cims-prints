@@ -1,17 +1,5 @@
 package com.biometrac.core;
 
-import java.util.Map;
-import java.util.Random;
-
-import org.acra.*;
-import org.acra.annotation.*;
-import org.acra.sender.HttpSender.*;
-
-import data.CommCareContentHandler;
-import data.LocalDatabaseHandler;
-import data.SharedPreferencesManager;
-import logic.HostUsbManager;
-import logic.Scanner;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -20,7 +8,22 @@ import android.hardware.usb.UsbManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.acra.ACRA;
+import org.acra.ACRAConfiguration;
+import org.acra.ACRAConfigurationException;
+import org.acra.ReportingInteractionMode;
+import org.acra.annotation.ReportsCrashes;
+import org.acra.sender.HttpSender.Method;
+import org.acra.sender.HttpSender.Type;
 
+import java.util.Map;
+import java.util.Random;
+
+import data.CommCareContentHandler;
+import data.LocalDatabaseHandler;
+import data.SharedPreferencesManager;
+import logic.HostUsbManager;
+import logic.Scanner;
 
 
 @ReportsCrashes(
