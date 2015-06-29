@@ -94,6 +94,13 @@ public class CommCareContentHandler {
 		in_sync = false;
 	}
 
+    public Map<String,String> getInstructions(){
+        if (this.instructions!= null){
+            return this.instructions;
+        }
+        return null;
+    }
+
 	public static boolean isWorking() {
 		return in_sync;
 	}

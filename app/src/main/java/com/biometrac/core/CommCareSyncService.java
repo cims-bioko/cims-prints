@@ -16,6 +16,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.Map;
+
 public class CommCareSyncService extends Service {
 
 	private Context mContext;
@@ -49,9 +51,24 @@ public class CommCareSyncService extends Service {
 					}catch (Exception e){
 						Log.i(TAG, "Couldn't Sync to CC");
 						show_message("Couldn't sync with Commcare.");
-                        Log.e(TAG,e.getMessage());
-                        e.printStackTrace();
-						handler.died();
+                        Log.e(TAG, String.format("%s", e.getMessage()));
+                        try {
+                            if (handler != null) {
+                                Map<String, String> cc_instructions = handler.getInstructions();
+                                Log.i(TAG, "Commcare Instructions");
+                                if (cc_instructions != null){
+                                    for (String key: cc_instructions.keySet()){
+                                        Log.i(TAG, String.format("%s | %s", key, cc_instructions.get(key)));
+                                    }
+                                }
+                            }
+                        }catch (Exception e1){
+                            Log.e(TAG, "Couldn't report CC Instruction set");
+                        }
+                        if(e!= null){
+                            e.printStackTrace();
+                        }
+                        handler.died();
 						Log.i(TAG, "Sync Failed.");
 						stopSelf();
 					}
