@@ -132,6 +132,9 @@ public class ScanningActivity extends Activity{
         left_thumb_btn.setImageDrawable(getResources().getDrawable(left_finger.finger_image_location));
         TextView left_thumb_txt = (TextView) findViewById(R.id.scanner_txt_finger_1_title);
         left_thumb_txt.setText(left_finger.finger_name);
+        left_thumb_btn.setOnClickListener(getScanClickListener(left_finger, left_thumb_btn));
+        left_thumb_btn.setOnLongClickListener(getScanLongClickListener(left_finger, left_thumb_btn));
+        /*
         left_thumb_btn.setOnClickListener(new Button.OnClickListener() {
 
             @Override
@@ -170,11 +173,13 @@ public class ScanningActivity extends Activity{
                 }
             }
         });
+        */
 
         right_thumb_btn = (ImageButton) findViewById(R.id.scanner_btn_finger_2);
         right_thumb_btn.setImageDrawable(getResources().getDrawable(right_finger.finger_image_location));
         TextView right_thumb_txt = (TextView) findViewById(R.id.scanner_txt_finger_2_title);
         right_thumb_txt.setText(right_finger.finger_name);
+        /*
         right_thumb_btn.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -210,6 +215,9 @@ public class ScanningActivity extends Activity{
                 }
             }
         });
+        */
+        right_thumb_btn.setOnClickListener(getScanClickListener(right_finger, right_thumb_btn));
+        right_thumb_btn.setOnLongClickListener(getScanLongClickListener(right_finger, right_thumb_btn));
 
         proceed = (ImageButton) findViewById(R.id.scan_btn_proceed);
         proceed.setOnClickListener(new Button.OnClickListener() {
@@ -274,6 +282,107 @@ public class ScanningActivity extends Activity{
                 Log.i(TAG, "portrait");
                 setContentView(R.layout.scanner_flex_layout);
                 break;
+        }
+    }
+    /*
+    private OnClickListener getScanClickListener(final FingerType finger, final ImageButton btn, final boolean instant){
+        OnClickListener listener = new Button.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                if(Controller.mScanner==null){
+                    restart_scanner(arg0);
+                    Toast.makeText(mContext, getResources().getString(R.string.scanner_not_connected), Toast.LENGTH_SHORT).show();
+                    return;
+                }else{
+                    HashMap<String, UsbDevice> deviceList = Controller.mUsbManager.getDeviceList();
+                    Iterator<UsbDevice> deviceIterator = deviceList.values().iterator();
+                    if (deviceIterator.hasNext()==false){
+                        Log.i(TAG,"Device Unplugged");
+                        restart_scanner(arg0);
+                        Toast.makeText(mContext, getResources().getString(R.string.scanner_not_connected), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+                if (Controller.mScanner.get_ready()==true){
+                    //TODO
+                    pop_prompt.setText(getResources().getString(R.string.scan_prompt)+" "+ finger.finger_name);
+                    popUp.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+                    popUp.showAtLocation(arg0, Gravity.CENTER_VERTICAL, 0, 0);
+                    //TODO
+                    final FingerScanInterface f = new FingerScanInterface(finger.finger_key, Controller.mScanner, btn, arg0, instant);
+                    pop_cancel.setOnClickListener(new Button.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            cancel_scan(f, v);
+                        }
+                    });
+                    pop_cancel.setVisibility(View.VISIBLE);
+                    popUp.update();
+                    f.execute();
+                }
+            }
+        };
+        return listener;
+    }
+    */
+    private OnClickListener getScanClickListener(final FingerType finger, final ImageButton btn){
+        return new Button.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                handleClick(finger, btn, false, arg0);
+            }
+
+            ;
+        };
+
+    }
+
+    private Button.OnLongClickListener getScanLongClickListener(final FingerType finger, final ImageButton btn){
+        return new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View arg0) {
+                handleClick(finger, btn, true, arg0);
+                return true;
+            }
+        };
+
+    }
+
+    private void handleClick(final FingerType finger, final ImageButton btn, final boolean instant, View arg0){
+        if(Controller.mScanner==null){
+            restart_scanner(arg0);
+            Toast.makeText(mContext, getResources().getString(R.string.scanner_not_connected), Toast.LENGTH_SHORT).show();
+            return;
+        }else{
+            HashMap<String, UsbDevice> deviceList = Controller.mUsbManager.getDeviceList();
+            Iterator<UsbDevice> deviceIterator = deviceList.values().iterator();
+            if (deviceIterator.hasNext()==false){
+                Log.i(TAG,"Device Unplugged");
+                restart_scanner(arg0);
+                Toast.makeText(mContext, getResources().getString(R.string.scanner_not_connected), Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+        if (Controller.mScanner.get_ready()==true){
+            //TODO
+            pop_prompt.setText(getResources().getString(R.string.scan_prompt)+" "+ finger.finger_name);
+            popUp.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+            popUp.showAtLocation(arg0, Gravity.CENTER_VERTICAL, 0, 0);
+            //TODO
+            final FingerScanInterface f = new FingerScanInterface(finger.finger_key, Controller.mScanner, btn, arg0, instant);
+            pop_cancel.setOnClickListener(new Button.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    cancel_scan(f, v);
+                }
+            });
+            pop_cancel.setVisibility(View.VISIBLE);
+            popUp.update();
+            f.execute();
         }
     }
 
@@ -594,14 +703,16 @@ public class ScanningActivity extends Activity{
 		String finger;
 		boolean success = false;
         boolean reconnect = false;
+        boolean triggered = false;
         Drawable image;
 		
-	private FingerScanInterface(String name, Scanner scanner, ImageButton spot, View parent) {
+	private FingerScanInterface(String name, Scanner scanner, ImageButton spot, View parent, boolean instant) {
 			super();
 			this.parent = parent;
 			view = spot;
 			finger = name;
 	        mScanner = scanner;
+            this.triggered = !instant;
 		}
 
         @Override
@@ -662,7 +773,7 @@ public class ScanningActivity extends Activity{
 		            });
 		        }
 	        }).start();
-			success = mScanner.run_scan(finger);
+			success = mScanner.run_scan(finger, triggered);
             if (success==true) {
                 //in case of disconnect, cache items locally
                 template_cache = Controller.mScanner.getBiometrics();

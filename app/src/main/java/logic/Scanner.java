@@ -30,8 +30,8 @@ public class Scanner {
 	private HashMap<String, Bitmap> images;
 	private HashMap<String, String> biometrics;
 	private HashMap<String, String> iso_templates;
-	
-	public Scanner(UsbDevice device, UsbManager uManager){
+
+    public Scanner(UsbDevice device, UsbManager uManager){
 		dev = device;
 		manager = uManager;
 		conn = manager.openDevice(device);
@@ -56,6 +56,10 @@ public class Scanner {
 	public boolean run_scan(String finger){
 		return false;
 	}
+
+    public boolean run_scan(String finger, boolean trigger){
+        return false;
+    }
 	
 	public boolean shut_down(){
 		return false;

@@ -20,7 +20,10 @@ import com.biometrac.core.ScanningActivity;
 public class Scanner_Lumidigm_Mercury extends Scanner{
 
 	String TAG = "LumidigmDriver";
-	private HashMap<String, int[]> words;
+
+    private static TriggerType currentTrigger = null;
+
+    private HashMap<String, int[]> words;
 	
 	public Scanner_Lumidigm_Mercury(UsbDevice device, UsbManager manager) {
 		super(device, manager);
@@ -122,66 +125,93 @@ public class Scanner_Lumidigm_Mercury extends Scanner{
 
                         }
                     }
-
-
-		    		byte[] read_buffer;
-		    		try{
-		    			read_buffer = new byte[k];	
-		    		}catch(Exception e){
-		    			read_buffer = new byte[1024];
-		    			e.printStackTrace();
-		    		}
-		    		
-		    		//
-		    		conn.bulkTransfer(epIN, read_buffer, k, 1000);
-		    		read_buffer = new byte[1024];
-		    		conn.bulkTransfer(epIN, read_buffer, 512, 1000);
-		    		read_buffer = new byte[1024];
-		    		
-		    		comm = write_buff("mp1");
-		    		k = conn.bulkTransfer(epOUT, comm , comm.length, 1000);
-		    		
-		    		comm = write_buff("set_config");
-		    		k = conn.bulkTransfer(epOUT, comm , comm.length, 1000);
-		    		conn.bulkTransfer(epIN, read_buffer, 1024, 1000);
-		    		read_buffer = new byte[1024];
-		    		conn.bulkTransfer(epIN, read_buffer, 1024, 1000);
-		    		read_buffer = new byte[1024];
-		    		
-		    		comm = write_buff("mp3");
-		    		k = conn.bulkTransfer(epOUT, comm , comm.length, 1000);
-		    		
-		    		comm = write_buff("get_config");
-		    		k = conn.bulkTransfer(epOUT, comm , comm.length, 1000);
-		    		conn.bulkTransfer(epIN, read_buffer, 1024, 1000);
-		    		read_buffer = new byte[1024];
-		    		conn.bulkTransfer(epIN, read_buffer, 1024, 1000);
-		    		read_buffer = new byte[1024];
-		    		
-		    		Log.i("Scanner Ops", "Finished Init Process");
+                    set_scanner_settings(false);
                     isInInit = false;
-		    		ready = true;
+                    ready = true;
         		}catch(Exception e){
         			scan_cancelled = true;
         			Log.i(TAG,"INIT FAILED");
                     isInInit = false;
         			e.printStackTrace();
         		}
+
 	    	}
 	    }).start();
 		
 	}
-	
+
+    protected void set_scanner_settings(){
+        set_scanner_settings(false);
+    }
+    protected void set_scanner_settings(boolean instant){
+        byte[] read_buffer;
+        int k = 0;
+        try{
+            read_buffer = new byte[k];
+        }catch(Exception e){
+            read_buffer = new byte[1024];
+            e.printStackTrace();
+        }
+
+
+        conn.bulkTransfer(epIN, read_buffer, k, 1000);
+        read_buffer = new byte[1024];
+        conn.bulkTransfer(epIN, read_buffer, 512, 1000);
+        read_buffer = new byte[1024];
+
+        byte[] comm = write_buff("mp1");
+        k = conn.bulkTransfer(epOUT, comm , comm.length, 1000);
+        if (instant){
+            comm = write_buff("set_config_instant");
+            currentTrigger = TriggerType.INSTANT;
+        }else{
+            comm = write_buff("set_config");
+            currentTrigger = TriggerType.TRIGGERED;
+        }
+
+        k = conn.bulkTransfer(epOUT, comm , comm.length, 1000);
+        conn.bulkTransfer(epIN, read_buffer, 1024, 1000);
+        read_buffer = new byte[1024];
+        conn.bulkTransfer(epIN, read_buffer, 1024, 1000);
+        read_buffer = new byte[1024];
+
+        comm = write_buff("mp3");
+        k = conn.bulkTransfer(epOUT, comm , comm.length, 1000);
+
+        comm = write_buff("get_config");
+        k = conn.bulkTransfer(epOUT, comm , comm.length, 1000);
+        conn.bulkTransfer(epIN, read_buffer, 1024, 1000);
+        read_buffer = new byte[1024];
+        conn.bulkTransfer(epIN, read_buffer, 1024, 1000);
+        //read_buffer = new byte[1024];
+        Log.i("Scanner Ops", "Finished Settings");
+    }
+    @Override
+    public boolean run_scan(final String finger){
+        return run_scan(finger, true);
+    }
+
 	//Ugly Fucking method to send our magic words in the right order for scanner IO to work
 	@Override
-	public boolean run_scan(final String finger){
+    public boolean run_scan(final String finger, boolean triggered){
+        if (ready != true){
+            return false;
+        }
+        ready = false;
+        scan_cancelled = false;
+        Scanner.finger_sensed = false;
+
+        if (triggered && currentTrigger.equals(TriggerType.INSTANT)){
+            set_scanner_settings(false);
+        }else if (!triggered && currentTrigger.equals(TriggerType.TRIGGERED)){
+            set_scanner_settings(true);
+        }
 		//MUST be run in the background with get_image returning the bitmap to the GUI in the onfinish method if the scan is successful.
-		if (ready != true){
-			return false;
-		}
+        /*
 		ready = false;
 		scan_cancelled = false;
 		Scanner.finger_sensed = false;
+		*/
 		int k = 0;
 		byte[] read_buffer = new byte[1024];
 		
@@ -202,19 +232,31 @@ public class Scanner_Lumidigm_Mercury extends Scanner{
 		//Log.i("len", Integer.toString(k));
 		
 		boolean taken = false;
-		
+		boolean scanner_responded = false;
 		while(true){
 			if (scan_cancelled==true){
 				return false;
 			}
-			if (((int) read_buffer[8] & 0xFF) == 4 && ((int) read_buffer[12] & 0xFF) == 1){
+			if (((int) read_buffer[8] & 0xFF) == 4 && ((int) read_buffer[12] & 0xFF) == 1 && taken == false){
 				taken = true;
 				Log.i("scanner status","finger sensed");
 				Scanner.finger_sensed = true;
 			}
 			if (taken == true){
+                /*
+                if (((int) read_buffer[8] & 0xFF) != 4 || ((int) read_buffer[12] & 0xFF) != 0){
+                    Log.i("scanner status","waiting for scanner response");
+                    try {
+                        Thread.sleep(250);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    continue;
+                }
+                */
 				if (((int) read_buffer[8] & 0xFF) == 4 && ((int) read_buffer[12] & 0xFF) == 0){
-					Log.i("scanner status","image ready!");	
+					Log.i("scanner status","image ready!");
+                    Log.i("found status:", read_buffer.toString());
 					comm = write_buff("get_image");
 					k = conn.bulkTransfer(epOUT, comm , comm.length, 1000);
 					//Log.i("length", Integer.toString(k));
@@ -382,22 +424,36 @@ public class Scanner_Lumidigm_Mercury extends Scanner{
 					set_image(finger, complete_image);
 					Scanner.finger_sensed = false;
 					break;
-				}	
-			}
+				}
+                Log.i(TAG, "Waiting for sensor");
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            else{
+                Log.i(TAG, "Waiting for finger");
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
 			
 			read_buffer = new byte[1024];
 			comm = write_buff("get_busy");
 			k = conn.bulkTransfer(epOUT, comm , comm.length, 1000);
-			//Log.i("len", Integer.toString(k));
+			Log.i("len", Integer.toString(k));
 			conn.bulkTransfer(epIN, read_buffer, 1024, 1000);
-			//Log.i("returns", read_buffer.toString());
+			Log.i("returns", read_buffer.toString());
 			read_buffer = new byte[1024];
 			conn.bulkTransfer(epIN, read_buffer, 1024, 1000);
-			//Log.i("returns", read_buffer.toString());
+			Log.i("returns", read_buffer.toString());
 			
 			comm = write_buff("mp2");
 			k = conn.bulkTransfer(epOUT, comm , comm.length, 1000);
-			//Log.i("len", Integer.toString(k));
+			Log.i("len", Integer.toString(k));
 		}
 		Log.i("Scanner Status","Scan Finished");
 		return true;
@@ -425,14 +481,24 @@ public class Scanner_Lumidigm_Mercury extends Scanner{
 				0x01, 0x00};
         */
         //Templating turned ON, timeout to 60.
-		int[] set_str = 
+
+        int[] set_str =
                {0x0d, 0x56, 0x4d, 0x00, 0x00, 0x00, 0x00, 0x00,   0x44, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00,
 				0x00, 0x00, 0x3c, 0x00, 0x00, 0x00, 0x00, 0x00,   0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00,
 				0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x11, 0x00,   0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,   0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x03, 0x00,
 				0x00, 0x00, 0x2c, 0x01, 0x00, 0x00, 0x00, 0x00,   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 				0x03, 0x00};
+
+        int[] set_str_inst =
+               {0x0d, 0x56, 0x4d, 0x00, 0x00, 0x00, 0x00, 0x00,   0x44, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x0f, 0x00, 0x01, 0x00, 0x00, 0x00,   0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00,
+                0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x11, 0x00,   0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,   0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x03, 0x00,
+                0x00, 0x00, 0x2c, 0x01, 0x00, 0x00, 0x00, 0x00,   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00};
 		words.put("set_config", set_str);
+        words.put("set_config_instant", set_str_inst);
 		//line template
         //words.put("", new int[] {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00});		
 		words.put("get_config", new int[]{0x0d,0x56,0x49,0x00,0x00,0x00,0x00,0x00,0x04,0x00,0x00,0x00, 0x80,0x00,0x00,0x00,0xc8,0x00});
@@ -478,4 +544,9 @@ public class Scanner_Lumidigm_Mercury extends Scanner{
         //Log.i("POD",": "+hexString.toString());
         
 	}
+
+    private enum TriggerType{
+        INSTANT,
+        TRIGGERED;
+    }
 }
