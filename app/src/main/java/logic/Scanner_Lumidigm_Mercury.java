@@ -207,11 +207,7 @@ public class Scanner_Lumidigm_Mercury extends Scanner{
             set_scanner_settings(true);
         }
 		//MUST be run in the background with get_image returning the bitmap to the GUI in the onfinish method if the scan is successful.
-        /*
-		ready = false;
-		scan_cancelled = false;
-		Scanner.finger_sensed = false;
-		*/
+
 		int k = 0;
 		byte[] read_buffer = new byte[1024];
 		
@@ -232,7 +228,6 @@ public class Scanner_Lumidigm_Mercury extends Scanner{
 		//Log.i("len", Integer.toString(k));
 		
 		boolean taken = false;
-		boolean scanner_responded = false;
 		while(true){
 			if (scan_cancelled==true){
 				return false;
@@ -357,7 +352,7 @@ public class Scanner_Lumidigm_Mercury extends Scanner{
 								int body_copy_length =(6 * minutia_count);
 								byte[] _temp_body = Arrays.copyOfRange(read_buffer, (template_start_position+30), (template_start_position+30+body_copy_length));
 								byte[] temp_body = Arrays.copyOf(_temp_body, (_temp_body.length + 2));
-								//indicating no exteneded data
+								//indicating no extended data
 								temp_body[temp_body.length-1] = (byte)0;
 								temp_body[temp_body.length-2] = (byte)0;
 								byte[] header_start = Arrays.copyOfRange(temp_header, 0 , 8);
@@ -382,6 +377,7 @@ public class Scanner_Lumidigm_Mercury extends Scanner{
 								ready = true;
 				        	}catch(Exception e){
 				        		Log.i(TAG,"iso templating failed");
+                                set_iso_template(finger, null);
 				        		ready = true;
 				        		e.printStackTrace();
 				        	}
@@ -444,16 +440,21 @@ public class Scanner_Lumidigm_Mercury extends Scanner{
 			read_buffer = new byte[1024];
 			comm = write_buff("get_busy");
 			k = conn.bulkTransfer(epOUT, comm , comm.length, 1000);
-			Log.i("len", Integer.toString(k));
+			//Log.i("len", Integer.toString(k));
 			conn.bulkTransfer(epIN, read_buffer, 1024, 1000);
-			Log.i("returns", read_buffer.toString());
+			//Log.i("returns", Arrays.toString(read_buffer));
 			read_buffer = new byte[1024];
 			conn.bulkTransfer(epIN, read_buffer, 1024, 1000);
-			Log.i("returns", read_buffer.toString());
-			
-			comm = write_buff("mp2");
+			//byte[] suba = Arrays.copyOfRange(read_buffer, 0, 20);
+            //Log.i("returns", Arrays.toString(suba));
+            comm = write_buff("mp2");
 			k = conn.bulkTransfer(epOUT, comm , comm.length, 1000);
-			Log.i("len", Integer.toString(k));
+			//Log.i("len", Integer.toString(k));
+            //Log.i("check", String.format("[8] %s | [12] %s",((int) read_buffer[8] & 0xFF), ((int) read_buffer[12] & 0xFF)));
+            if(((int) read_buffer[12] == 11)){
+                Log.e(TAG, "Scan Error!");
+                return false;
+            }
 		}
 		Log.i("Scanner Status","Scan Finished");
 		return true;
