@@ -1,6 +1,7 @@
 package com.biometrac.core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -55,15 +56,16 @@ public class ScanningActivity extends Activity{
 	public static boolean waiting_for_permission = true;
 	private static final String ACTION_USB_PERMISSION =
 	    "com.biometrac.screentest.ScanningActivity.USB_PERMISSION";
-	
+
+    boolean finished = false;
 	FingerType left_finger;
 	FingerType right_finger;
-    Map<String, Bitmap> scanImages;
+    HashMap<String, Bitmap> scanImages;
 	ImageButton left_thumb_btn;
 	ImageButton right_thumb_btn;
-	Map <String, Boolean> scannedFingers;
-	Map<String,String> template_cache;
-	Map<String,String> iso_template_cache;
+	HashMap <String, Boolean> scannedFingers;
+	HashMap<String,String> template_cache;
+	HashMap<String,String> iso_template_cache;
     ImageButton proceed;
 	ImageButton skip;
 	boolean easy_skip = false;
@@ -89,35 +91,97 @@ public class ScanningActivity extends Activity{
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		getWindow().setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN );
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String rotation = prefs.getString("bmt.rotation", "Horizontal");
-        if(rotation.equals("Horizontal")){
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        }else{
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
-        setCorrectContentView(getResources().getConfiguration());
+        Log.i(TAG, "Create");
 
         scanImages = new HashMap<String, Bitmap>();
         scannedFingers = new HashMap<>();
         template_cache = new HashMap<String,String>();
         iso_template_cache = new HashMap<String,String>();
+
+        if (savedInstanceState != null){
+            Log.i(TAG, "Found saved instance");
+            ArrayList<String> keyList = new ArrayList();
+            for(String key: savedInstanceState.keySet()){
+                keyList.add(key);
+            }
+            Log.i(TAG, String.format("Found keys: %s", Arrays.toString(keyList.toArray())));
+            loadAssets(savedInstanceState);
+        }
+        else{
+            Log.i(TAG, "No saved instance");
+        }
+        if(finished){
+            Log.e(TAG, "OPERATION COMPLETE. Killing.");
+            finish();
+            return;
+        }
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN );
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String rotation = prefs.getString("bmt.rotation", "Horizontal");
+        if(rotation.equals("Horizontal")){
+            if(getResources().getConfiguration().orientation != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                Log.i(TAG, "Rotating to Landscape");
+                return;
+            }
+            Log.i(TAG, "Setting Layout Landscape");
+            setCorrectContentView(Configuration.ORIENTATION_LANDSCAPE);
+
+        }else{
+            if(getResources().getConfiguration().orientation != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT){
+                Log.i(TAG, "Rotating to Portrait");
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                return;
+            }
+            Log.i(TAG, "Setting Layout Portrait");
+            setCorrectContentView(Configuration.ORIENTATION_PORTRAIT);
+        }
+
         load_options(getIntent().getExtras());
         //If we have options from the intent Bundle, parse and enact them
         if (opts != null || binary_opts != null){
-        	parse_options();	
+            parse_options();
         }else{
-        	default_options();
+            default_options();
         }
-        
-        //TODO Enable or edit exit button
-        //super.set_up_bar(this);
-        setupUI();
 
-        
-	}
+        //TODO Enable or edit exit button
+        setupUI();
+        if(savedInstanceState!= null){
+            redrawAssets();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        Log.i(TAG, "Resumed.");
+        super.onResume();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        saveAssets(outState);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onPause() {
+        Log.i(TAG, "Paused.");
+        super.onPause();
+    }
+
+    @Override
+    protected void onRestart() {
+        Log.i(TAG, "Restart.");
+        super.onRestart();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.i(TAG, "Destroy");
+        super.onDestroy();
+    }
 
     private void setupUI() {
         final LayoutInflater inflater = (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -185,16 +249,18 @@ public class ScanningActivity extends Activity{
         });
 
         mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
+        return;
     }
 
-    private void setCorrectContentView(Configuration configuration) {
-        switch(configuration.orientation){
+    private void setCorrectContentView(int configuration) {
+        switch(configuration){
             case Configuration.ORIENTATION_LANDSCAPE:
                 Log.i(TAG, "landscape");
                 setContentView(R.layout.scanner_flex_layout_landscape);
                 break;
             case Configuration.ORIENTATION_PORTRAIT:
                 Log.i(TAG, "portrait");
+                //setContentView(R.layout.scanner_flex_layout);
                 setContentView(R.layout.scanner_flex_layout);
                 break;
         }
@@ -241,6 +307,7 @@ public class ScanningActivity extends Activity{
 
             popUp.showAtLocation(arg0, Gravity.CENTER_VERTICAL, 0, 0);
             //TODO
+
             final FingerScanInterface f = new FingerScanInterface(finger.finger_key, Controller.mScanner, btn, arg0, instant);
             pop_cancel.setOnClickListener(new Button.OnClickListener() {
                 @Override
@@ -254,19 +321,39 @@ public class ScanningActivity extends Activity{
         }
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        Log.e(TAG, "Redrawing for Rotation");
-        setCorrectContentView(newConfig);
-        if (opts != null || binary_opts != null){
-            parse_options();
-        }else{
-            default_options();
+    public Bundle saveAssets(Bundle bundle){
+        /*
+        ArrayList<String> valid_images = new ArrayList<>();
+        for(String k: scanImages.keySet()){
+            valid_images.add(k);
+            bundle.putParcelable(k, scanImages.get(k));
         }
-        setupUI();
-        colorFinger();
+        bundle.putStringArrayList("valid_images", valid_images);
+        */
+        bundle.putSerializable("scanImages", scanImages);
+        bundle.putSerializable("scannedFingers", scannedFingers);
+        bundle.putSerializable("template_cache", template_cache);
+        bundle.putSerializable("iso_template_cache", iso_template_cache);
+        bundle.putBoolean("finished", finished);
+        return bundle;
+    }
+
+
+    public void loadAssets(Bundle bundle) {
+        if(bundle != null){
+            Log.e(TAG, "Loading Assets");
+            finished = bundle.getBoolean("finished");
+            scanImages = (HashMap<String, Bitmap>) bundle.getSerializable("scanImages");
+            scannedFingers = (HashMap<String,Boolean>) bundle.getSerializable("scannedFingers");
+            template_cache = (HashMap<String,String>) bundle.getSerializable("template_cache");
+            iso_template_cache = (HashMap<String,String>) bundle.getSerializable("iso_template_cache");
+        }
+    }
+
+    public void redrawAssets(){
+        if(scanImages == null){
+            return;
+        }
         for (String key: scanImages.keySet()){
             Log.d(TAG, "found in scan Images: " + key);
         }
@@ -284,7 +371,7 @@ public class ScanningActivity extends Activity{
         } else {
             Log.i(TAG, "Right image is null");
         }
-
+        //colorFinger();
     }
 
     @Override
@@ -418,6 +505,7 @@ public class ScanningActivity extends Activity{
         if (scannedFingers.get(right_finger.finger_key)!= null) {
             right_thumb_btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_shape_green_round));
         }
+        return;
 	}
 	
 	//On press of confirm in skip dialog
@@ -457,6 +545,7 @@ public class ScanningActivity extends Activity{
 
         }
         finish_ok(out);
+        return;
 
 	}
 	
@@ -483,29 +572,36 @@ public class ScanningActivity extends Activity{
 	}
 	
 	protected void finish_ok(Map<String,String> output){
-		Log.i(TAG,"Finish OK -- Start");
+		finished = true;
+        Log.i(TAG,"Finish OK -- Start");
 		Log.i(TAG,"package keys -- " +output.keySet().toString());
 		Intent i = new Intent();
 		Iterator<String> keys = output.keySet().iterator();
 		while(keys.hasNext()==true){
 			String k = keys.next();
 			i.putExtra(k, output.get(k));
-			Log.i(TAG,"Loading output-- k: " + k +" v: "+ output.get(k));
+			Log.i(TAG,String.format("K: %s V: %s", k, output.get(k)));
 		}
-		setResult(RESULT_OK, i);
-		this.finish();
+		setResult(Activity.RESULT_OK, i);
+        Log.i(TAG,"Finish OK -- Finished");
+		finish();
+        return;
 	}
 	
 	protected void finish_cancel(){
+        Log.i(TAG, "Caught Cancel Signal");
 		Intent i = new Intent();
 		setResult(RESULT_CANCELED, i);
-		this.finish();
+		finish();
 	}
 	
 	public void stop_scanner_restart(){
 		
 	}
-	
+
+    /*
+	 *    Scanning Task Async
+	 */
 	private class FingerScanInterface extends AsyncTask<Void, Void, Void> {
 		ImageButton view;
 		View parent;
@@ -655,7 +751,9 @@ public class ScanningActivity extends Activity{
 	    }
 	}
 
-	
+	/*
+	 *    Scanner Unplug Async
+	 */
 	private class ScannerUnplug extends AsyncTask<Void, Void, Void> {
 		View parent;
 		private ScannerUnplug(View parent){
@@ -714,7 +812,10 @@ public class ScanningActivity extends Activity{
 			super.onPostExecute(result);
 		}
 	}
-	
+
+    /*
+    *    Scanner Setup Async
+    */
 	private class ScannerSetup extends AsyncTask<Void, Void, Void> {
 		private Context oldContext;
 		private View parent;
@@ -899,6 +1000,7 @@ public class ScanningActivity extends Activity{
 	}
 	
 	public static Intent get_next_scanning_bundle(Intent i, int index){
+        Log.i(TAG, "Getting Next Scanning Bundle");
 		Bundle data = i.getExtras();
 		List<String>fields = new ArrayList<String>(){{
 			add("prompt");
@@ -951,14 +1053,17 @@ public class ScanningActivity extends Activity{
 	
 	
 	public static boolean bundle_has_multiple_scans(Bundle data){
-		if (data.containsKey("left_finger_assignment")){
-			return false;
+		Log.i(TAG, "Looking for many scan bundle");
+        if (data.containsKey("left_finger_assignment")){
+            Log.i(TAG,"only single scan");
+            return false;
 		}
+        Log.i(TAG,"multiple scans found");
 		return true;
 	}
 	
 	public static int get_total_scans_from_bundle(Bundle data){
-		
+        Log.i(TAG, "Looking for many scan bundle");
 		int out = 1;
 		for (int x = 0; x < 10; x++){
 			String left = data.getString("left_finger_assignment_" + Integer.toString(x));
@@ -968,8 +1073,9 @@ public class ScanningActivity extends Activity{
 				break;
 			}
 		}
+        Log.i(TAG, String.format("Found %s scans in bundle", out));
 		if (out < 1){
-			return 1;
+            return 1;
 		}
 			return out;
 		

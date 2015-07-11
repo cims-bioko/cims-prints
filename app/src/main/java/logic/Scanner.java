@@ -1,7 +1,6 @@
 package logic;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import android.graphics.Bitmap;
@@ -108,7 +107,7 @@ public class Scanner {
 		return biometrics.get(key);
 	}
 
-	public Map<String,String> get_iso_biometrics(){
+	public HashMap<String,String> get_iso_biometrics(){
 		return iso_templates;
 	}
 	
@@ -127,7 +126,7 @@ public class Scanner {
 		}
 	}
 	
-	public Map<String,String> getBiometrics(){
+	public HashMap<String,String> getBiometrics(){
 		return biometrics;
 	}
 

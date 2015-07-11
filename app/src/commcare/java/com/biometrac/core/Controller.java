@@ -21,6 +21,7 @@ import java.util.Random;
 
 import data.CommCareContentHandler;
 import data.LocalDatabaseHandler;
+import data.LocalDatabaseHelper;
 import data.SharedPreferencesManager;
 import logic.HostUsbManager;
 import logic.Scanner;
@@ -49,6 +50,7 @@ public class Controller extends Application {
 	public static Engine mEngine = null;
 	public static Random mRandom = new Random();
 	public static LocalDatabaseHandler db_handle = null;
+    public static LocalDatabaseHelper db_help = null;
 	public static CommCareContentHandler commcare_handler = null;
 	public static SharedPreferencesManager preference_manager = null;
 	
@@ -70,7 +72,7 @@ public class Controller extends Application {
         context.startService(i);
         sync_commcare_default();
         
-        //db_help = new LocalDatabaseHelper(context);
+        db_help = new LocalDatabaseHelper(context);
         
     }
 
@@ -116,7 +118,6 @@ public class Controller extends Application {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	//android.os.Process.killProcess(android.os.Process.myPid());
     	System.exit(0);
 
     }
@@ -152,20 +153,7 @@ public class Controller extends Application {
         Log.i(TAG, "Inducing Crash!");
         enableCrashDialog();
         ACRA.getErrorReporter().handleException(new Exception("Induced Crash"));
-        //Toast.makeText(getAppContext(), "Log captured", Toast.LENGTH_LONG).show();
         disableCrashDialog();
-        /*
-        preference_manager.notify_false_start();
-        context.stopService(new Intent(context, PersistenceService.class));
-        context.stopService(new Intent(context, NotificationReceiver.class));
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        throw new RuntimeException("Induced Crash");
-        */
     }
     
 }

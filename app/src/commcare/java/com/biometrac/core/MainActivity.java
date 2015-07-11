@@ -83,7 +83,19 @@ public class MainActivity extends Activity {
         dispatch_intent(incoming);
 	}
 
-	private boolean is_false_start() {
+    @Override
+    protected void onResume() {
+        Log.i(TAG, "Resume");
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.i(TAG, "Pause");
+        super.onPause();
+    }
+
+    private boolean is_false_start() {
 		if (Controller.preference_manager.is_false_start()){
 			Log.i(TAG, "False Start Caught");
 			finish_cancel();
@@ -107,19 +119,25 @@ public class MainActivity extends Activity {
 		Log.i(TAG,"Started via... " + action);
 		if (action.equals("com.biometrac.core.SCAN")){
 			if(ScanningActivity.get_total_scans_from_bundle(incoming.getExtras())>1){
+                Log.i(TAG, "Launching PIPE");
 				incoming.setClass(this, PipeActivity.class);
 				startActivityForResult(incoming, REQUEST_CODE);
+                return;
 			}else{
+                Log.i(TAG, "Launching SCAN");
 				incoming.setClass(this, ScanningActivity.class);
-				startActivityForResult(incoming, REQUEST_CODE);	
+				startActivityForResult(incoming, REQUEST_CODE);
+                return;
 			}
 			
 		}
 		else if (action.equals("com.biometrac.core.ENROLL")){
 			incoming.setClass(this, EnrollActivity.class);
 			startActivityForResult(incoming, REQUEST_CODE);
+            return;
 		}
 		else if(action.equals("com.biometrac.core.VERIFY")){
+            return;
 			
 		}
 		else if(action.equals("com.biometrac.core.IDENTIFY")){
@@ -135,11 +153,13 @@ public class MainActivity extends Activity {
 			startActivityForResult(incoming, REQUEST_CODE);
 		}
 		else if(action.equals("com.biometrac.core.LOAD")){
+            return;
 			
 		}
 		else if(action.equals("com.biometrac.core.PIPE")){
 			incoming.setClass(this, PipeActivity.class);
 			startActivityForResult(incoming, REQUEST_CODE);
+            return;
 		}
 		else{
 			needs_return = false;
