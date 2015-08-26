@@ -243,8 +243,8 @@ public class MainActivity extends Activity {
 	
 	private void fire_intent(){
 		Intent i = new Intent(this, ScanningActivity.class);
-		Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.biometraclogo);
-		i.putExtra("image", bmp);
+		//Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.biometraclogo);
+		//i.putExtra("image", bmp);
 		i.putExtra("prompt", "This is a\nTest Prompt!");
 		i.putExtra("easy_skip", "true");
 		i.putExtra("left_finger_assignment", "left_index");

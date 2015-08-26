@@ -123,7 +123,6 @@ public class ScanningActivity extends Activity{
             if(getResources().getConfiguration().orientation != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 Log.i(TAG, "Rotating to Landscape");
-                return;
             }
             Log.i(TAG, "Setting Layout Landscape");
             setCorrectContentView(Configuration.ORIENTATION_LANDSCAPE);
@@ -132,7 +131,6 @@ public class ScanningActivity extends Activity{
             if(getResources().getConfiguration().orientation != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT){
                 Log.i(TAG, "Rotating to Portrait");
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                return;
             }
             Log.i(TAG, "Setting Layout Portrait");
             setCorrectContentView(Configuration.ORIENTATION_PORTRAIT);

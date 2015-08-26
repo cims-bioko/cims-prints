@@ -1,28 +1,38 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            Properties props = new Properties()
+            props.load(new FileInputStream(file("/home/sarwar/.gradle/gradle.properties")))
+            keyAlias 'bmt-release'
+            keyPassword props['buildPassword']
+            storeFile file('/home/sarwar/workspace/key_store/BMT-Release-Key.keystore')
+            storePassword props['storePassword']
+        }
+    }
     compileSdkVersion 21
     buildToolsVersion "21.1.1"
-
     defaultConfig {
         applicationId "com.biometrac.core"
         minSdkVersion 15
         targetSdkVersion 19
         versionName "BiometracCore"
     }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
-    productFlavors{
-        vaxtrac{
-            versionName  = versionName +".vaxtrac"
+    productFlavors {
+        vaxtrac {
+            versionName = versionName + ".vaxtrac"
+            signingConfig signingConfigs.config
         }
-        commcare{
+        commcare {
             versionName = versionName + ".ccodk"
+            signingConfig signingConfigs.config
         }
     }
 }
