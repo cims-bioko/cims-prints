@@ -590,7 +590,9 @@ public class ScanningActivity extends Activity{
         Log.i(TAG, "Caught Cancel Signal");
 		Intent i = new Intent();
 		setResult(RESULT_CANCELED, i);
+        finished = true;
 		finish();
+        return;
 	}
 	
 	public void stop_scanner_restart(){
@@ -730,8 +732,12 @@ public class ScanningActivity extends Activity{
 		
 		@Override
 		protected void onCancelled() {
-			popUp.dismiss();
-			unplug_scanner(parent);
+            try {
+                popUp.dismiss();
+                unplug_scanner(parent);
+            } catch (IllegalArgumentException e){
+                Log.e(TAG, String.format("Cancel: %s", e.getMessage()));
+            }
 			super.onCancelled();
 		}
 		

@@ -114,7 +114,8 @@
             android:name=".PipeActivity"
             android:label="VirtualCohort" 
             android:screenOrientation="portrait"
-            android:noHistory="false" >
+            android:noHistory="false"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.View" />
                 <category android:name="android.intent.category.DEFAULT"/>

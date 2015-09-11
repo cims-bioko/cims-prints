@@ -133,7 +133,6 @@ public class CCSyncActivity extends Activity {
 				// TODO Auto-generated method stub
 			}
         });
-        
         Button b = (Button) findViewById(R.id.sync_accept_settings);
         b.setOnClickListener(new OnClickListener() {
 			

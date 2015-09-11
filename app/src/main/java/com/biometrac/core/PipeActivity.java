@@ -16,28 +16,163 @@ import android.widget.Toast;
 
 public class PipeActivity extends Activity {
 
-	private final String TAG = "PIPE";
-	boolean finished;
+    private static int startSequence =0;
+    private static int createSequence =0;
+    private static boolean caughtCancelled = false;
+    private final String TAG = "PIPE";
+	boolean finished = false;
 	Intent output_intent;
-	Iterator<Intent> intents;
 	List<Intent> stack;
+    int stackPosition;
 	
 	int REQUEST_CODE = 1;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.i(TAG, String.format("onCreate | %s", createSequence));
+        createSequence +=1;
 		output_intent = new Intent();
 		stack = new ArrayList<Intent>();
-		Intent incoming = getIntent();
-		log_intent(incoming);
-		output_intent.putExtras(merge_bundles(output_intent, incoming));
-		process_request(incoming);
-		super.onCreate(savedInstanceState);
+        stackPosition = 0;
+		if (savedInstanceState != null){
+            Log.i(TAG, "Found saved instance, reporting and restoring");
+            restoreAssets(savedInstanceState);
+            print_bundle(savedInstanceState);
+            if(caughtCancelled){
+                Log.e(TAG,"This was already canceled!");
+            }
+        }else{
+            Log.i(TAG, "savedInstanceState is null");
+            Log.i(TAG, "Resetting Stack");
+            Controller.resetStack();
+        }
+        boolean stackOK = checkStack(stack, stackPosition);
+        if (!stackOK){
+            stackOK = fixStack();
+			if (!stackOK){
+				Log.e(TAG, "Could not fix stack. Killing.");
+				Controller.nullPipeStack();
+				finish();
+				return;
+			}else{
+				Log.i(TAG, "StackFixed! Carry on...");
+			}
+
+        }
+		if (Controller.isStackFinished()){
+			Log.e(TAG, "Finished PIPE is attempting to restart. Killing");
+            Log.e(TAG, "Using last known bundle as output for looped instance");
+            Intent i = new Intent();
+            i.putExtras(Controller.getLastStackOutput());
+            setResult(Activity.RESULT_OK, i);
+            Controller.resetStack();
+			finish();
+
+		}else{
+            Intent incoming = getIntent();
+            Log.i(TAG, "Pipe NOT finished.");
+            log_intent(incoming);
+            output_intent.putExtras(merge_bundles(output_intent, incoming));
+            process_request(incoming);
+        }
+
 	}
-	
-	private void log_intent(Intent incoming) {
+
+    public void setStackPosition(int position){
+        stackPosition = position;
+        Controller.setPipePosition(position);
+    }
+
+    public boolean checkStack(List<Intent> stack, int stackPosition){
+        int controlStackPosition = Controller.getPipeStackPosition();
+        List<Intent> controlStack = Controller.getPipeStack();
+        if (stackPosition != controlStackPosition){
+            Log.e(TAG, "Stack is out of sync!");
+            return false;
+        }
+        Log.i(TAG, "Stack is correct");
+        return true;
+    }
+
+	public boolean fixStack(){
+        try {
+            stack = Controller.getPipeStack();
+            stackPosition = Controller.getPipeStackPosition();
+            return checkStack(stack, stackPosition);
+        } catch (Exception e){
+            Log.e(TAG, e.getMessage());
+            return false;
+        }
+
+	}
+
+    @Override
+    protected void onStart() {
+        Log.i(TAG, String.format("onStart| %s", startSequence));
+        startSequence +=1;
+        super.onStart();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.i(TAG, String.format("onPause| S:%s | C:%s", startSequence, createSequence));
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        Log.i(TAG, String.format("onResume| S:%s | C:%s", startSequence, createSequence));
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.i(TAG, String.format("onDestroy| S:%s | C:%s", startSequence, createSequence));
+		super.onDestroy();
+    }
+
+    public Bundle saveAssets(Bundle bundle){
+        Log.i(TAG, "Saving State");
+        bundle.putBoolean("caughtCancelled", caughtCancelled);
+        caughtCancelled = false;
+        bundle.putSerializable("stack", (ArrayList<Intent>) stack);
+        if(stack != null) {
+            Log.i(TAG, String.format("Stack Size: %s", stack.size()));
+        }
+        bundle.putInt("stackPosition", stackPosition);
+        Log.i(TAG, String.format("Current position %s", stackPosition));
+        bundle.putBoolean("finished", finished);
+        Log.i(TAG, String.format("Is finished: %s", finished));
+        return bundle;
+    }
+
+    public void restoreAssets(Bundle bundle){
+        Log.i(TAG, "Restoring State");
+        caughtCancelled = bundle.getBoolean("caughtCancelled");
+        Log.i(TAG, String.format("Caught Cancelled: %s", caughtCancelled));
+        stack = (ArrayList<Intent>) bundle.getSerializable("stack");
+        if(stack != null) {
+            Log.i(TAG, String.format("Stack Size: %s", stack.size()));
+        }else{
+            Log.i(TAG, "stack is null");
+        }
+        stackPosition = bundle.getInt("stackPosition");
+        Log.i(TAG, String.format("Current position %s", stackPosition));
+        finished = bundle.getBoolean("finished");
+        Log.i(TAG, String.format("Is finished: %s", finished));
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+        saveAssets(outState);
+
+    }
+
+    private void log_intent(Intent incoming) {
 		Log.i(TAG, "INCOMING INTENT | CHECKIT");
-		Log.i(TAG, "Action : "  + incoming.getAction());
+		Log.i(TAG, "Action : " + incoming.getAction());
 		
 	}
 
@@ -53,8 +188,7 @@ public class PipeActivity extends Activity {
 		}else if(action.equals("com.biometrac.core.SCAN")){
 			append_scans(incoming);
 		}
-		intents = stack.iterator();
-		dispatch_intent(intents.next());
+		dispatch_intent(stack);
 	}
 	
 	private void process_pipe(Intent incoming){
@@ -80,7 +214,8 @@ public class PipeActivity extends Activity {
 		Log.i(TAG, "Append Scans");
 		int iter = ScanningActivity.get_total_scans_from_bundle(incoming.getExtras());
 		Log.i(TAG, "Total Scans: " + Integer.toString(iter));
-		for (int x = 0; x< iter; x++){
+		if (stack == null){stack = new ArrayList<Intent>();}
+        for (int x = 0; x< iter; x++){
 			Intent b = ScanningActivity.get_next_scanning_bundle(incoming, x);
 			if (b!=null){
 				Log.i(TAG, "Stacking | SCAN -- details follow");
@@ -91,7 +226,27 @@ public class PipeActivity extends Activity {
 			}
 		}
 	}
-	
+
+    private void dispatch_intent(List<Intent> stack){
+        Log.i(TAG, "Dispatching Stack");
+
+        try {
+            Intent currentIntent = stack.get(stackPosition);
+            setStackPosition(stackPosition +1);
+            Log.i(TAG, String.format("Current Stack Position %s", stackPosition));
+            dispatch_intent(currentIntent);
+        }catch (IndexOutOfBoundsException e){
+            Log.e(TAG, e.getMessage());
+            e.printStackTrace();
+            Log.e(TAG, "Error getting current stack item");
+            Log.e(TAG, String.format("Stack Size in controller: %s Stack Position: %s",Controller.getPipeStack().size(), stackPosition));
+            Log.e(TAG, "Killing pipe");
+            finish();
+
+        }
+
+    }
+
 	private void dispatch_intent(Intent incoming){
 		
 		String action = incoming.getAction();
@@ -123,12 +278,17 @@ public class PipeActivity extends Activity {
 		else if(action.equals("com.biometrac.core.VERIFY")){
 			
 		}else{
-			if(!intents.hasNext()){
+			if(stackPosition >= stack.size()){
                 Bundle b = output_intent.getExtras();
                 b.putString("pipe_finished", "true");
+                output_intent.putExtras(b);
 				setResult(Activity.RESULT_OK, output_intent);
 			}
-			dispatch_intent(intents.next());
+			else{
+                Log.i(TAG, "More intents to dispatch!");
+                dispatch_intent(stack);
+            }
+
 		}
 		
 	}
@@ -137,52 +297,63 @@ public class PipeActivity extends Activity {
 		
 		Log.i(TAG, "Print Bundle");
 		Bundle b = data.getExtras();
-		String txt = "";
-	
-		try{
-			Set<String> keys = b.keySet();
-			for (String k:keys){
-				txt += k+ " : " + b.get(k) + "\n";
-			}
-			Log.i(TAG, txt);
-			// TODO Auto-generated method stub
-			}catch(Exception e){
-				Log.i(TAG,"No result returned");
-			}	
-	
+		print_bundle(b);
 	}
-	
+
+    private void print_bundle(Bundle b){
+        String txt = "";
+
+        try{
+            Set<String> keys = b.keySet();
+            for (String k:keys){
+                txt += k+ " : " + b.get(k) + "\n";
+            }
+            Log.i(TAG, txt);
+        }catch(Exception e){
+            Log.i(TAG,"No result returned");
+        }
+    }
+
+    private void cancelPipe(){
+        Log.i(TAG, "Previous Activity was Canceled... Returning null");
+        caughtCancelled = true;
+        setResult(RESULT_CANCELED, new Intent());
+        this.finish();
+    }
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.i(TAG, "Pipe Caught Output from child.");
 		//print_bundle(data);
 		if (data == null){
-			Log.i(TAG,"Previous Activity DIED... Returning null");
+			Log.i(TAG, "Previous Activity DIED... Returning null");
 			setResult(RESULT_CANCELED, new Intent());
-			super.onActivityResult(requestCode, resultCode, data);
-			this.finish();
+            this.finish();
+            super.onActivityResult(requestCode, resultCode, data);
 			return;
 		}else{
 			Log.i(TAG, "Child data != null");
 			print_bundle(data);
 		}
 		if(resultCode == Activity.RESULT_CANCELED){
-			Log.i(TAG,"Previous Activity was Canceled... Returning null");
-			setResult(RESULT_CANCELED, new Intent());
-			super.onActivityResult(requestCode, resultCode, data);
-			this.finish();
+			cancelPipe();
+            super.onActivityResult(requestCode, resultCode, data);
 			return;
 		}
 		output_intent.putExtras(merge_bundles(output_intent, data));
 		
-		if (!intents.hasNext()){
+		if (stackPosition >= stack.size()){
 			Log.i(TAG, "No more intents, finished with PIPE");
-            MainActivity.pipeFinished = true;
+
+            Controller.nullPipeStack();
+            Controller.setStackFinished();
 			setResult(resultCode, output_intent);
+			this.finished = true;
 			super.onActivityResult(requestCode, resultCode, data);
 			this.finish();
 		}else{
-			dispatch_intent(intents.next());
+            Log.i(TAG, String.format("Dispatching #%s of %s", stackPosition, stack.size()));
+            dispatch_intent(stack);
 			super.onActivityResult(requestCode, resultCode, data);
 		}
 		
@@ -202,6 +373,7 @@ public class PipeActivity extends Activity {
 			print_bundle(b);
 			c.putAll(bb);
 		}
+        Controller.setLastStackOutput(c);
 		return c;
 	}
 

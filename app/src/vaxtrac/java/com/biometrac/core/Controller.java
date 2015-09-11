@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -16,6 +17,7 @@ import org.acra.annotation.ReportsCrashes;
 import org.acra.sender.HttpSender.Method;
 import org.acra.sender.HttpSender.Type;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -44,8 +46,12 @@ public class Controller extends Application {
 	public static UsbDevice mDevice;
 	public static UsbManager mUsbManager;
 	public static HostUsbManager mHostUsbManager;
-	
-	
+
+    private static List<Intent> stack = null;
+    private static int stackPosition = 0;
+    private static boolean pipeFinished = false;
+    private static Bundle lastStackOutput = null;
+
 	public static Engine mEngine = null;
 	public static Random mRandom = new Random();
 	public static LocalDatabaseHandler db_handle = null;
@@ -170,6 +176,46 @@ public class Controller extends Application {
         }
         throw new RuntimeException("Induced Crash");
         */
+    }
+
+    public static List<Intent> getPipeStack(){
+        return stack;
+    }
+
+    public static int getPipeStackPosition(){
+        return stackPosition;
+    }
+    public static void setPipeStack(List<Intent> pipeStack, int pipePosition){
+        setPipeStack(pipeStack);
+        setPipePosition(pipePosition);
+    }
+
+    public static void setPipeStack(List<Intent> pipeStack){
+        stack = pipeStack;
+        pipeFinished = false;
+    }
+    public static void setPipePosition(int pipePosition){
+        stackPosition = pipePosition;
+    }
+
+    public static void nullPipeStack(){
+        setPipeStack(null, 0);
+    }
+
+    public static boolean isStackFinished(){return pipeFinished;}
+
+    public static void resetStack(){
+        pipeFinished = false;
+        nullPipeStack();
+    }
+    public static void setStackFinished(){pipeFinished = true;}
+
+    public static Bundle getLastStackOutput(){
+        return lastStackOutput;
+    }
+
+    public static void setLastStackOutput(Bundle bundle){
+        lastStackOutput = bundle;
     }
     
 }
