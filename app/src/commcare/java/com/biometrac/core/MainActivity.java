@@ -37,6 +37,7 @@ public class MainActivity extends Activity {
         if (is_false_start()){
             return;
         }
+        /*
         try{
             Bundle b = getIntent().getExtras();
             String pipe_status = b.getString("pipe_finished");
@@ -46,6 +47,7 @@ public class MainActivity extends Activity {
             Log.i(TAG, "No pipe status in intent");
             pipeFinished = false;
         }
+        */
 
         if(pipeFinished){
             Log.i(TAG, "Pipe sent finished signal, aborting onCreate dispatches.");

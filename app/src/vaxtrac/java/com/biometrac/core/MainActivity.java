@@ -29,6 +29,7 @@ public class MainActivity extends Activity {
 		if (is_false_start()){
 			return;
 		}
+		/*
         try{
             Bundle b = getIntent().getExtras();
             String pipe_status = b.getString("pipe_finished");
@@ -38,7 +39,7 @@ public class MainActivity extends Activity {
             Log.i(TAG, "No pipe status in intent");
             pipeFinished = false;
         }
-
+		*/
         if(pipeFinished){
             Log.i(TAG, "Pipe sent finished signal, aborting onCreate dispatches.");
             pipeFinished = false;
@@ -102,7 +103,7 @@ public class MainActivity extends Activity {
 
 	private void dispatch_intent(Intent incoming) {
 		String action = incoming.getAction();
-		Log.i(TAG,"Started via... " + action);
+		Log.i(TAG, "Started via... " + action);
 		if (action.equals("com.biometrac.core.SCAN")){
 			if(ScanningActivity.get_total_scans_from_bundle(incoming.getExtras())>1){
 				incoming.setClass(this, PipeActivity.class);
@@ -202,6 +203,18 @@ public class MainActivity extends Activity {
 		startActivityForResult(i, 101);
 	}
 
+	private void fire_other_intent(){
+		Intent i = new Intent();
+		i.setAction("com.biometrac.core.SCAN");
+		i.putExtra("prompt_0", "This is a\nTest Prompt!");
+		i.putExtra("easy_skip_0", "true");
+		i.putExtra("prompt_1", "This is a\nTest Prompt\n2!");
+		i.putExtra("easy_skip_1", "true");
+		i.putExtra("left_finger_assignment", "left_index");
+		i.putExtra("right_finger_assignment", "right_middle");
+		startActivityForResult(i, 101);
+	}
+
 	public void enable_fire(){
 		fire_btn.setOnClickListener(new OnClickListener() {
 			@Override
@@ -209,6 +222,13 @@ public class MainActivity extends Activity {
 				fire_intent();
 			}
 		});
+        fire_btn.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                fire_other_intent();
+                return true;
+            }
+        });
 	}
 	//Sets up the NDK file system and utilities on the apps first run
 	class Syncronizing extends AsyncTask<Void, Void, Void> {

@@ -191,6 +191,7 @@ public class Controller extends Application {
     }
 
     public static void setPipeStack(List<Intent> pipeStack){
+        Log.i(TAG, "Setting PipeStack");
         stack = pipeStack;
         pipeFinished = false;
     }
@@ -205,8 +206,10 @@ public class Controller extends Application {
     public static boolean isStackFinished(){return pipeFinished;}
 
     public static void resetStack(){
+        Log.i(TAG, "ResetStack.");
         pipeFinished = false;
         nullPipeStack();
+        lastStackOutput = null;
     }
     public static void setStackFinished(){pipeFinished = true;}
 
@@ -217,5 +220,5 @@ public class Controller extends Application {
     public static void setLastStackOutput(Bundle bundle){
         lastStackOutput = bundle;
     }
-    
+
 }

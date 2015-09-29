@@ -116,7 +116,7 @@ public class ScanningActivity extends Activity{
             return;
         }
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		getWindow().setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN );
+		//getWindow().setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN );
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String rotation = prefs.getString("bmt.rotation", "Horizontal");
         if(rotation.equals("Horizontal")){
@@ -178,7 +178,22 @@ public class ScanningActivity extends Activity{
     @Override
     protected void onDestroy() {
         Log.i(TAG, "Destroy");
+        dismissProgressDialog();
         super.onDestroy();
+    }
+
+    private void dismissProgressDialog() {
+        if (popUp != null && popUp.isShowing()) {
+            try {
+                popUp.dismiss();
+            }catch (IllegalArgumentException e){
+                Log.i(TAG, "PopUp not attached to window: " + e.getMessage());
+
+            }catch (Exception e2){
+                Log.e(TAG, "Unspecified Error with dismiss popup: " + e2.getMessage());
+                e2.printStackTrace();
+            }
+        }
     }
 
     private void setupUI() {
@@ -320,14 +335,7 @@ public class ScanningActivity extends Activity{
     }
 
     public Bundle saveAssets(Bundle bundle){
-        /*
-        ArrayList<String> valid_images = new ArrayList<>();
-        for(String k: scanImages.keySet()){
-            valid_images.add(k);
-            bundle.putParcelable(k, scanImages.get(k));
-        }
-        bundle.putStringArrayList("valid_images", valid_images);
-        */
+
         bundle.putSerializable("scanImages", scanImages);
         bundle.putSerializable("scannedFingers", scannedFingers);
         bundle.putSerializable("template_cache", template_cache);
@@ -667,14 +675,18 @@ public class ScanningActivity extends Activity{
 		                @Override
 		                public void run() {
 		                	//FIX
-		                	popUp.dismiss();
+                            dismissProgressDialog();
 		                	pop_prompt.setText(getResources().getString(R.string.scan_complete));
 		                	Button b = pop_cancel;
 		                	b.setVisibility(View.GONE);
 		                	popUp.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 		                	//popUp.setBackgroundDrawable(grey_box);
-		                	popUp.showAtLocation(parent, Gravity.CENTER_VERTICAL, 0, 0);
-		                	popUp.update();
+                            try {
+                                popUp.showAtLocation(parent, Gravity.CENTER_VERTICAL, 0, 0);
+                                popUp.update();
+                            }catch (WindowManager.BadTokenException e){
+                                Log.e(TAG, "No window to attach popup: " + e.getMessage());
+                            }
 		                }
 		            });
 		        }
@@ -682,9 +694,14 @@ public class ScanningActivity extends Activity{
 			success = mScanner.run_scan(finger, triggered);
             if (success==true) {
                 //in case of disconnect, cache items locally
-                template_cache = Controller.mScanner.getBiometrics();
-                iso_template_cache = Controller.mScanner.get_iso_biometrics();
-
+                HashMap<String,String> existingBiometrics = Controller.mScanner.getBiometrics();
+                if(!existingBiometrics.isEmpty()){
+                    template_cache = existingBiometrics;
+                }
+                existingBiometrics = Controller.mScanner.get_iso_biometrics();
+                if(!existingBiometrics.isEmpty()){
+                    iso_template_cache= existingBiometrics;
+                }
                 Log.i("PostExec", "Started");
                 Bitmap result = mScanner.get_image(finger);
                 Log.i("bmp_info", Integer.toString(result.getHeight()));
@@ -705,8 +722,12 @@ public class ScanningActivity extends Activity{
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        view.setScaleType(ScaleType.CENTER);
-                        view.setImageBitmap(scaled);
+                        try {
+                            view.setScaleType(ScaleType.CENTER);
+                            view.setImageBitmap(scaled);
+                        }catch(IllegalArgumentException ille){
+                            Log.e(TAG, "Couldn't apply image to view: " + ille.getMessage());
+                        }
                     }
                 });
 
@@ -733,7 +754,7 @@ public class ScanningActivity extends Activity{
 		@Override
 		protected void onCancelled() {
             try {
-                popUp.dismiss();
+                dismissProgressDialog();
                 unplug_scanner(parent);
             } catch (IllegalArgumentException e){
                 Log.e(TAG, String.format("Cancel: %s", e.getMessage()));
@@ -742,7 +763,7 @@ public class ScanningActivity extends Activity{
 		}
 		
 		protected void onPostExecute(Void res) {
-            popUp.dismiss();
+            dismissProgressDialog();
             colorFinger();
             if(!success){
 				Log.i(TAG, "Scan failed!");
@@ -811,7 +832,7 @@ public class ScanningActivity extends Activity{
 		}
 		@Override
 		protected void onPostExecute(Void result) {
-			popUp.dismiss();
+            dismissProgressDialog();
 			restart_scanner(parent);
 			super.onPostExecute(result);
 		}
@@ -928,8 +949,12 @@ public class ScanningActivity extends Activity{
                                 Button b = pop_cancel;
                                 b.setVisibility(View.GONE);
                                 popUp.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                                popUp.showAtLocation(parent, Gravity.CENTER_VERTICAL, 0, 0);
-                                popUp.update();
+                                try {
+                                    popUp.showAtLocation(parent, Gravity.CENTER_VERTICAL, 0, 0);
+                                    popUp.update();
+                                }catch (WindowManager.BadTokenException e){
+                                    Log.e(TAG, "No window to attach popup: " + e.getMessage());
+                                }
                             }
                         });
 	    	    		while (Controller.mScanner.get_ready() == false){
@@ -977,7 +1002,7 @@ public class ScanningActivity extends Activity{
 		protected void onCancelled(Void res){
 			try{
 				Controller.mScanner = null;
-				popUp.dismiss();
+                dismissProgressDialog();
 			}catch(Exception e){
 				Log.i(TAG,"Couldn't kill scanner on cancel");
 			}
@@ -992,7 +1017,7 @@ public class ScanningActivity extends Activity{
 					Controller.mScanner.set_iso_template(k, iso_template_cache.get(k));
 				}	
 			}
-			popUp.dismiss();
+            dismissProgressDialog();
             Log.d(TAG, "Finished Setup.");
 		}
 	}

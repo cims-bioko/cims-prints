@@ -9,10 +9,12 @@ import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
+import android.util.Log;
 
 public class Scanner {
 
-	public UsbDeviceConnection conn;
+    private static final String TAG = "Scanner";
+    public UsbDeviceConnection conn;
 	public UsbInterface usbIf;
 	public UsbManager manager;
 	public UsbDevice dev;
@@ -104,12 +106,22 @@ public class Scanner {
 	}
 
 	public String getBiometrics(String key) {
-		return biometrics.get(key);
+		try{
+			return biometrics.get(key);
+        }catch (NullPointerException e){
+            Log.e(TAG, "Biometrics Map was null! Returning nothing");
+            return "";
+        }
 	}
 
-	public HashMap<String,String> get_iso_biometrics(){
-		return iso_templates;
-	}
+	public HashMap<String,String> get_iso_biometrics() {
+        try {
+            return iso_templates;
+        } catch (NullPointerException e) {
+            Log.e(TAG, "Biometrics Map was null! Returning nothing");
+            return new HashMap<String,String>();
+        }
+    }
 	
 	public void set_iso_template(String key, String value){
 		if (iso_templates == null){
@@ -127,7 +139,12 @@ public class Scanner {
 	}
 	
 	public HashMap<String,String> getBiometrics(){
-		return biometrics;
+		try{
+            return biometrics;
+        }catch(NullPointerException e){
+            Log.e(TAG, "Biometrics were null! Returning nothing");
+            return new HashMap<String,String>();
+        }
 	}
 
 	public void cancel_scan() {

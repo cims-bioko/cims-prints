@@ -40,7 +40,17 @@ public class PipeActivity extends Activity {
             restoreAssets(savedInstanceState);
             print_bundle(savedInstanceState);
             if(caughtCancelled){
-                Log.e(TAG,"This was already canceled!");
+                Log.e(TAG, "This was already canceled!");
+				//Controller.setStackFinished();
+                caughtCancelled = false;
+                setResult(RESULT_CANCELED);
+                MainActivity.pipeFinished = true;
+                finish();
+                return;
+            }
+            else{
+                Log.i(TAG, "Dispatching existing stack");
+                dispatch_intent(stack);
             }
         }else{
             Log.i(TAG, "savedInstanceState is null");
@@ -53,7 +63,7 @@ public class PipeActivity extends Activity {
 			if (!stackOK){
 				Log.e(TAG, "Could not fix stack. Killing.");
 				Controller.nullPipeStack();
-				finish();
+                finish();
 				return;
 			}else{
 				Log.i(TAG, "StackFixed! Carry on...");
@@ -233,7 +243,7 @@ public class PipeActivity extends Activity {
         try {
             Intent currentIntent = stack.get(stackPosition);
             setStackPosition(stackPosition +1);
-            Log.i(TAG, String.format("Current Stack Position %s", stackPosition));
+            Log.i(TAG, String.format("Current Stack Position %s of %s", stackPosition, stack.size()));
             dispatch_intent(currentIntent);
         }catch (IndexOutOfBoundsException e){
             Log.e(TAG, e.getMessage());
