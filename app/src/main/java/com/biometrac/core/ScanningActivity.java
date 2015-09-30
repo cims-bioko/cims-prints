@@ -92,7 +92,6 @@ public class ScanningActivity extends Activity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "Create");
-
         scanImages = new HashMap<String, Bitmap>();
         scannedFingers = new HashMap<>();
         template_cache = new HashMap<String,String>();
@@ -694,44 +693,57 @@ public class ScanningActivity extends Activity{
 			success = mScanner.run_scan(finger, triggered);
             if (success==true) {
                 //in case of disconnect, cache items locally
-                HashMap<String,String> existingBiometrics = Controller.mScanner.getBiometrics();
-                if(!existingBiometrics.isEmpty()){
-                    template_cache = existingBiometrics;
-                }
-                existingBiometrics = Controller.mScanner.get_iso_biometrics();
-                if(!existingBiometrics.isEmpty()){
-                    iso_template_cache= existingBiometrics;
-                }
-                Log.i("PostExec", "Started");
-                Bitmap result = mScanner.get_image(finger);
-                Log.i("bmp_info", Integer.toString(result.getHeight()));
-                Log.i("bmp_info", Integer.toString(result.getWidth()));
-                int starting_image_height = view.getHeight();
-                int starting_image_width = view.getWidth();
-
-                Log.i(TAG, "Max Image width: " + starting_image_width + " Height: " + starting_image_height);
-
-                int new_height = (int) Math.round(starting_image_height * .92);
-                int new_width = (int) Math.round(starting_image_width * .92);
-                Log.i(TAG, "new height: " + Integer.toString(new_height));
-                Log.i(TAG, "new width: " + Integer.toString(new_width));
-
-                final Bitmap scaled = Bitmap.createScaledBitmap(result, new_width, new_height, true);
-                scanImages.put(finger, scaled);
-                Log.i(TAG, "Scaled BMP width: " + Integer.toString(scaled.getWidth()));
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            view.setScaleType(ScaleType.CENTER);
-                            view.setImageBitmap(scaled);
-                        }catch(IllegalArgumentException ille){
-                            Log.e(TAG, "Couldn't apply image to view: " + ille.getMessage());
-                        }
+                try {
+                    HashMap<String,String> existingBiometrics = Controller.mScanner.getBiometrics();
+                    if(!existingBiometrics.isEmpty()){
+                        template_cache = existingBiometrics;
                     }
-                });
+                    existingBiometrics = Controller.mScanner.get_iso_biometrics();
+                    if(!existingBiometrics.isEmpty()){
+                        iso_template_cache= existingBiometrics;
+                    }
+                    Log.i("PostExec", "Started");
+                    Bitmap result = mScanner.get_image(finger);
+                    Log.i("bmp_info", Integer.toString(result.getHeight()));
+                    Log.i("bmp_info", Integer.toString(result.getWidth()));
+                    int starting_image_height = view.getHeight();
+                    int starting_image_width = view.getWidth();
 
-                scannedFingers.put(finger, true);
+                    Log.i(TAG, "Max Image width: " + starting_image_width + " Height: " + starting_image_height);
+
+                    int new_height = (int) Math.round(starting_image_height * .92);
+                    int new_width = (int) Math.round(starting_image_width * .92);
+                    Log.i(TAG, "new height: " + Integer.toString(new_height));
+                    Log.i(TAG, "new width: " + Integer.toString(new_width));
+
+                    final Bitmap scaled = Bitmap.createScaledBitmap(result, new_width, new_height, true);
+                    scanImages.put(finger, scaled);
+                    Log.i(TAG, "Scaled BMP width: " + Integer.toString(scaled.getWidth()));
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                view.setScaleType(ScaleType.CENTER);
+                                view.setImageBitmap(scaled);
+                            } catch (IllegalArgumentException ille) {
+                                Log.e(TAG, "Couldn't apply image to view: " + ille.getMessage());
+                            }
+                        }
+                    });
+
+                    scannedFingers.put(finger, true);
+
+                }catch(RuntimeException np){
+                    Log.e(TAG, "Lost reference to an object!");
+                    np.printStackTrace();
+                    try{
+                        Log.e(TAG, "Attempting to cancel");
+                        this.cancel(true);
+                    }catch (Exception e3){
+                        Log.e(TAG, "Couldn't cancel!");
+                    }
+                }
             }else{
                 Log.i(TAG, "Caught Scan Failure. Canceling");
                 this.cancel(true);
@@ -1009,16 +1021,27 @@ public class ScanningActivity extends Activity{
 		}
 		@Override
 		protected void onPostExecute(Void res) {
-			if (Controller.mScanner != null){
-				for (String k:template_cache.keySet()){
-					Controller.mScanner.setBiometrics(k, template_cache.get(k));
-				}
-				for (String k:iso_template_cache.keySet()){
-					Controller.mScanner.set_iso_template(k, iso_template_cache.get(k));
-				}	
-			}
-            dismissProgressDialog();
-            Log.d(TAG, "Finished Setup.");
+			try {
+                if (Controller.mScanner != null) {
+                    for (String k : template_cache.keySet()) {
+                        Controller.mScanner.setBiometrics(k, template_cache.get(k));
+                    }
+                    for (String k : iso_template_cache.keySet()) {
+                        Controller.mScanner.set_iso_template(k, iso_template_cache.get(k));
+                    }
+                }
+                dismissProgressDialog();
+                Log.d(TAG, "Finished Setup.");
+            } catch (NullPointerException np){
+                Log.e(TAG, "Couldn't finish scanner setup");
+                np.printStackTrace();
+                try{
+                    dismissProgressDialog();
+                }
+                catch (Exception e2){
+                    Log.e(TAG, "Couldn't dismiss dialog!");
+                }
+            }
 		}
 	}
 

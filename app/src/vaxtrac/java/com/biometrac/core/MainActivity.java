@@ -18,15 +18,17 @@ public class MainActivity extends Activity {
 
 	boolean needs_return = true;
     public static boolean pipeFinished = false;
-	Button fire_btn;
+	private static boolean gotResult = false;
+    Button fire_btn;
 	private final String TAG = "LAUNCHER";
 	int REQUEST_CODE = 1;
-	
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate");
-		if (is_false_start()){
+        if (is_false_start()){
 			return;
 		}
 		/*
@@ -39,13 +41,13 @@ public class MainActivity extends Activity {
             Log.i(TAG, "No pipe status in intent");
             pipeFinished = false;
         }
-		*/
+
         if(pipeFinished){
             Log.i(TAG, "Pipe sent finished signal, aborting onCreate dispatches.");
             pipeFinished = false;
             return;
         }else{Log.i(TAG, "Pipe didn't send finished signal, continuing.");}
-		
+		*/
 		Intent incoming = getIntent();
 		try{
 			REQUEST_CODE = incoming.getExtras().getInt("requestCode");	
@@ -79,10 +81,22 @@ public class MainActivity extends Activity {
 			dispatch_intent(incoming);
 		}
 		*/
-        dispatch_intent(incoming);
+        //dispatch_intent(incoming);
 	}
 
-	private boolean is_false_start() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!gotResult){
+            Log.i(TAG, "No Result");
+            dispatch_intent(getIntent());
+            return;
+        }
+        Log.i(TAG, "Has Result");
+        setupScreen();
+    }
+
+    private boolean is_false_start() {
 		if (Controller.preference_manager.is_false_start()){
 			Log.i(TAG, "False Start Caught");
 			finish_cancel();
@@ -104,15 +118,17 @@ public class MainActivity extends Activity {
 	private void dispatch_intent(Intent incoming) {
 		String action = incoming.getAction();
 		Log.i(TAG, "Started via... " + action);
+        needs_return = true;
 		if (action.equals("com.biometrac.core.SCAN")){
 			if(ScanningActivity.get_total_scans_from_bundle(incoming.getExtras())>1){
 				incoming.setClass(this, PipeActivity.class);
 				Log.i(TAG, "Starting PipeActivity");
 				startActivityForResult(incoming, REQUEST_CODE);
 			}else{
+                //incoming.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 				incoming.setClass(this, ScanningActivity.class);
 				Log.i(TAG, "Starting ScanningActivity");
-				startActivityForResult(incoming, REQUEST_CODE);
+                startActivityForResult(incoming, REQUEST_CODE);
 			}
 
 		}
@@ -143,28 +159,34 @@ public class MainActivity extends Activity {
 			startActivityForResult(incoming, REQUEST_CODE);
 		}
 		else{
-			needs_return = false;
-			setContentView(R.layout.activity_main);
-			//TODO This needs to be its own little screen
-			fire_btn = (Button) findViewById(R.id.main_fire_btn);
-			enable_fire();
-
-            Button advanced = (Button) findViewById(R.id.advanced_settings_btn);
-            advanced.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent i = new Intent(getBaseContext(), AdvancedPreferences.class);
-                    startActivity(i);
-
-                }
-            });
+			setupScreen();
 		}
 
 	}
 
+    private void setupScreen(){
+        needs_return = false;
+        gotResult = false;
+        setContentView(R.layout.activity_main);
+        //TODO This needs to be its own little screen
+        fire_btn = (Button) findViewById(R.id.main_fire_btn);
+        enable_fire();
+
+        Button advanced = (Button) findViewById(R.id.advanced_settings_btn);
+        advanced.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getBaseContext(), AdvancedPreferences.class);
+                startActivity(i);
+
+            }
+        });
+    }
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.i(TAG, "Dispatcher Has Activity Result");
+        gotResult = true;
 		try{
 			Bundle b = data.getExtras();
 			//IF CCODK

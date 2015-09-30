@@ -24,7 +24,8 @@ public class PipeActivity extends Activity {
 	Intent output_intent;
 	List<Intent> stack;
     int stackPosition;
-	
+	private static boolean gotResult = false;
+
 	int REQUEST_CODE = 1;
 	
 	@Override
@@ -84,10 +85,22 @@ public class PipeActivity extends Activity {
             Log.i(TAG, "Pipe NOT finished.");
             log_intent(incoming);
             output_intent.putExtras(merge_bundles(output_intent, incoming));
-            process_request(incoming);
+            //process_request(incoming);
         }
 
 	}
+
+	@Override
+	protected void onResume() {
+		Log.i(TAG, String.format("onResume| S:%s | C:%s", startSequence, createSequence));
+		super.onResume();
+        if (!gotResult){
+            Log.i(TAG, "No Result");
+            process_request(getIntent());
+            return;
+        }
+        Log.i(TAG, "Has Result");
+    }
 
     public void setStackPosition(int position){
         stackPosition = position;
@@ -128,12 +141,6 @@ public class PipeActivity extends Activity {
     protected void onPause() {
         Log.i(TAG, String.format("onPause| S:%s | C:%s", startSequence, createSequence));
         super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        Log.i(TAG, String.format("onResume| S:%s | C:%s", startSequence, createSequence));
-        super.onResume();
     }
 
     @Override
@@ -334,6 +341,7 @@ public class PipeActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.i(TAG, "Pipe Caught Output from child.");
+        gotResult = true;
 		//print_bundle(data);
 		if (data == null){
 			Log.i(TAG, "Previous Activity DIED... Returning null");
