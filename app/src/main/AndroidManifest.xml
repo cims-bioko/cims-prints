@@ -135,7 +135,7 @@
             android:name=".ScanningActivity"
             android:label="VirtualCohort"
             android:noHistory="false"
-            android:launchMode="singleTask"
+            android:launchMode="standard"
             android:exported="true">
 
             <intent-filter>

@@ -107,9 +107,11 @@ public class MainActivity extends Activity {
 		if (action.equals("com.biometrac.core.SCAN")){
 			if(ScanningActivity.get_total_scans_from_bundle(incoming.getExtras())>1){
 				incoming.setClass(this, PipeActivity.class);
+				Log.i(TAG, "Starting PipeActivity");
 				startActivityForResult(incoming, REQUEST_CODE);
 			}else{
 				incoming.setClass(this, ScanningActivity.class);
+				Log.i(TAG, "Starting ScanningActivity");
 				startActivityForResult(incoming, REQUEST_CODE);
 			}
 
