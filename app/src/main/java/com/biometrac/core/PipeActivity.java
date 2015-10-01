@@ -45,7 +45,7 @@ public class PipeActivity extends Activity {
 				//Controller.setStackFinished();
                 caughtCancelled = false;
                 setResult(RESULT_CANCELED);
-                MainActivity.pipeFinished = true;
+                //MainActivity.pipeFinished = true;
                 finish();
                 return;
             }

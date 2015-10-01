@@ -32,4 +32,5 @@
         <item>Horizontal</item>
         <item>Vertical</item>
     </string-array>
+    <string name="title_activity_launch">LaunchActivity</string>
 </resources>

@@ -57,15 +57,17 @@ public class ScanningActivity extends Activity{
 	private static final String ACTION_USB_PERMISSION =
 	    "com.biometrac.screentest.ScanningActivity.USB_PERMISSION";
 
+    /*
     boolean finished = false;
+    */
 	FingerType left_finger;
 	FingerType right_finger;
-    HashMap<String, Bitmap> scanImages;
+    private static HashMap<String, Bitmap> scanImages;
 	ImageButton left_thumb_btn;
 	ImageButton right_thumb_btn;
-	HashMap <String, Boolean> scannedFingers;
-	HashMap<String,String> template_cache;
-	HashMap<String,String> iso_template_cache;
+	private static HashMap <String, Boolean> scannedFingers;
+    private static HashMap<String,String> template_cache;
+    private static HashMap<String,String> iso_template_cache;
     ImageButton proceed;
 	ImageButton skip;
 	boolean easy_skip = false;
@@ -109,11 +111,13 @@ public class ScanningActivity extends Activity{
         else{
             Log.i(TAG, "No saved instance");
         }
+        /*
         if(finished){
             Log.e(TAG, "OPERATION COMPLETE. Killing.");
             finish();
             return;
         }
+        */
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		//getWindow().setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN );
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -146,6 +150,7 @@ public class ScanningActivity extends Activity{
         //TODO Enable or edit exit button
         setupUI();
         if(savedInstanceState!= null){
+            Log.d(TAG, "Redrawing assets");
             redrawAssets();
         }
     }
@@ -339,7 +344,6 @@ public class ScanningActivity extends Activity{
         bundle.putSerializable("scannedFingers", scannedFingers);
         bundle.putSerializable("template_cache", template_cache);
         bundle.putSerializable("iso_template_cache", iso_template_cache);
-        bundle.putBoolean("finished", finished);
         return bundle;
     }
 
@@ -347,7 +351,6 @@ public class ScanningActivity extends Activity{
     public void loadAssets(Bundle bundle) {
         if(bundle != null){
             Log.e(TAG, "Loading Assets");
-            finished = bundle.getBoolean("finished");
             scanImages = (HashMap<String, Bitmap>) bundle.getSerializable("scanImages");
             scannedFingers = (HashMap<String,Boolean>) bundle.getSerializable("scannedFingers");
             template_cache = (HashMap<String,String>) bundle.getSerializable("template_cache");
@@ -577,8 +580,7 @@ public class ScanningActivity extends Activity{
 	}
 	
 	protected void finish_ok(Map<String,String> output){
-		finished = true;
-        Log.i(TAG,"Finish OK -- Start");
+		Log.i(TAG,"Finish OK -- Start");
 		Log.i(TAG,"package keys -- " +output.keySet().toString());
 		Intent i = new Intent();
 		Iterator<String> keys = output.keySet().iterator();
@@ -597,7 +599,7 @@ public class ScanningActivity extends Activity{
         Log.i(TAG, "Caught Cancel Signal");
 		Intent i = new Intent();
 		setResult(RESULT_CANCELED, i);
-        finished = true;
+        //finished = true;
 		finish();
         return;
 	}

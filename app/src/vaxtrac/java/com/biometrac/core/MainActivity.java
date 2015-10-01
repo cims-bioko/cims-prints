@@ -10,17 +10,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-	boolean needs_return = true;
-    public static boolean pipeFinished = false;
 	private static boolean gotResult = false;
-    Button fire_btn;
-	private final String TAG = "LAUNCHER";
+    private final String TAG = "MainActivity--VT";
 	int REQUEST_CODE = 1;
 
 
@@ -28,86 +26,25 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate");
-        if (is_false_start()){
-			return;
-		}
-		/*
-        try{
-            Bundle b = getIntent().getExtras();
-            String pipe_status = b.getString("pipe_finished");
-            if(pipe_status.equals("true")){pipeFinished = true;}
-            Log.i(TAG, "Pipe finished status in intent");
-        }catch(NullPointerException e){
-            Log.i(TAG, "No pipe status in intent");
-            pipeFinished = false;
-        }
-
-        if(pipeFinished){
-            Log.i(TAG, "Pipe sent finished signal, aborting onCreate dispatches.");
-            pipeFinished = false;
-            return;
-        }else{Log.i(TAG, "Pipe didn't send finished signal, continuing.");}
-		*/
-		Intent incoming = getIntent();
-		try{
-			REQUEST_CODE = incoming.getExtras().getInt("requestCode");	
-		}catch (Exception e){
-			Log.i(TAG, "Couldn't get requestcode from intent.");
-		}
-		
-		try{
-			Bundle b = incoming.getExtras();
-			Log.i(TAG,"Input from CommCare");
-			for (String k: b.keySet()){
-				try{
-					Log.i(TAG, k+": " + b.getString(k));
-				}catch (Exception e2){
-					Log.i(TAG, "Key: " + k + " is not readable as a string.");
-					Log.i(TAG,e2.toString());
-				}
-			}
-		}catch (Exception e){
-			Log.i(TAG,"Error reading incoming bundle.");
-			Log.i(TAG, e.toString());
-		}
-		//TODO KILL
-        /*
-        Log.i(TAG, "Starting Native Check");
-
-        boolean isNativeSetup = NativeSetup.checkNativeSystem(this);
-		if (!isNativeSetup){
-			new NativeSetupBackground(this, incoming).execute();	
-		}else{
-			dispatch_intent(incoming);
-		}
-		*/
-        //dispatch_intent(incoming);
 	}
 
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(TAG, "Resume");
         if (!gotResult){
             Log.i(TAG, "No Result");
             dispatch_intent(getIntent());
             return;
         }
         Log.i(TAG, "Has Result");
-        setupScreen();
+        gotResult = false;
+        finish();
     }
-
-    private boolean is_false_start() {
-		if (Controller.preference_manager.is_false_start()){
-			Log.i(TAG, "False Start Caught");
-			finish_cancel();
-			return true;
-		}
-		return false;
-	}
 
 	private void finish_cancel() {
 		Log.i(TAG, "Finishing as Canceled.");
-		Intent i = new Intent();
+        Intent i = new Intent();
 		Bundle b = new Bundle();
 		i.putExtra("odk_intent_bundle",b);
 		setResult(RESULT_CANCELED, i);
@@ -118,8 +55,7 @@ public class MainActivity extends Activity {
 	private void dispatch_intent(Intent incoming) {
 		String action = incoming.getAction();
 		Log.i(TAG, "Started via... " + action);
-        needs_return = true;
-		if (action.equals("com.biometrac.core.SCAN")){
+        if (action.equals("com.biometrac.core.SCAN")){
 			if(ScanningActivity.get_total_scans_from_bundle(incoming.getExtras())>1){
 				incoming.setClass(this, PipeActivity.class);
 				Log.i(TAG, "Starting PipeActivity");
@@ -158,102 +94,43 @@ public class MainActivity extends Activity {
 			incoming.setClass(this, PipeActivity.class);
 			startActivityForResult(incoming, REQUEST_CODE);
 		}
-		else{
-			setupScreen();
-		}
-
 	}
-
-    private void setupScreen(){
-        needs_return = false;
-        gotResult = false;
-        setContentView(R.layout.activity_main);
-        //TODO This needs to be its own little screen
-        fire_btn = (Button) findViewById(R.id.main_fire_btn);
-        enable_fire();
-
-        Button advanced = (Button) findViewById(R.id.advanced_settings_btn);
-        advanced.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getBaseContext(), AdvancedPreferences.class);
-                startActivity(i);
-
-            }
-        });
-    }
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.i(TAG, "Dispatcher Has Activity Result");
         gotResult = true;
-		try{
-			Bundle b = data.getExtras();
-			//IF CCODK
-			data.putExtra("odk_intent_bundle",b);
+        if(resultCode == RESULT_CANCELED){
+            Log.d(TAG, "Got Cancelled flag");
+            finish_cancel();
+            return;
+        }
+        else {
+            Log.d(TAG, "Previous Activity Finished");
+            try {
+                Bundle b = data.getExtras();
+                //IF CCODK
+                data.putExtra("odk_intent_bundle", b);
 
-			Log.i(TAG,"Output from BiometracCore");
-			for (String k: b.keySet()){
-				Log.i(TAG, k+": " + b.getString(k));
-			}
-		}catch(Exception e){
-			Log.i(TAG, "No output from activity");
-			Log.i(TAG,e.toString());
-		}
-		//super.onActivityResult(requestCode, resultCode, data);
-		if (needs_return == true){
-			setResult(resultCode, data);
-		}
-
-		super.onActivityResult(requestCode, resultCode, data);
-		this.finish();
+                Log.i(TAG, "Output from BiometracCore");
+                for (String k : b.keySet()) {
+                    Log.i(TAG, k + ": " + b.getString(k));
+                }
+            } catch (Exception e) {
+                Log.i(TAG, "No output from activity");
+                Log.i(TAG, e.toString());
+            }
+            setResult(resultCode, data);
+            super.onActivityResult(requestCode, resultCode, data);
+        }
 	}
 
 	private void finish_self(){
 		finish();
 	}
 
-	private void fire_intent(){
-		Intent i = new Intent();
-        i.setAction("com.biometrac.core.SCAN");
-		i.putExtra("prompt_0", "This is a\nTest Prompt!");
-		i.putExtra("easy_skip_0", "true");
-        i.putExtra("prompt_1", "This is a\nTest Prompt\n2!");
-        i.putExtra("easy_skip_1", "true");
-		i.putExtra("left_finger_assignment_0", "left_index");
-		i.putExtra("right_finger_assignment_0", "right_middle");
-		i.putExtra("left_finger_assignment_1", "right_thumb");
-		i.putExtra("right_finger_assignment_1", "left_middle");
-		startActivityForResult(i, 101);
-	}
 
-	private void fire_other_intent(){
-		Intent i = new Intent();
-		i.setAction("com.biometrac.core.SCAN");
-		i.putExtra("prompt_0", "This is a\nTest Prompt!");
-		i.putExtra("easy_skip_0", "true");
-		i.putExtra("prompt_1", "This is a\nTest Prompt\n2!");
-		i.putExtra("easy_skip_1", "true");
-		i.putExtra("left_finger_assignment", "left_index");
-		i.putExtra("right_finger_assignment", "right_middle");
-		startActivityForResult(i, 101);
-	}
 
-	public void enable_fire(){
-		fire_btn.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				fire_intent();
-			}
-		});
-        fire_btn.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                fire_other_intent();
-                return true;
-            }
-        });
-	}
 	//Sets up the NDK file system and utilities on the apps first run
 	class Syncronizing extends AsyncTask<Void, Void, Void> {
 		private Context oldContext;
