@@ -16,7 +16,7 @@ public class LaunchActivity extends Activity {
 
 
     Button fire_btn;
-    private final String TAG = "LaunchActivity--VT";
+    private final String TAG = "LaunchActivity--CC";
 
 
     @Override
@@ -50,12 +50,43 @@ public class LaunchActivity extends Activity {
     private void setupScreen(){
         Log.d(TAG, "Setting contentview");
         setContentView(R.layout.activity_main);
-        //TODO This needs to be its own little screen
         fire_btn = (Button) findViewById(R.id.main_fire_btn);
         enable_fire();
+        Button sync_button = (Button) findViewById(R.id.main_sync_btn);
+        if(!Controller.preference_manager.has_preferences()){
+            sync_button.setVisibility(View.GONE);
+        }else{
+            sync_button.setOnClickListener(new OnClickListener() {
 
+                @Override
+                public void onClick(View v) {
+                    if(!Controller.commcare_handler.isWorking()){
+                        Controller.sync_commcare_default();
+                        Toast.makeText(getBaseContext(), "Sync Started.", Toast.LENGTH_LONG).show();
+                    }else{
+                        Toast.makeText(getBaseContext(), "Sync is Already Running.", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+        }
+
+        Button sync_set = (Button) findViewById(R.id.main_sync_settings_btn);
+        sync_set.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if(!Controller.commcare_handler.isWorking()){
+                    Intent i = new Intent(getBaseContext(), CCSyncActivity.class);
+                    startActivity(i);
+                    finish_self();
+                }else{
+                    Toast.makeText(getBaseContext(), "Please wait for Sync to Complete...", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
         Button advanced = (Button) findViewById(R.id.advanced_settings_btn);
-        advanced.setOnClickListener(new View.OnClickListener() {
+        advanced.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getBaseContext(), AdvancedPreferences.class);
