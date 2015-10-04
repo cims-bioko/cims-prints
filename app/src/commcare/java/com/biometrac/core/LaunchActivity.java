@@ -9,7 +9,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
+import java.lang.IllegalArgumentException;
 import java.util.Iterator;
 
 public class LaunchActivity extends Activity {
@@ -31,10 +33,11 @@ public class LaunchActivity extends Activity {
         try{
             Bundle b = data.getExtras();
             Iterator<String> keys = b.keySet().iterator();
-
+            String ignore = "odk_intent_bundle";
             while(keys.hasNext()){
                 String key = keys.next();
                 try{
+                    if (key.equals(ignore)){throw new IllegalArgumentException("Can't read bundle")}
                     Log.d(TAG, String.format("%s | %s", key, b.getString(key)));
                 }catch(Exception e2){
                     Log.d(TAG, String.format("%s | not readable", key));
@@ -56,7 +59,7 @@ public class LaunchActivity extends Activity {
         if(!Controller.preference_manager.has_preferences()){
             sync_button.setVisibility(View.GONE);
         }else{
-            sync_button.setOnClickListener(new OnClickListener() {
+            sync_button.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
@@ -71,14 +74,14 @@ public class LaunchActivity extends Activity {
         }
 
         Button sync_set = (Button) findViewById(R.id.main_sync_settings_btn);
-        sync_set.setOnClickListener(new OnClickListener() {
+        sync_set.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 if(!Controller.commcare_handler.isWorking()){
                     Intent i = new Intent(getBaseContext(), CCSyncActivity.class);
                     startActivity(i);
-                    finish_self();
+                    finish();
                 }else{
                     Toast.makeText(getBaseContext(), "Please wait for Sync to Complete...", Toast.LENGTH_LONG).show();
                 }
@@ -86,7 +89,7 @@ public class LaunchActivity extends Activity {
             }
         });
         Button advanced = (Button) findViewById(R.id.advanced_settings_btn);
-        advanced.setOnClickListener(new OnClickListener() {
+        advanced.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getBaseContext(), AdvancedPreferences.class);

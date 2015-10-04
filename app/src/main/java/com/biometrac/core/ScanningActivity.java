@@ -444,6 +444,7 @@ public class ScanningActivity extends Activity{
 	
 	private void parse_options() {
 		//TODO Write API for .SCAN broadcast
+		/*
 		try{
 	    	Bitmap bmp = (Bitmap) binary_opts.get("image");
 	    	if (bmp == null){
@@ -456,6 +457,7 @@ public class ScanningActivity extends Activity{
         	Log.i(TAG,"Couldn't load image");
         	Log.i(TAG,opts.toString());
         }
+        */
         try{
         	String prompt = opts.get("prompt");
         	TextView prompt_text = (TextView) findViewById(R.id.scanner_view_prompt);
@@ -591,6 +593,11 @@ public class ScanningActivity extends Activity{
 		}
 		setResult(Activity.RESULT_OK, i);
         Log.i(TAG,"Finish OK -- Finished");
+        try{
+            Controller.mScanner.reset_dicts();
+        }catch (Exception e){
+            Log.d(TAG, "Couldn't clear scanner");
+        }
 		finish();
         return;
 	}
@@ -600,6 +607,11 @@ public class ScanningActivity extends Activity{
 		Intent i = new Intent();
 		setResult(RESULT_CANCELED, i);
         //finished = true;
+        try{
+            Controller.mScanner.reset_dicts();
+        }catch (Exception e){
+            Log.d(TAG, "Couldn't clear scanner");
+        }
 		finish();
         return;
 	}
@@ -1056,57 +1068,62 @@ public class ScanningActivity extends Activity{
 	public static Intent get_next_scanning_bundle(Intent i, int index){
         Log.i(TAG, "Getting Next Scanning Bundle");
 		Bundle data = i.getExtras();
-		List<String>fields = new ArrayList<String>(){{
-			add("prompt");
-			add("left_finger_assignment");
-			add("right_finger_assignment");
-			add("easy_skip");
-		}};
-		Bundle b = new Bundle();
-		boolean all_null = true;
-		if (index == 0){
-			for(String field: fields){
-				try{
-					String a = data.getString(field);
-					if (a!= null){
-						b.putString(field, a);	
-						Log.i(TAG, "Plain Field found | " + a + " | for" + field + " for # " + Integer.toString(index));
-						all_null = false;
-					}else{
-						Log.i(TAG, "Plain Field empty | " + field + " for # " + Integer.toString(index));
-					}
-				}catch(Exception e){
-					Log.i(TAG, "Error in bundle");
-					return null;
-				}
-			}	
-		}
-		if (all_null){
-			for(String field: fields){
-				try{
-					String a = data.getString(field+"_"+ Integer.toString(index));
-					if (a!= null){
-						b.putString(field, a);	
-					}else{
-						Log.i(TAG, "Numbered Field empty | " + field + " for # " + Integer.toString(index));
-					}
-					b.putString(field, a);
-				}catch(Exception e){
-					Log.i(TAG, "Error in bundle");
-					return null;
-				}
-			}	
-		}
-		
-		Intent out = new Intent();
-		out.setAction("com.biometrac.core.SCAN");
-		out.putExtras(b);
-		return out;
-		
+		return get_next_scanning_bundle(data, index);
 	}
-	
-	
-	public static boolean bundle_has_multiple_scans(Bundle data){
+
+    public static Intent get_next_scanning_bundle(Bundle data, int index){
+        List<String>fields = new ArrayList<String>(){{
+            add("prompt");
+            add("left_finger_assignment");
+            add("right_finger_assignment");
+            add("easy_skip");
+        }};
+        Bundle b = new Bundle();
+        boolean all_null = true;
+        if (index == 0){
+            for(String field: fields){
+                try{
+                    String a = data.getString(field);
+                    if (a!= null){
+                        b.putString(field, a);
+                        Log.i(TAG, "Plain Field found | " + a + " | for" + field + " for # " + Integer.toString(index));
+                        all_null = false;
+                    }else{
+                        Log.i(TAG, "Plain Field empty | " + field + " for # " + Integer.toString(index));
+                    }
+                }catch(Exception e){
+                    Log.i(TAG, "Error in bundle");
+                    return null;
+                }
+            }
+        }
+        if (all_null){
+            for(String field: fields){
+                try{
+                    String a = data.getString(field+"_"+ Integer.toString(index));
+                    if (a!= null){
+                        b.putString(field, a);
+                    }else{
+                        Log.i(TAG, "Numbered Field empty | " + field + " for # " + Integer.toString(index));
+                    }
+                    b.putString(field, a);
+                }catch(Exception e){
+                    Log.i(TAG, "Error in bundle");
+                    return null;
+                }
+            }
+        }
+
+        Intent out = new Intent();
+        out.setAction("com.biometrac.internal.SCAN");
+        out.putExtras(b);
+        return out;
+
+    }
+
+
+
+    public static boolean bundle_has_multiple_scans(Bundle data){
 		Log.i(TAG, "Looking for many scan bundle");
         if (data.containsKey("left_finger_assignment")){
             Log.i(TAG,"only single scan");

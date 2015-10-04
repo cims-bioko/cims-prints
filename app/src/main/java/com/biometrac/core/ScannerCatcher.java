@@ -7,6 +7,7 @@ import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.PersistableBundle;
+import android.util.Log;
 
 /**
  * Created by sarwar on 2/5/15.
@@ -15,10 +16,12 @@ public class ScannerCatcher extends Activity {
 
     public static final String USB_ON_BROADCAST = "com.biometrac.core.SCANNER_ATTACHED";
     public static UsbDevice device;
+    public static final String TAG = "ScannerCatcher";
 
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
+        Log.d(TAG, "Create.");
     }
 
     @Override

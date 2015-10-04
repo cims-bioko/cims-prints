@@ -36,10 +36,11 @@ public class MainActivity extends Activity {
             Log.i(TAG, "No Result");
             dispatch_intent(getIntent());
             return;
-        }
-        Log.i(TAG, "Has Result");
-        gotResult = false;
-        finish();
+        }else{
+			gotResult = false;
+            Log.i(TAG, "Has Result, finished.");
+			finish();
+		}
     }
 
 	private void finish_cancel() {
@@ -47,8 +48,7 @@ public class MainActivity extends Activity {
         Intent i = new Intent();
 		Bundle b = new Bundle();
 		i.putExtra("odk_intent_bundle",b);
-		setResult(RESULT_CANCELED, i);
-		finish();
+        setResult(RESULT_CANCELED, i);
 	}
 
 
@@ -124,12 +124,6 @@ public class MainActivity extends Activity {
             super.onActivityResult(requestCode, resultCode, data);
         }
 	}
-
-	private void finish_self(){
-		finish();
-	}
-
-
 
 	//Sets up the NDK file system and utilities on the apps first run
 	class Syncronizing extends AsyncTask<Void, Void, Void> {

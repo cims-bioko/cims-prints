@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import java.util.Iterator;
+import java.util.UUID;
 
 public class LaunchActivity extends Activity {
 
@@ -19,27 +20,38 @@ public class LaunchActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         setupScreen();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.i(TAG, "Dispatcher Has Activity Result");
-        try{
-            Bundle b = data.getExtras();
-            Iterator<String> keys = b.keySet().iterator();
-
-            while(keys.hasNext()){
-                String key = keys.next();
-                try{
-                    Log.d(TAG, String.format("%s | %s", key, b.getString(key)));
-                }catch(Exception e2){
-                    Log.d(TAG, String.format("%s | not readable", key));
+        Log.d(TAG, String.format("Result Ok: %s", resultCode == RESULT_OK));
+        if(resultCode == RESULT_OK) {
+            try {
+                Bundle b = data.getExtras();
+                Iterator<String> keys = b.keySet().iterator();
+                String ignore = "odk_intent_bundle";
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    try {
+                        if (key.equals(ignore)) {
+                            throw new IllegalArgumentException("Can't read bundle");
+                        }
+                        Log.d(TAG, String.format("%s | %s", key, b.getString(key)));
+                    } catch (Exception e2) {
+                        Log.d(TAG, String.format("%s | not readable", key));
+                    }
                 }
+            } catch (Exception e) {
+                Log.i(TAG, "No output from activity");
+                Log.i(TAG, e.toString());
             }
-        }catch(Exception e){
-            Log.i(TAG, "No output from activity");
-            Log.i(TAG,e.toString());
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -83,6 +95,7 @@ public class LaunchActivity extends Activity {
         Log.d(TAG, "Demo for .PIPE");
         //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         i.setAction("com.biometrac.core.SCAN");
+        i.putExtra("sessionID", UUID.randomUUID().toString());
         i.putExtra("prompt_0", ".PIPE Test 1");
         i.putExtra("easy_skip_0", "true");
         i.putExtra("prompt_1", ".PIPE Test 2");
@@ -99,11 +112,12 @@ public class LaunchActivity extends Activity {
         Intent i = new Intent();
         //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         i.setAction("com.biometrac.core.SCAN");
+        i.putExtra("sessionID", UUID.randomUUID().toString());
         i.putExtra("prompt", ".SCAN Test");
         i.putExtra("easy_skip", "true");
         i.putExtra("left_finger_assignment", "left_index");
         i.putExtra("right_finger_assignment", "right_middle");
-        startActivityForResult(i, 101);
+        startActivityForResult(i, 102);
     }
 
 }

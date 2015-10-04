@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.biometrac.core"
     android:versionCode="7"
     android:versionName="15.08.26.01" >
@@ -7,174 +8,203 @@
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="19" />
-	<uses-feature android:name="android.hardware.usb.host" />
-	<uses-permission
-	     android:name="org.commcare.dalvik.provider.cases.read" />
-	<uses-permission
-	     android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-	<uses-permission
-	     android:name="android.permission.KILL_BACKGROUND_PROCESSES"/>
-    <uses-permission
-        android:name="android.permission.USB_PERMISSION" />
-    <uses-permission
-        android:name="android.permission.READ_LOGS"/>
-    <uses-permission
-        android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+
+    <uses-feature android:name="android.hardware.usb.host" />
+
+    <uses-permission android:name="org.commcare.dalvik.provider.cases.read" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="android.permission.USB_PERMISSION" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <android:uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
-        android:name="Controller"
-        android:label="Biometrac Core"
+        android:name=".Controller"
         android:allowBackup="true"
+        android:debuggable="true"
         android:icon="@drawable/ic_launcher"
-        android:theme="@style/AppTheme">
-        <receiver android:name="broadcast.ScannerReceiver">
+        android:label="Biometrac Core"
+        android:theme="@style/AppTheme"
+        tools:ignore="HardcodedDebugMode" >
+        <receiver android:name="broadcast.ScannerReceiver" >
             <intent-filter>
-                <action android:name="com.biometrac.screentest.ScanningActivity.USB_PERMISSION"/>
+                <action android:name="com.biometrac.screentest.ScanningActivity.USB_PERMISSION" />
             </intent-filter>
         </receiver>
-        <receiver android:name="broadcast.USBReceiver">
+        <receiver android:name="broadcast.USBReceiver" >
             <intent-filter>
                 <action android:name="com.biometrac.core.SCANNER_ATTACHED" />
                 <action android:name="android.hardware.usb.action.USB_DEVICE_DETACHED" />
             </intent-filter>
-            <meta-data android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" android:resource="@xml/usb_filter" />
+
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/usb_filter" />
         </receiver>
-        <receiver android:name="com.biometrac.core.CommcareReceiver"
-            android:enabled="true">
+        <receiver
+            android:name=".CommcareReceiver"
+            android:enabled="true" >
             <intent-filter>
-                <action android:name="org.commcare.dalvik.api.action.data.update"></action>
-                <action android:name="org.commcare.dalvik.api.action.session.login"></action>
+                <action android:name="org.commcare.dalvik.api.action.data.update" />
+                <action android:name="org.commcare.dalvik.api.action.session.login" />
             </intent-filter>
-		</receiver>
-        <receiver android:name="com.biometrac.core.BootReceiver" 
-            android:enabled="true">
+        </receiver>
+        <receiver
+            android:name=".BootReceiver"
+            android:enabled="true" >
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
-		</receiver>
-        <activity android:name="org.acra.CrashReportDialog"
-                  android:theme="@style/Theme.Dialog"
-                  android:launchMode="singleInstance"
-                  android:excludeFromRecents="true"
-                  android:finishOnTaskLaunch="true" />
-        <activity android:name=".AdvancedPreferences" android:label="Advanced Preferences">
+        </receiver>
+
+        <activity
+            android:name="org.acra.CrashReportDialog"
+            android:excludeFromRecents="true"
+            android:finishOnTaskLaunch="true"
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.Dialog" />
+        <activity
+            android:name=".AdvancedPreferences"
+            android:label="Advanced Preferences" >
             <intent-filter>
                 <action android:name=".Preferences" />
+
                 <category android:name="android.intent.category.PREFERENCE" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.biometrac.core.IntentFilterTest"
+            android:name=".IntentFilterTest"
             android:label="AIntentFilterTest" >
             <intent-filter>
-				<action android:name="android.intent.action.View" />
-				<category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.View" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.biometrac.core.TestEngine"
+            android:name=".TestEngine"
             android:label="ATestEngine" >
             <intent-filter>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </activity>
-		<activity
-            android:name="com.biometrac.core.CCSyncActivity"
-            android:label="CCSynch" >
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.biometrac.core.MainActivity"
+            android:name=".CCSyncActivity"
+            android:label="CCSynch" >
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".DispatchActivity"
             android:exported="true"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="com.biometrac.core.SCAN" />
-                <category android:name="android.intent.category.DEFAULT"/>
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
                 <action android:name="com.biometrac.core.ENROLL" />
-                <category android:name="android.intent.category.DEFAULT"/>
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
                 <action android:name="com.biometrac.core.IDENTIFY" />
-                <category android:name="android.intent.category.DEFAULT"/>
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
                 <action android:name="com.biometrac.core.PIPE" />
-                <category android:name="android.intent.category.DEFAULT"/>
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.biometrac.core.LaunchActivity"
+            android:name=".LaunchActivity"
             android:exported="true"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".PipeActivity"
-            android:label="VirtualCohort" 
-            android:screenOrientation="portrait"
+            android:label="VirtualCohort"
+            android:launchMode="singleInstance"
             android:noHistory="false"
-            android:launchMode="singleInstance">
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.View" />
-                <category android:name="android.intent.category.DEFAULT"/>
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name=".CleanupActivity"
-            android:label="VirtualCohort" 
-            android:screenOrientation="portrait"
-            android:noHistory="true" >
+            android:label="VirtualCohort"
+            android:noHistory="true"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.View" />
-                <category android:name="android.intent.category.DEFAULT"/>
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-		<activity
+        <activity
             android:name=".ScanningActivity"
+            android:exported="true"
             android:label="VirtualCohort"
-            android:noHistory="false"
             android:launchMode="standard"
-            android:exported="true">
-
+            android:noHistory="false" >
             <intent-filter>
-            <action android:name="android.intent.action.View" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
+                <action android:name="android.intent.action.View" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.biometrac.internal.SCAN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
-        <activity android:name=".ScannerCatcher"
-                  android:label="@string/app_name"
-                  android:theme="@style/Theme.Transparent"
-                  android:noHistory="true"
-                  android:excludeFromRecents="true"
-                  android:taskAffinity="com.biometrac.core.taskAffinityScannerCatcher"
-                  android:process=":ScannerCatcherProcess"
-                  android:exported="false">
+        <activity
+            android:name=".ScannerCatcher"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:noHistory="true"
+            android:process=":ScannerCatcherProcess"
+            android:taskAffinity="com.biometrac.core.taskAffinityScannerCatcher"
+            android:theme="@style/Theme.Transparent" >
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
             </intent-filter>
-            <meta-data android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" android:resource="@xml/usb_filter" />
+
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/usb_filter" />
         </activity>
-		<activity
+        <activity
             android:name=".EnrollActivity"
-            android:label="VirtualCohort" 
-            android:screenOrientation="portrait">
-		</activity>
-		<activity
+            android:label="VirtualCohort"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name=".IdentifyActivity"
-            android:label="VirtualCohort" 
-            android:screenOrientation="portrait">
-		</activity>
-		<service android:name=".PersistenceService" />
-		<service android:name=".CommCareSyncService" />
-		<service android:name=".NotificationReceiver" />
+            android:label="VirtualCohort"
+            android:screenOrientation="portrait" >
+        </activity>
+
+        <service android:name=".PersistenceService" />
+        <service android:name=".CommCareSyncService" />
+        <service android:name=".NotificationReceiver" />
     </application>
 
 </manifest>
-

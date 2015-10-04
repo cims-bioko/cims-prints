@@ -20,6 +20,7 @@ public class HostUsbManager {
 	
 	public static final Set<Integer> vendor_blacklist = new HashSet<Integer>(){{
 		add(6531); //NVIDIA Shield
+		add(1478); //Moto Nexus 6
 		}};
 	
 	public HostUsbManager(UsbManager manager){

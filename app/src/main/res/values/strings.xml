@@ -33,4 +33,5 @@
         <item>Vertical</item>
     </string-array>
     <string name="title_activity_launch">LaunchActivity</string>
+    <string name="title_activity_dispatch">DispatchActivity</string>
 </resources>

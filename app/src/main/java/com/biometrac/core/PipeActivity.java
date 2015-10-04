@@ -44,14 +44,27 @@ public class PipeActivity extends Activity {
                 Log.e(TAG, "This was already canceled!");
 				//Controller.setStackFinished();
                 caughtCancelled = false;
+                gotResult = false;
                 setResult(RESULT_CANCELED);
+                //MainActivity.pipeFinished = true;
                 //MainActivity.pipeFinished = true;
                 finish();
                 return;
             }
             else{
-                Log.i(TAG, "Dispatching existing stack");
-                dispatch_intent(stack);
+                if(stack != null) {
+                    Log.i(TAG, "Dispatching existing stack");
+                    //dispatch_intent(stack);
+                }else{
+                    Log.e(TAG, "Using last known bundle as output for looped instance");
+                    Intent i = new Intent();
+                    i.putExtras(Controller.getLastStackOutput());
+                    setResult(Activity.RESULT_OK, i);
+                    Controller.resetStack();
+                    gotResult = false;
+                    finish();
+                }
+
             }
         }else{
             Log.i(TAG, "savedInstanceState is null");
@@ -64,6 +77,7 @@ public class PipeActivity extends Activity {
 			if (!stackOK){
 				Log.e(TAG, "Could not fix stack. Killing.");
 				Controller.nullPipeStack();
+                gotResult = false;
                 finish();
 				return;
 			}else{
@@ -78,6 +92,7 @@ public class PipeActivity extends Activity {
             i.putExtras(Controller.getLastStackOutput());
             setResult(Activity.RESULT_OK, i);
             Controller.resetStack();
+            gotResult = false;
 			finish();
 
 		}else{
@@ -94,12 +109,22 @@ public class PipeActivity extends Activity {
 	protected void onResume() {
 		Log.i(TAG, String.format("onResume| S:%s | C:%s", startSequence, createSequence));
 		super.onResume();
-        if (!gotResult){
-            Log.i(TAG, "No Result");
+        if (!gotResult && stackPosition == 0){
+            Log.i(TAG, "New Stack");
             process_request(getIntent());
             return;
         }
+		gotResult = false;
         Log.i(TAG, "Has Result");
+        if(finished || caughtCancelled){
+            caughtCancelled = false;
+            finished = false;
+            Log.d(TAG, "Finishing from resume");
+            finish();
+        }else{
+            Log.d(TAG, "Dispatch from resume");
+            dispatch_intent(stack);
+        }
     }
 
     public void setStackPosition(int position){
@@ -132,9 +157,9 @@ public class PipeActivity extends Activity {
 
     @Override
     protected void onStart() {
+        super.onStart();
         Log.i(TAG, String.format("onStart| %s", startSequence));
         startSequence +=1;
-        super.onStart();
     }
 
     @Override
@@ -224,6 +249,7 @@ public class PipeActivity extends Activity {
 				}
 			}
 		}
+		Log.d(TAG, "Stack size: " + Integer.toString(stack.size()));
 		
 	}
 	
@@ -242,6 +268,7 @@ public class PipeActivity extends Activity {
 				Log.i(TAG, "Scan Bundle Null");
 			}
 		}
+		Log.d(TAG, "Stack size: " + Integer.toString(stack.size()));
 	}
 
     private void dispatch_intent(List<Intent> stack){
@@ -253,13 +280,22 @@ public class PipeActivity extends Activity {
             Log.i(TAG, String.format("Current Stack Position %s of %s", stackPosition, stack.size()));
             dispatch_intent(currentIntent);
         }catch (IndexOutOfBoundsException e){
-            Log.e(TAG, e.getMessage());
-            e.printStackTrace();
-            Log.e(TAG, "Error getting current stack item");
-            Log.e(TAG, String.format("Stack Size in controller: %s Stack Position: %s",Controller.getPipeStack().size(), stackPosition));
+            try {
+                Log.e(TAG, e.getMessage());
+                e.printStackTrace();
+                Log.e(TAG, "Error getting current stack item");
+                Log.e(TAG, String.format("Stack Size in controller: %s Stack Position: %s", Controller.getPipeStack().size(), stackPosition));
+                throw new NullPointerException();
+            }catch (Exception np){
+                Log.e(TAG, "Killing pipe");
+                gotResult = false;
+                finish();
+            }
+        }catch (NullPointerException e){
+            Log.e(TAG, "NullPointer getting current stack item");
             Log.e(TAG, "Killing pipe");
+            gotResult = false;
             finish();
-
         }
 
     }
@@ -335,7 +371,6 @@ public class PipeActivity extends Activity {
         Log.i(TAG, "Previous Activity was Canceled... Returning null");
         caughtCancelled = true;
         setResult(RESULT_CANCELED, new Intent());
-        this.finish();
     }
 
 	@Override
@@ -345,30 +380,30 @@ public class PipeActivity extends Activity {
 		//print_bundle(data);
 		if (data == null){
 			Log.i(TAG, "Previous Activity DIED... Returning null");
-			setResult(RESULT_CANCELED, new Intent());
-            this.finish();
+            cancelPipe();
             super.onActivityResult(requestCode, resultCode, data);
-			return;
+            return;
 		}else{
 			Log.i(TAG, "Child data != null");
 			print_bundle(data);
 		}
-		if(resultCode == Activity.RESULT_CANCELED){
+		if(resultCode == RESULT_CANCELED){
+            Log.i(TAG, "Previous Activity Canceled...");
 			cancelPipe();
             super.onActivityResult(requestCode, resultCode, data);
 			return;
 		}
 		output_intent.putExtras(merge_bundles(output_intent, data));
 		
-		if (stackPosition >= stack.size()){
-			Log.i(TAG, "No more intents, finished with PIPE");
+		if (stackPosition >= stack.size()) {
+            Log.i(TAG, "No more intents, finished with PIPE");
 
             Controller.nullPipeStack();
             Controller.setStackFinished();
-			setResult(resultCode, output_intent);
-			this.finished = true;
-			super.onActivityResult(requestCode, resultCode, data);
-			this.finish();
+            setResult(resultCode, output_intent);
+			finished = true;
+            super.onActivityResult(requestCode, resultCode, data);
+
 		}else{
             Log.i(TAG, String.format("Dispatching #%s of %s", stackPosition, stack.size()));
             dispatch_intent(stack);
