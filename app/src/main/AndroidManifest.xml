@@ -195,11 +195,21 @@
             android:name=".EnrollActivity"
             android:label="VirtualCohort"
             android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="com.biometrac.internal.ENROLL" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".IdentifyActivity"
             android:label="VirtualCohort"
             android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="com.biometrac.internal.IDENTIFY" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
 
         <service android:name=".PersistenceService" />

@@ -69,7 +69,7 @@ public class PipeSessionManager {
         Log.i(TAG, String.format("Stacking | %s @ # %s ", action, 0));
         Intent i = new Intent();
         i.putExtras(info);
-        i.setAction(action);
+        i.setAction(rectifyAction(action));
         currentSession.put(0, i);
     }
 
@@ -85,7 +85,7 @@ public class PipeSessionManager {
                 }else{
                     Log.i(TAG, String.format("Stacking | %s @ # %s ", a, Integer.toString(x)));
                     Intent i = new Intent();
-                    i.setAction(a);
+                    i.setAction(rectifyAction(a));
                     currentSession.put(x, i);
                     x+=1;
                 }
@@ -215,5 +215,15 @@ public class PipeSessionManager {
             return null;
         }
 
+    }
+
+    public static String rectifyAction(String action){
+        if (action.contains("IDENTIFY")){
+            return "com.biometrac.internal.IDENTIFY";
+        }else if (action.contains("ENROLL")){
+            return "com.biometrac.internal.ENROLL";
+        }else{
+            return action;
+        }
     }
 }

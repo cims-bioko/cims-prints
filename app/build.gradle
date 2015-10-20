@@ -27,13 +27,13 @@ android {
     }
     productFlavors {
         vaxtrac {
-            versionName = "2015.10.04.01" + ".vaxtrac"
-            versionCode = 16;
+            versionName = "2015.10.20.01" + ".vaxtrac"
+            versionCode = 17;
             signingConfig signingConfigs.config
         }
         commcare {
-            versionName = "2015.10.04.01" + ".ccodk"
-            versionCode = 16;
+            versionName = "2015.10.20.01" + ".ccodk"
+            versionCode = 17;
             signingConfig signingConfigs.config
         }
     }

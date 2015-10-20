@@ -37,7 +37,7 @@ public class LaunchActivity extends Activity {
             while(keys.hasNext()){
                 String key = keys.next();
                 try{
-                    if (key.equals(ignore)){throw new IllegalArgumentException("Can't read bundle")}
+                    if (key.equals(ignore)){throw new IllegalArgumentException("Can't read bundle");}
                     Log.d(TAG, String.format("%s | %s", key, b.getString(key)));
                 }catch(Exception e2){
                     Log.d(TAG, String.format("%s | not readable", key));

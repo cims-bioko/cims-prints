@@ -47,6 +47,7 @@ public class Controller extends Application {
 	public static UsbDevice mDevice;
 	public static UsbManager mUsbManager;
 	public static HostUsbManager mHostUsbManager;
+    public static PipeSessionManager pipeSession;
 
     private static List<Intent> stack = null;
     private static int stackPosition = 0;
@@ -73,6 +74,7 @@ public class Controller extends Application {
         db_handle = new LocalDatabaseHandler(context);
         mEngine = new Engine(Controller.context, 27.0f);
         preference_manager = new SharedPreferencesManager(context);
+        pipeSession.init();
         //Start foreground service
         Intent i = new Intent(context, PersistenceService.class);
         context.startService(i);
