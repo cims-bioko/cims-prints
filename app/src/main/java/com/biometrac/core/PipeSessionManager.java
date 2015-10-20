@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by sarwar on 10/3/15.
@@ -75,18 +76,23 @@ public class PipeSessionManager {
 
     private static void process_pipe(Bundle info){
         Log.d(TAG, "Processing Pipe");
+        printBundle(info);
         List<String> actions = new ArrayList<String>();
         int x = 0;
+        int actionCounter = 0;
         while(true){
-            String a = info.getString("action_"+Integer.toString(x));
+            String a = info.getString("action_"+Integer.toString(actionCounter));
+            Log.d(TAG, String.format("action #%s -> %s", actionCounter, a));
             if (a!= null){
                 if (a.equals("com.biometrac.core.SCAN")){
                     x+= append_scans(info, x);
+                    actionCounter +=1;
                 }else{
                     Log.i(TAG, String.format("Stacking | %s @ # %s ", a, Integer.toString(x)));
                     Intent i = new Intent();
                     i.setAction(rectifyAction(a));
                     currentSession.put(x, i);
+                    actionCounter +=1;
                     x+=1;
                 }
 
@@ -94,6 +100,13 @@ public class PipeSessionManager {
                 Log.d(TAG, String.format("Finished processing with %s intents",x));
                 break;
             }
+        }
+    }
+
+    private static void printBundle(Bundle bundle){
+        Iterator<String> keys = bundle.keySet().iterator();
+        while(keys.hasNext()){
+            Log.d(TAG, String.format("BundleKeys | %s", keys.next()));
         }
     }
 
@@ -171,7 +184,9 @@ public class PipeSessionManager {
 
     public static Intent getIntent(){
         if(hasIntent(currentSessionPosition)){
-            return currentSession.get(currentSessionPosition);
+            Intent outIntent = currentSession.get(currentSessionPosition);
+            outIntent.putExtras(aggregateResults());
+            return outIntent;
         }
         return null;
     }
