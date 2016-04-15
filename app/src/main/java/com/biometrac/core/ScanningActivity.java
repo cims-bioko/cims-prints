@@ -47,19 +47,16 @@ import android.widget.ImageView.ScaleType;
 
 public class ScanningActivity extends Activity{
 
+    /*
+        I'm embarrassed by this mess. Please, refactor...
+     */
 
     private static UsbDevice freeScanner = null;
-	//Scanner restart variables
-	//GETTING USB Permission
-    private BroadcastReceiver mUsbReceiver;
+	private BroadcastReceiver mUsbReceiver;
 	private PendingIntent mPermissionIntent;
 	public static boolean waiting_for_permission = true;
 	private static final String ACTION_USB_PERMISSION =
 	    "com.biometrac.screentest.ScanningActivity.USB_PERMISSION";
-
-    /*
-    boolean finished = false;
-    */
 	FingerType left_finger;
 	FingerType right_finger;
     private static HashMap<String, Bitmap> scanImages;
@@ -77,10 +74,6 @@ public class ScanningActivity extends Activity{
 	PopupWindow popUp;
 	TextView pop_prompt;
 	Context mContext = this;
-	/*
-    Controller c;
-	Layout mainView;
-	*/
 	Map<String,String> opts = null;
 	Map<String,Object> binary_opts = null;
     public boolean kill_switch = false;
@@ -111,15 +104,8 @@ public class ScanningActivity extends Activity{
         else{
             Log.i(TAG, "No saved instance");
         }
-        /*
-        if(finished){
-            Log.e(TAG, "OPERATION COMPLETE. Killing.");
-            finish();
-            return;
-        }
-        */
+
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		//getWindow().setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN );
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String rotation = prefs.getString("bmt.rotation", "Horizontal");
         if(rotation.equals("Horizontal")){
@@ -205,7 +191,6 @@ public class ScanningActivity extends Activity{
         pview = inflater.inflate(R.layout.pop_up_wait,(ViewGroup)findViewById(R.layout.scanner_view_layout));
         popUp = new PopupWindow(pview);
         popUp.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        //popUp.setBackgroundDrawable(getResources().getDrawable(R.drawable.grey_trans_red_box));
         pop_prompt = (TextView) pview.findViewById(R.id.pop_up_wait_title);
 
         pop_cancel = (Button) pview.findViewById(R.id.pop_up_wait_cancel_btn);
@@ -444,20 +429,7 @@ public class ScanningActivity extends Activity{
 	
 	private void parse_options() {
 		//TODO Write API for .SCAN broadcast
-		/*
-		try{
-	    	Bitmap bmp = (Bitmap) binary_opts.get("image");
-	    	if (bmp == null){
-	    		throw new NullPointerException();
-	    	}
 
-        }catch (Exception e){
-        	ImageView i_view = (ImageView) findViewById(R.id.scanner_view_prompt_image);
-	    	i_view.setVisibility(View.GONE);
-        	Log.i(TAG,"Couldn't load image");
-        	Log.i(TAG,opts.toString());
-        }
-        */
         try{
         	String prompt = opts.get("prompt");
         	TextView prompt_text = (TextView) findViewById(R.id.scanner_view_prompt);

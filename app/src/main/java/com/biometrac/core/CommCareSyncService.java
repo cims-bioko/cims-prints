@@ -134,9 +134,6 @@ public class CommCareSyncService extends Service {
         builder.setContentTitle("BiometracCore");
         builder.setContentText(message);
         builder.setSmallIcon(R.drawable.bmt_icon);
-        //builder.setContentIntent(kill_intent);
-
-        //builder.addAction(R.drawable.error_icon, "Stop Service", kill_intent);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         if(sharedPref.getBoolean("bmt.allowkill", false)) {
             builder.addAction(android.R.drawable.ic_input_delete, "Stop Service", kill_intent);
