@@ -86,3 +86,12 @@ OpenANDID is now available under a GPLv3 License. Any linked libraries may conta
       i.putExtra("left_finger_assignment_1", "left_thumb");
       i.putExtra("right_finger_assignment_1", "right_thumb");
       i.putExtra("easy_skip_1", "false");
+
+# Acknowledgements
+    OpenANDID engine is a fork of SourceAFIS by Robert Važan and contributors:
+    http://www.sourceafis.org
+    
+    OpenANDID contains the NIST NBIS package, compiled for your convenience:
+    http://www.nist.gov/itl/iad/ig/nbis.cfm
+
+
