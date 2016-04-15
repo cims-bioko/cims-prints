@@ -2,7 +2,7 @@
 
 FOSS Biometric Identification Tools for Android; primarily geared towards global health applications.
 
-OpenANDID was created by Biometrac LLC and Shawn Sarwar as proprietary software under the name BiometracCore.
+OpenANDID was created by Biometrac LLC [Shawn Sarwar, Trisha Finnegan, Heath Gross] as proprietary software under the name BiometracCore.
 OpenANDID is now available under a GPLv3 License. Any linked libraries may contain their own licenses.
 
 # Requirements:
