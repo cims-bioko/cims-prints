@@ -19,6 +19,8 @@ OpenANDID is now available under a GPLv3 License. Any linked libraries may conta
 
 # Current API for calls via Intent:
   
+  Once installed, you can communicate with ANDID via intent. You must always include a unique sessionID with each intent call. We use this to deal with duplicate intent calls.
+  
   com.openandid.core.SCAN
   
       call multiple scans with a single intent. Starting with 0 index add a "_n" to the end of each key to group them together into screens of two scans.
@@ -27,6 +29,7 @@ OpenANDID is now available under a GPLv3 License. Any linked libraries may conta
     
       Inputs for the first scan:
       
+        sessionID: 00001
         prompt_0 : A string scanning prompt for the user
         left_finger_assignment_0 : Which finger you want in the left pane. Valid values are in the format hand_finger, i.e. "left_index" or "right_ring"
         right_finger_assignment_0 : "
@@ -43,6 +46,7 @@ OpenANDID is now available under a GPLv3 License. Any linked libraries may conta
       Try to identify a set of templates within the cached set. Returns the best matches which meet the score threshold.
     
     InputKeys:
+      sessionID: unique session id
       left_thumb : hex string of the template for the left thumb
       right_thumb: "
       left_index: "
@@ -67,6 +71,7 @@ OpenANDID is now available under a GPLv3 License. Any linked libraries may conta
   
     InputKeys:
     
+      sessionID: unique session id
       action_0: full qualified address of intent to be called (Limited to valid com.openandid namespace)
       action_1: "
       action_n
@@ -76,6 +81,7 @@ OpenANDID is now available under a GPLv3 License. Any linked libraries may conta
       Here's a .PIPE example for our current project that scans four fingers and passed them to identify. All outputs and inputs are passed back to the called on return.
       
       Intent i = new Intent("com.openandid.core.PIPE");
+      i.putExtra("sessionID", "imauniqueid");
       i.putExtra("action_0", "com.openandid.core.SCAN");
       i.putExtra("action_1", "com.openandid.core.IDENTIFY")
       i.putExtra("prompt_0", "Scan the Index Fingers")
