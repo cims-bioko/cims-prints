@@ -30,7 +30,7 @@ public class NativeClass {
 		String score = null;
 		
 		try {
-			FileOutputStream out = new FileOutputStream("data/data/com.biometrac.core/nbis/search/database.xyt");
+			FileOutputStream out = new FileOutputStream("data/data/com.openandid.core/nbis/search/database.xyt");
 			out.write(databaseTemplate.getBytes());
 			out.close();
 		} catch (IOException e1) {
@@ -38,7 +38,7 @@ public class NativeClass {
 		}
 		
 		try{	
-			Process bozorth3 = Runtime.getRuntime().exec("/data/data/com.biometrac.core/nbis/bin/bozorth3 /data/data/biometrac.bmtcamera/nbis/search/probe.xyt /data/data/biometrac.bmtcamera/nbis/search/database.xyt");
+			Process bozorth3 = Runtime.getRuntime().exec("/data/data/com.openandid.core/nbis/bin/bozorth3 /data/data/openandid.bmtcamera/nbis/search/probe.xyt /data/data/openandid.bmtcamera/nbis/search/database.xyt");
 		    
 		    BufferedReader reader = new BufferedReader(
 		            new InputStreamReader(bozorth3.getInputStream(), Charset.defaultCharset()), 10);
@@ -69,7 +69,7 @@ public class NativeClass {
 		NativeSetup.changePermission(input);
 		
 		try {
-			Process jpegConvert = Runtime.getRuntime().exec("/data/data/com.biometrac.core/nbis/bin/jpegtran -grayscale -flip horizontal -outfile "+output+" "+input);
+			Process jpegConvert = Runtime.getRuntime().exec("/data/data/com.openandid.core/nbis/bin/jpegtran -grayscale -flip horizontal -outfile "+output+" "+input);
 		 	jpegConvert.waitFor();		    
 		} catch (IOException e) {
 		    throw new RuntimeException(e);
@@ -81,15 +81,15 @@ public class NativeClass {
 	
 	public static String mindtct(String fingerName){
 			
-			String imagePath = "/data/data/com.biometrac.core/nbis/img/"+fingerName+"2.jpg";
-			String templatePath ="/data/data/com.biometrac.core/nbis/template/";
+			String imagePath = "/data/data/com.openandid.core/nbis/img/"+fingerName+"2.jpg";
+			String templatePath ="/data/data/com.openandid.core/nbis/template/";
 			String ext = ".xyt";
 			
 			//Changes Permission to ensure operation
 			String outputString = "error!";
 			
 			try {
-			    Process mindtct = Runtime.getRuntime().exec("/data/data/com.biometrac.core/nbis/bin/mindtct " +imagePath +" " +templatePath+fingerName);
+			    Process mindtct = Runtime.getRuntime().exec("/data/data/com.openandid.core/nbis/bin/mindtct " +imagePath +" " +templatePath+fingerName);
 			    mindtct.waitFor();
 			    
 			    BufferedReader reader = new BufferedReader(
@@ -128,7 +128,7 @@ public class NativeClass {
 		}
 		
 		try {
-		    Process nfiq = Runtime.getRuntime().exec("/data/data/com.biometrac.core/nbis/bin/nfiq "+verboseFlag +imagePath);
+		    Process nfiq = Runtime.getRuntime().exec("/data/data/com.openandid.core/nbis/bin/nfiq "+verboseFlag +imagePath);
 		    			    
 		    BufferedReader reader = new BufferedReader(
 		            new InputStreamReader(nfiq.getInputStream()));

@@ -56,9 +56,9 @@ public class PipeSessionManager {
     }
 
     private static void digestSession(String action, Bundle info){
-        if (action.equals("com.biometrac.core.PIPE")){
+        if (action.equals("com.openandid.core.PIPE")){
             process_pipe(info);
-        }else if(action.equals("com.biometrac.core.SCAN")){
+        }else if(action.equals("com.openandid.core.SCAN")){
             append_scans(info, 0);
         }else{
             process_single(action, info);
@@ -83,7 +83,7 @@ public class PipeSessionManager {
             String a = info.getString("action_"+Integer.toString(actionCounter));
             Log.d(TAG, String.format("action #%s -> %s", actionCounter, a));
             if (a!= null){
-                if (a.equals("com.biometrac.core.SCAN")){
+                if (a.equals("com.openandid.core.SCAN")){
                     x+= append_scans(info, x);
                     actionCounter +=1;
                 }else{
@@ -225,9 +225,9 @@ public class PipeSessionManager {
 
     public static String rectifyAction(String action){
         if (action.contains("IDENTIFY")){
-            return "com.biometrac.internal.IDENTIFY";
+            return "com.openandid.internal.IDENTIFY";
         }else if (action.contains("ENROLL")){
-            return "com.biometrac.internal.ENROLL";
+            return "com.openandid.internal.ENROLL";
         }else{
             return action;
         }

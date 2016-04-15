@@ -51,7 +51,7 @@ public class MainActivity extends Activity {
 	private void dispatch_intent(Intent incoming) {
 		String action = incoming.getAction();
 		Log.i(TAG, "Started via... " + action);
-        if (action.equals("com.biometrac.core.SCAN")){
+        if (action.equals("com.openandid.core.SCAN")){
 			if(ScanningActivity.get_total_scans_from_bundle(incoming.getExtras())>1){
 				incoming.setClass(this, PipeActivity.class);
 				Log.i(TAG, "Starting PipeActivity");
@@ -63,14 +63,14 @@ public class MainActivity extends Activity {
 			}
 
 		}
-		else if (action.equals("com.biometrac.core.ENROLL")){
+		else if (action.equals("com.openandid.core.ENROLL")){
 			incoming.setClass(this, EnrollActivity.class);
 			startActivityForResult(incoming, REQUEST_CODE);
 		}
-		else if(action.equals("com.biometrac.core.VERIFY")){
+		else if(action.equals("com.openandid.core.VERIFY")){
 
 		}
-		else if(action.equals("com.biometrac.core.IDENTIFY")){
+		else if(action.equals("com.openandid.core.IDENTIFY")){
 			if (Controller.commcare_handler != null){
 				if (CommCareContentHandler.isWorking()){
 					//Wait for sync to finish w/ prompt
@@ -82,10 +82,10 @@ public class MainActivity extends Activity {
 			incoming.setClass(this, IdentifyActivity.class);
 			startActivityForResult(incoming, REQUEST_CODE);
 		}
-		else if(action.equals("com.biometrac.core.LOAD")){
+		else if(action.equals("com.openandid.core.LOAD")){
 
 		}
-		else if(action.equals("com.biometrac.core.PIPE")){
+		else if(action.equals("com.openandid.core.PIPE")){
 			incoming.setClass(this, PipeActivity.class);
 			startActivityForResult(incoming, REQUEST_CODE);
 		}
@@ -107,7 +107,7 @@ public class MainActivity extends Activity {
                 //IF CCODK
                 data.putExtra("odk_intent_bundle", b);
 
-                Log.i(TAG, "Output from BiometracCore");
+                Log.i(TAG, "Output from openandidCore");
                 for (String k : b.keySet()) {
                     Log.i(TAG, k + ": " + b.getString(k));
                 }

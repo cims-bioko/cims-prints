@@ -17,7 +17,7 @@ public class SharedPreferencesManager {
 	
 	public SharedPreferencesManager(Context mContext) {
 		this.mContext = mContext;
-		preferences = mContext.getSharedPreferences("com.biometrac.core", Context.MODE_PRIVATE);
+		preferences = mContext.getSharedPreferences("com.openandid.core", Context.MODE_PRIVATE);
 	}
 	
 	public boolean has_preferences(){

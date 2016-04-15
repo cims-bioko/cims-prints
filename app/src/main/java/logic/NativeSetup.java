@@ -136,7 +136,7 @@ public class NativeSetup {
 	
 	public static boolean checkNativeSystem(Context context) {
 		
-		File file = new File("/data/data/com.biometrac.core/nbis/bin/","nfiq");
+		File file = new File("/data/data/com.openandid.core/nbis/bin/","nfiq");
 		
 		if(file.exists()){
 			System.out.println("files found!");
@@ -150,7 +150,7 @@ public class NativeSetup {
 	
 	public static void setupNativeSystem(Context context) {
 	
-		String baseDir = "/data/data/com.biometrac.core";
+		String baseDir = "/data/data/com.openandid.core";
 		//String[] directories = {"nbis","nbis/bin","nbis/include","nbis/include/mlp","nbis/lib","nbis/man","nbis/man/man1","nbis/nbis","nbis/nbis/an2k","nbis/nbis/an2k/chkan2k","nbis/nbis/nfiq","nbis/nbis/pcasys","nbis/nbis/pcasys/images","nbis/nbis/pcasys/parms","nbis/nbis/pcasys/weights","nbis/nbis/pcasys/weights/mlp","nbis/nbis/pcasys/weights/pnn"};
 		String[] directories = {"nbis","nbis/bin","nbis/include","nbis/include/mlp","nbis/lib"};
 		for(String directoryName:directories){

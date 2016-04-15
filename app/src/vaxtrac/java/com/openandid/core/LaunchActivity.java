@@ -96,7 +96,7 @@ public class LaunchActivity extends Activity {
         Intent i = new Intent();
         Log.d(TAG, "Demo for .PIPE");
         //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        i.setAction("com.biometrac.core.SCAN");
+        i.setAction("com.openandid.core.SCAN");
         i.putExtra("sessionID", UUID.randomUUID().toString());
         i.putExtra("prompt_0", ".PIPE Test 1");
         i.putExtra("easy_skip_0", "true");
@@ -113,7 +113,7 @@ public class LaunchActivity extends Activity {
         Log.d(TAG, "Demo for .SCAN");
         Intent i = new Intent();
         //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        i.setAction("com.biometrac.core.SCAN");
+        i.setAction("com.openandid.core.SCAN");
         i.putExtra("sessionID", UUID.randomUUID().toString());
         i.putExtra("prompt", ".SCAN Test");
         i.putExtra("easy_skip", "true");

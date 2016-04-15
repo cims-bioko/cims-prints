@@ -181,7 +181,7 @@
             android:label="@string/app_name"
             android:noHistory="true"
             android:process=":ScannerCatcherProcess"
-            android:taskAffinity="com.openandid.core.taskAffinityScannerCatcher"
+            android:taskAffinity="com.openandid.core.ScannerCatcher"
             android:theme="@style/Theme.Transparent" >
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />

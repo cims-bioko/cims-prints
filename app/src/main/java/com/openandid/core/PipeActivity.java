@@ -223,9 +223,9 @@ public class PipeActivity extends Activity {
 			Log.i(TAG, "Couldn't get requestcode from intent.");
 		}
 		String action = incoming.getAction();
-		if(action.equals("com.biometrac.core.PIPE")){
+		if(action.equals("com.openandid.core.PIPE")){
 			process_pipe(incoming);
-		}else if(action.equals("com.biometrac.core.SCAN")){
+		}else if(action.equals("com.openandid.core.SCAN")){
 			append_scans(incoming);
 		}
 		dispatch_intent(stack);
@@ -237,7 +237,7 @@ public class PipeActivity extends Activity {
 		for (int x = 0; x < 10; x++){
 			String a = b.getString("action_"+Integer.toString(x));
 			if (a!= null){
-				if (a.equals("com.biometrac.core.SCAN")){
+				if (a.equals("com.openandid.core.SCAN")){
 					append_scans(incoming);
 				}else{
 					Log.i(TAG, "Stacking | " + a);
@@ -302,7 +302,7 @@ public class PipeActivity extends Activity {
 		
 		String action = incoming.getAction();
 		Log.i(TAG, "Dispatching Activity | " + action);
-		if(action.equals("com.biometrac.core.IDENTIFY")){
+		if(action.equals("com.openandid.core.IDENTIFY")){
 			output_intent.setClass(this, IdentifyActivity.class);
 			Log.i(TAG, "Starting | IDENTIFY");
 			if (Controller.commcare_handler != null){
@@ -315,17 +315,17 @@ public class PipeActivity extends Activity {
 				}
 			}
 			startActivityForResult(output_intent, REQUEST_CODE);
-		}else if (action.equals("com.biometrac.core.SCAN")){
+		}else if (action.equals("com.openandid.core.SCAN")){
 			incoming.setClass(this, ScanningActivity.class);
 			Log.i(TAG, "Starting | SCAN");
 			startActivityForResult(incoming, REQUEST_CODE);
 		}
-		else if (action.equals("com.biometrac.core.ENROLL")){
+		else if (action.equals("com.openandid.core.ENROLL")){
 			output_intent.setClass(this, EnrollActivity.class);
 			Log.i(TAG, "Starting | ENROLL");
 			startActivityForResult(output_intent, REQUEST_CODE);
 		}
-		else if(action.equals("com.biometrac.core.VERIFY")){
+		else if(action.equals("com.openandid.core.VERIFY")){
 			
 		}else{
 			if(stackPosition >= stack.size()){

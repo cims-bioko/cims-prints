@@ -130,7 +130,7 @@ public class CommCareSyncService extends Service {
         PendingIntent kill_intent = PendingIntent.getService(this, 0, kill, 0);
         PendingIntent crash_intent = PendingIntent.getService(this, 0, crash, 0);
         Builder builder = new Builder(getApplicationContext());
-        builder.setContentTitle("BiometracCore");
+        builder.setContentTitle("OpenANDIDCore");
         builder.setContentText(message);
         builder.setSmallIcon(R.drawable.bmt_icon);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);

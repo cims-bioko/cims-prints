@@ -237,6 +237,8 @@ public class Scanner_Lumidigm_Mercury extends Scanner{
 				taken = true;
 				Log.i("scanner status","finger sensed");
 				Scanner.finger_sensed = true;
+			}else{
+				Log.i(TAG, String.format("%s | %s | %s | %s", read_buffer[8], read_buffer[12], taken, read_buffer));
 			}
 			if (taken == true){
 

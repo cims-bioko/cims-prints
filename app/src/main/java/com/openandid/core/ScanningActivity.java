@@ -56,7 +56,7 @@ public class ScanningActivity extends Activity{
 	private PendingIntent mPermissionIntent;
 	public static boolean waiting_for_permission = true;
 	private static final String ACTION_USB_PERMISSION =
-	    "com.biometrac.screentest.ScanningActivity.USB_PERMISSION";
+	    "com.openandid.screentest.ScanningActivity.USB_PERMISSION";
 	FingerType left_finger;
 	FingerType right_finger;
     private static HashMap<String, Bitmap> scanImages;
@@ -1087,7 +1087,7 @@ public class ScanningActivity extends Activity{
         }
 
         Intent out = new Intent();
-        out.setAction("com.biometrac.internal.SCAN");
+        out.setAction("com.openandid.internal.SCAN");
         out.putExtras(b);
         return out;
 

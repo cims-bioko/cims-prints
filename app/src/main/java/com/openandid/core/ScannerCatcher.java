@@ -14,7 +14,7 @@ import android.util.Log;
  */
 public class ScannerCatcher extends Activity {
 
-    public static final String USB_ON_BROADCAST = "com.biometrac.core.SCANNER_ATTACHED";
+    public static final String USB_ON_BROADCAST = "com.openandid.core.SCANNER_ATTACHED";
     public static UsbDevice device;
     public static final String TAG = "ScannerCatcher";
 

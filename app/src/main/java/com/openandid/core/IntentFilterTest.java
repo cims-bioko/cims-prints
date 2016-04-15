@@ -16,12 +16,10 @@ public class IntentFilterTest extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		//Intent i = new Intent("com.biometrac.core.SCAN");
 		
-		
-		Intent i = new Intent("com.biometrac.core.PIPE");
-		i.putExtra("action_0", "com.biometrac.core.SCAN");
-		i.putExtra("action_1", "com.biometrac.core.IDENTIFY");
+		Intent i = new Intent("com.openandid.core.PIPE");
+		i.putExtra("action_0", "com.openandid.core.SCAN");
+		i.putExtra("action_1", "com.openandid.core.IDENTIFY");
 		
 		
 		/*
@@ -48,7 +46,7 @@ public class IntentFilterTest extends Activity {
 		*/
 		
 		/*
-		Intent i = new Intent("com.biometrac.core.IDENTIFY");
+		Intent i = new Intent("com.openandid.core.IDENTIFY");
 		
 		String left_thumb = "464D520020323000000000BA00000120016800C500C501000000001A408E00D6670040AE00DC6000409300676000403C008E220040B700695700408F0052B100402400DC12004098003B600040E10113550040B300C84400405600D61700403B00AB1B00409001090600403B0086810040AD00564F00403400607700806A012D060080F001044B00807400DF0D00807C0068060080A50069AC0080D300DE490080CA00F55600803700F412008052011E0F0080E200589B000000";
 		String right_thumb = "464D520020323000000000C600000120016800C500C501000000001C408500BB0200407400DE0F00404A00D3190040A5006EAE00408701140800403800F3120040AF005756004052011E0F0040E101145400404501400400408D00D06900405600D61700407000696F0040940067600040C900F55600403F006F1700402100E51400806C0127060080F001044B00809F009D5F0080AE00DC6000807C0067040080D200DE4800804C00686E00808E0052B0008039006275008099003B600080E300589A000000";
@@ -56,7 +54,7 @@ public class IntentFilterTest extends Activity {
 		i.putExtra("right_thumb", right_thumb);
 		*/
 		/*
-		Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.biometraclogo);
+		Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.openandidlogo);
 		i.putExtra("image", bmp);
 		i.putExtra("prompt", "This is a\nTest Prompt!");
 		i.putExtra("easy_skip", "true");

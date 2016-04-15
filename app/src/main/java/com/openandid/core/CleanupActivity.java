@@ -54,7 +54,7 @@ public class CleanupActivity extends Activity {
 	    	    am.killBackgroundProcesses(pid.processName);
 	    	}
 	    	Intent i = new Intent();
-	    	i.setAction("com.biometrac.core.KILL");
+	    	i.setAction("com.openandid.core.KILL");
 	    	sendBroadcast(i);
 	    	
 	    	try {
