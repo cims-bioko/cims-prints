@@ -1,4 +1,4 @@
-package com.biometrac.core;
+package com.openandid.core;
 
 import android.app.Notification;
 import android.app.Notification.Builder;
@@ -10,8 +10,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-
-import data.SharedPreferencesManager;
 
 public class PersistenceService extends Service {
 

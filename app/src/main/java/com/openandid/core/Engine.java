@@ -1,4 +1,4 @@
-package com.biometrac.core;
+package com.openandid.core;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,7 +15,6 @@ import org.json.simple.parser.ParseException;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import bmtafis.simple.*;
 

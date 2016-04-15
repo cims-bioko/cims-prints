@@ -1,8 +1,8 @@
 package logic;
 
 
-import com.biometrac.core.Controller;
-import com.biometrac.core.R;
+import com.openandid.core.Controller;
+import com.openandid.core.R;
 
 import android.content.res.Resources;
 import android.util.Log;

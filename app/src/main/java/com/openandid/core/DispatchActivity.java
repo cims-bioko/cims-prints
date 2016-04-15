@@ -1,4 +1,4 @@
-package com.biometrac.core;
+package com.openandid.core;
 
 import android.content.Intent;
 import android.os.Bundle;

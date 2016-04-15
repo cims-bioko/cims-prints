@@ -1,4 +1,4 @@
-package com.biometrac.core;
+package com.openandid.core;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
@@ -9,7 +9,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
+
+import com.openandid.core.Controller;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

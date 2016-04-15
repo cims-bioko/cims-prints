@@ -1,7 +1,6 @@
-package com.biometrac.core;
+package com.openandid.core;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -302,7 +301,7 @@ public class PipeActivity extends Activity {
 		String action = incoming.getAction();
 		Log.i(TAG, "Dispatching Activity | " + action);
 		if(action.equals("com.biometrac.core.IDENTIFY")){
-			output_intent.setClass(this, com.biometrac.core.IdentifyActivity.class);
+			output_intent.setClass(this, IdentifyActivity.class);
 			Log.i(TAG, "Starting | IDENTIFY");
 			if (Controller.commcare_handler != null){
 				if (Controller.commcare_handler.isWorking()){
@@ -315,12 +314,12 @@ public class PipeActivity extends Activity {
 			}
 			startActivityForResult(output_intent, REQUEST_CODE);
 		}else if (action.equals("com.biometrac.core.SCAN")){
-			incoming.setClass(this, com.biometrac.core.ScanningActivity.class);
+			incoming.setClass(this, ScanningActivity.class);
 			Log.i(TAG, "Starting | SCAN");
 			startActivityForResult(incoming, REQUEST_CODE);
 		}
 		else if (action.equals("com.biometrac.core.ENROLL")){
-			output_intent.setClass(this, com.biometrac.core.EnrollActivity.class);
+			output_intent.setClass(this, EnrollActivity.class);
 			Log.i(TAG, "Starting | ENROLL");
 			startActivityForResult(output_intent, REQUEST_CODE);
 		}

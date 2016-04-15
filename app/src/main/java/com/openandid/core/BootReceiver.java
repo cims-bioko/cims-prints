@@ -1,9 +1,11 @@
-package com.biometrac.core;
+package com.openandid.core;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+
+import com.openandid.core.Controller;
 
 public class BootReceiver extends BroadcastReceiver {
 

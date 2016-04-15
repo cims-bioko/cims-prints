@@ -1,4 +1,4 @@
-package com.biometrac.core;
+package com.openandid.core;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -9,6 +9,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.openandid.core.Controller;
 
 public class CleanupActivity extends Activity {
 

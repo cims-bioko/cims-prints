@@ -1,6 +1,4 @@
-package com.biometrac.core;
-
-import com.biometrac.core.Controller;
+package com.openandid.core;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

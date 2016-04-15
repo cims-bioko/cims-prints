@@ -1,4 +1,4 @@
-package com.biometrac.core;
+package com.openandid.core;
 
 import java.util.HashMap;
 import java.util.List;

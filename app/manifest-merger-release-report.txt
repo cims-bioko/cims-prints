@@ -79,7 +79,7 @@ action#android.hardware.usb.action.USB_DEVICE_DETACHED
 ADDED from AndroidManifest.xml:33:17
 	android:name
 		ADDED from AndroidManifest.xml:33:25
-activity#com.biometrac.core.IntentFilterTest
+activity#com.openandid.core.IntentFilterTest
 ADDED from AndroidManifest.xml:51:9
 	android:label
 		ADDED from AndroidManifest.xml:53:13
@@ -95,7 +95,7 @@ category#android.intent.category.DEFAULT
 ADDED from AndroidManifest.xml:56:5
 	android:name
 		ADDED from AndroidManifest.xml:56:15
-activity#com.biometrac.core.TestEngine
+activity#com.openandid.core.TestEngine
 ADDED from AndroidManifest.xml:59:9
 	android:label
 		ADDED from AndroidManifest.xml:61:13
@@ -103,13 +103,13 @@ ADDED from AndroidManifest.xml:59:9
 		ADDED from AndroidManifest.xml:60:13
 intent-filter#android.intent.category.DEFAULT
 ADDED from AndroidManifest.xml:62:13
-activity#com.biometrac.core.CCSyncActivity
+activity#com.openandid.core.CCSyncActivity
 ADDED from AndroidManifest.xml:66:3
 	android:label
 		ADDED from AndroidManifest.xml:68:13
 	android:name
 		ADDED from AndroidManifest.xml:67:13
-activity#com.biometrac.core.MainActivity
+activity#com.openandid.core.MainActivity
 ADDED from AndroidManifest.xml:73:9
 	android:label
 		ADDED from AndroidManifest.xml:75:13
@@ -149,7 +149,7 @@ action#com.biometrac.core.PIPE
 ADDED from AndroidManifest.xml:93:17
 	android:name
 		ADDED from AndroidManifest.xml:93:25
-activity#com.biometrac.core.PipeActivity
+activity#com.openandid.core.PipeActivity
 ADDED from AndroidManifest.xml:97:9
 	android:screenOrientation
 		ADDED from AndroidManifest.xml:100:13
@@ -159,7 +159,7 @@ ADDED from AndroidManifest.xml:97:9
 		ADDED from AndroidManifest.xml:99:13
 	android:name
 		ADDED from AndroidManifest.xml:98:13
-activity#com.biometrac.core.CleanupActivity
+activity#com.openandid.core.CleanupActivity
 ADDED from AndroidManifest.xml:107:9
 	android:screenOrientation
 		ADDED from AndroidManifest.xml:110:13
@@ -169,7 +169,7 @@ ADDED from AndroidManifest.xml:107:9
 		ADDED from AndroidManifest.xml:109:13
 	android:name
 		ADDED from AndroidManifest.xml:108:13
-activity#com.biometrac.core.ScanningActivity
+activity#com.openandid.core.ScanningActivity
 ADDED from AndroidManifest.xml:117:3
 	android:noHistory
 		ADDED from AndroidManifest.xml:120:13
@@ -179,7 +179,7 @@ ADDED from AndroidManifest.xml:117:3
 		ADDED from AndroidManifest.xml:121:13
 	android:name
 		ADDED from AndroidManifest.xml:118:13
-activity#com.biometrac.core.EnrollActivity
+activity#com.openandid.core.EnrollActivity
 ADDED from AndroidManifest.xml:133:3
 	android:screenOrientation
 		ADDED from AndroidManifest.xml:136:13
@@ -187,7 +187,7 @@ ADDED from AndroidManifest.xml:133:3
 		ADDED from AndroidManifest.xml:135:13
 	android:name
 		ADDED from AndroidManifest.xml:134:13
-activity#com.biometrac.core.IdentifyActivity
+activity#com.openandid.core.IdentifyActivity
 ADDED from AndroidManifest.xml:138:3
 	android:screenOrientation
 		ADDED from AndroidManifest.xml:141:13
@@ -195,15 +195,15 @@ ADDED from AndroidManifest.xml:138:3
 		ADDED from AndroidManifest.xml:140:13
 	android:name
 		ADDED from AndroidManifest.xml:139:13
-service#com.biometrac.core.PersistenceService
+service#com.openandid.core.PersistenceService
 ADDED from AndroidManifest.xml:143:3
 	android:name
 		ADDED from AndroidManifest.xml:143:12
-service#com.biometrac.core.CommCareSyncService
+service#com.openandid.core.CommCareSyncService
 ADDED from AndroidManifest.xml:144:3
 	android:name
 		ADDED from AndroidManifest.xml:144:12
-service#com.biometrac.core.NotificationReceiver
+service#com.openandid.core.NotificationReceiver
 ADDED from AndroidManifest.xml:145:3
 	android:name
 		ADDED from AndroidManifest.xml:145:12

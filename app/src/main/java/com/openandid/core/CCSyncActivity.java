@@ -1,4 +1,4 @@
-package com.biometrac.core;
+package com.openandid.core;
 
 
 import java.util.ArrayList;
@@ -23,6 +23,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.openandid.core.Controller;
 
 public class CCSyncActivity extends Activity {
 	

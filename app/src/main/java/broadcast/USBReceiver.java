@@ -7,16 +7,10 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.util.Log;
 
-import com.biometrac.core.Controller;
-import com.biometrac.core.ScannerCatcher;
-import com.biometrac.core.ScanningActivity;
+import com.openandid.core.Controller;
+import com.openandid.core.ScannerCatcher;
+import com.openandid.core.ScanningActivity;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import logic.HostUsbManager;
 import logic.Scanner;
 
 /**

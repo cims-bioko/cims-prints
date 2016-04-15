@@ -1,7 +1,6 @@
-package com.biometrac.core;
+package com.openandid.core;
 
 import data.CommCareContentHandler;
-import data.SharedPreferencesManager;
 
 import android.app.Notification;
 import android.app.NotificationManager;

@@ -1,4 +1,4 @@
-package com.biometrac.core;
+package com.openandid.core;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 
-import broadcast.USBReceiver;
 import logic.FingerType;
 import logic.HostUsbManager;
 import logic.Scanner;
@@ -28,7 +27,6 @@ import android.hardware.usb.UsbManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.Layout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -44,6 +42,8 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ImageView.ScaleType;
+
+import com.openandid.core.Controller;
 
 public class ScanningActivity extends Activity{
 

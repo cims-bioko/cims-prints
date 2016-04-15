@@ -12,8 +12,8 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.util.Log;
 
-import com.biometrac.core.Controller;
-import com.biometrac.core.ScanningActivity;
+import com.openandid.core.Controller;
+import com.openandid.core.ScanningActivity;
 
 public class Scanner_Lumidigm_Mercury extends Scanner{
 	/*

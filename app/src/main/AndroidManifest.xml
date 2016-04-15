@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.biometrac.core"
+    package="com.openandid.core"
     android:versionCode="7"
     android:versionName="15.08.26.01" >
 
@@ -27,17 +27,17 @@
         android:allowBackup="true"
         android:debuggable="true"
         android:icon="@drawable/ic_launcher"
-        android:label="Biometrac Core"
+        android:label="OpenANDID Core"
         android:theme="@style/AppTheme"
         tools:ignore="HardcodedDebugMode" >
         <receiver android:name="broadcast.ScannerReceiver" >
             <intent-filter>
-                <action android:name="com.biometrac.screentest.ScanningActivity.USB_PERMISSION" />
+                <action android:name="com.openandid.screentest.ScanningActivity.USB_PERMISSION" />
             </intent-filter>
         </receiver>
         <receiver android:name="broadcast.USBReceiver" >
             <intent-filter>
-                <action android:name="com.biometrac.core.SCANNER_ATTACHED" />
+                <action android:name="com.openandid.core.SCANNER_ATTACHED" />
                 <action android:name="android.hardware.usb.action.USB_DEVICE_DETACHED" />
             </intent-filter>
 
@@ -104,22 +104,22 @@
             android:exported="true"
             android:label="@string/app_name" >
             <intent-filter>
-                <action android:name="com.biometrac.core.SCAN" />
+                <action android:name="com.openandid.core.SCAN" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
-                <action android:name="com.biometrac.core.ENROLL" />
+                <action android:name="com.openandid.core.ENROLL" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
-                <action android:name="com.biometrac.core.IDENTIFY" />
+                <action android:name="com.openandid.core.IDENTIFY" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
-                <action android:name="com.biometrac.core.PIPE" />
+                <action android:name="com.openandid.core.PIPE" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -169,7 +169,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
-                <action android:name="com.biometrac.internal.SCAN" />
+                <action android:name="com.openandid.internal.SCAN" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -181,7 +181,7 @@
             android:label="@string/app_name"
             android:noHistory="true"
             android:process=":ScannerCatcherProcess"
-            android:taskAffinity="com.biometrac.core.taskAffinityScannerCatcher"
+            android:taskAffinity="com.openandid.core.taskAffinityScannerCatcher"
             android:theme="@style/Theme.Transparent" >
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
@@ -196,7 +196,7 @@
             android:label="VirtualCohort"
             android:screenOrientation="portrait" >
             <intent-filter>
-                <action android:name="com.biometrac.internal.ENROLL" />
+                <action android:name="com.openandid.internal.ENROLL" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -206,7 +206,7 @@
             android:label="VirtualCohort"
             android:screenOrientation="portrait" >
             <intent-filter>
-                <action android:name="com.biometrac.internal.IDENTIFY" />
+                <action android:name="com.openandid.internal.IDENTIFY" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

@@ -1,4 +1,4 @@
-package com.biometrac.core;
+package com.openandid.core;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by sarwar on 10/3/15.

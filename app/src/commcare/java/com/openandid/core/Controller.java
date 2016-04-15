@@ -1,4 +1,4 @@
-package com.biometrac.core;
+package com.openandid.core;
 
 import android.app.Application;
 import android.content.Context;
@@ -23,6 +23,7 @@ import java.util.Random;
 
 import data.CommCareContentHandler;
 import data.LocalDatabaseHandler;
+import data.LocalDatabaseHelper;
 import data.SharedPreferencesManager;
 import logic.HostUsbManager;
 import logic.Scanner;
@@ -31,7 +32,7 @@ import logic.Scanner;
 @ReportsCrashes(
         httpMethod = Method.PUT,
         reportType = Type.JSON,
-        formUri = "http://dev.biometrac.com:5984/acra-vaxtrac/_design/acra-storage/_update/report",
+        formUri = "http://dev.biometrac.com:5984/acra-bmt/_design/acra-storage/_update/report",
         formUriBasicAuthLogin = "acralog",
         formUriBasicAuthPassword = "acralogging",
         mode = ReportingInteractionMode.SILENT,
@@ -56,6 +57,7 @@ public class Controller extends Application {
 	public static Engine mEngine = null;
 	public static Random mRandom = new Random();
 	public static LocalDatabaseHandler db_handle = null;
+    public static LocalDatabaseHelper db_help = null;
 	public static CommCareContentHandler commcare_handler = null;
 	public static SharedPreferencesManager preference_manager = null;
 	
@@ -65,15 +67,21 @@ public class Controller extends Application {
         super.onCreate();
 
         //init the logging function
+        //check for preference?
         ACRA.init(this);
 
         Controller.context = getApplicationContext();
+        db_handle = new LocalDatabaseHandler(context);
+        mEngine = new Engine(Controller.context, 27.0f);
         preference_manager = new SharedPreferencesManager(context);
         pipeSession.init();
         //Start foreground service
         Intent i = new Intent(context, PersistenceService.class);
         context.startService(i);
-
+        sync_commcare_default();
+        
+        db_help = new LocalDatabaseHelper(context);
+        
     }
 
     public static Context getAppContext() {
@@ -81,10 +89,26 @@ public class Controller extends Application {
     }
 
     public static void sync_commcare_default(){
+    	if(preference_manager.has_preferences()){
+        	Map<String,String> data= preference_manager.get_template_fields();
+        	data.put("case_type", preference_manager.get_case_type());
+        	sync_commcare(data);
+        }else{
+        	Toast.makeText(context, "CommCare Setting are NOT SET. Check BMTCore.", Toast.LENGTH_LONG);
+        }
     }
     
     public static void sync_commcare(Map<String, String> output){
-
+    	if (CommCareSyncService.is_ready){
+    		Log.i(TAG, "CC Sync Start");
+    		commcare_handler = new CommCareContentHandler(output);
+        	Intent i = new Intent(context, CommCareSyncService.class);
+        	context.startService(i);	
+    	}else{
+    		Log.i(TAG, "Delayed sync queued");
+    		CommCareSyncService.re_sync = true;
+    	}
+    	
 	}
     
     public void test(){
@@ -182,5 +206,5 @@ public class Controller extends Application {
     public static void setLastStackOutput(Bundle bundle){
         lastStackOutput = bundle;
     }
-
+    
 }

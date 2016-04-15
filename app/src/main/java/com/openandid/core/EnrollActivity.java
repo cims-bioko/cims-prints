@@ -1,4 +1,4 @@
-package com.biometrac.core;
+package com.openandid.core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +10,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
+
+import com.openandid.core.Controller;
 
 public class EnrollActivity extends Activity{
 

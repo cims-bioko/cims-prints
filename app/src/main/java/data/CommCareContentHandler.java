@@ -9,9 +9,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
-import com.biometrac.core.CommCareSyncService;
-import com.biometrac.core.Controller;
-import com.biometrac.core.Engine;
+import com.openandid.core.CommCareSyncService;
+import com.openandid.core.Controller;
+import com.openandid.core.Engine;
 
 public class CommCareContentHandler {
 

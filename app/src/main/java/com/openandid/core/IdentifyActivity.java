@@ -1,4 +1,4 @@
-package com.biometrac.core;
+package com.openandid.core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -83,7 +83,7 @@ private class IdentifyBG extends AsyncTask<Void, Void, Void> {
 				}
 			}
 			
-    		List<Engine.Match> matches = Controller.mEngine.get_best_matches(templates); 
+    		List<Engine.Match> matches = Controller.mEngine.get_best_matches(templates);
     		
     		
     		output = new Bundle();
