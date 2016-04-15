@@ -42,12 +42,9 @@ public class PipeActivity extends Activity {
             print_bundle(savedInstanceState);
             if(caughtCancelled){
                 Log.e(TAG, "This was already canceled!");
-				//Controller.setStackFinished();
-                caughtCancelled = false;
+				caughtCancelled = false;
                 gotResult = false;
                 setResult(RESULT_CANCELED);
-                //MainActivity.pipeFinished = true;
-                //MainActivity.pipeFinished = true;
                 finish();
                 return;
             }
@@ -310,7 +307,6 @@ public class PipeActivity extends Activity {
 			if (Controller.commcare_handler != null){
 				if (Controller.commcare_handler.isWorking()){
 					//Wait for sync to finish w/ prompt
-					
 					//TODO fix  output_intent -> incoming
 					Syncronizing sync = new Syncronizing(this, incoming);
 					sync.execute();
@@ -377,7 +373,6 @@ public class PipeActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.i(TAG, "Pipe Caught Output from child.");
         gotResult = true;
-		//print_bundle(data);
 		if (data == null){
 			Log.i(TAG, "Previous Activity DIED... Returning null");
             cancelPipe();

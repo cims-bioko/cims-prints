@@ -9,6 +9,16 @@ import java.nio.charset.Charset;
 
 /*
  * Implementation of NBIS resources
+ *
+ * There are many NIST functions available if you copy them in.
+ * This doesn't work well with restricted users. You need to copy them in as each user
+ * since users each have different applications spaces.
+ *
+ * Of particular interest are the following NIST apps:
+ *
+ * Bozorth3 Matcher
+ * NFIQ 1.0 Fingerprint quality analyizer
+ * MINDTCT Fingerprint Extractor
  */
 
 public class NativeClass {

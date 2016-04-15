@@ -81,33 +81,10 @@ public class Engine {
             }catch (IllegalArgumentException e){
                 Log.e(TAG, e.getMessage());
             }
-
-			/*
-			int _ref_id = _id_generator.getAndIncrement();
-			int_alias.put(uuid_in, _ref_id);
-			string_alias.put(_ref_id, uuid_in);
-			
-			Person p = map_to_person(_ref_id, candidates_in.get(uuid_in));
-			Log.i(TAG, "Adding uuid:"+ uuid_in+" as _id" + Integer.toString(_ref_id));
-			candidates.add(p);
-			candidates_map.put(_ref_id, p);
-			*/
 		}
 		is_ready = true;
 	}
-	
-	/*
-	public void cache_candidates(Map<Integer,Map<String,String>> candidates_in){
-		candidates = new ArrayList<Person>();
-		candidates_map = new HashMap<Integer, Person>();
-		for (Integer uuid: candidates_in.keySet()){
-			Person p = map_to_person(uuid, candidates_in.get(uuid));
-			candidates.add(p);
-			candidates_map.put(uuid, p);
-		}
-	}
-	*/
-	
+
 	//TODO kill
 	public void add_candidate_to_db(int id, Person person, JSONObject ob){
 		candidates.add(person);
@@ -194,16 +171,7 @@ public class Engine {
 			scores.put(p.getId(), 0.0);
 			v_scores.put(p.getId(), 0.0);
 		}
-		/*
-		for (String f: fingers){
-			List<Person> spikes = identify(p_hold.get(f));
-			for (Person p: spikes){
-				hits.add(p.getId());
-				scores.put(p.getId(), 0.0);
-				v_scores.put(p.getId(), 0.0);
-			}
-		}
-		*/
+
 		this.mEngine.setThreshold(0.0f);
 		List<Integer>super_threshold = new ArrayList<Integer>();
 		for (int id: hits){
@@ -218,7 +186,6 @@ public class Engine {
 				super_threshold.add(id);
 				scores.put(id, score);	
 			}
-			
 		}
 		
 		mEngine.setThreshold(threshold);

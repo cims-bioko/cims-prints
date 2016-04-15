@@ -14,14 +14,7 @@ public class CCODKContentProvider {
 	protected final String TAG = "CCODKContentProvider";
 	public CCODKContentProvider(Context context){
 			mContext = context;
-			/*
-			ContentResolver mResolver = mContext.getContentResolver();
-			String[] projection = new String[]{""};
-			
-			String selection = "";
-			String[] selectionArgs = new String[]{""};
-			String sortOrder = "";
-			*/
+
 			Cursor c = mContext.getContentResolver().query(CASE_LISTING, null, null, null, null);
 			String[] columns = c.getColumnNames();
 			String column_names = "Column Names:";

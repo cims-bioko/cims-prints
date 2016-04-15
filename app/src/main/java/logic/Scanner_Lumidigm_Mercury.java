@@ -1,7 +1,5 @@
 package logic;
 
-
-
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
@@ -18,6 +16,10 @@ import com.biometrac.core.Controller;
 import com.biometrac.core.ScanningActivity;
 
 public class Scanner_Lumidigm_Mercury extends Scanner{
+	/*
+	This class is the result of reverse engineering scanner protocols from wireshark-sniffed packets.
+	It's terrible. Try not to do things like this in the future. Get an official driver to work from.
+	 */
 
 	String TAG = "LumidigmDriver";
 
@@ -99,7 +101,6 @@ public class Scanner_Lumidigm_Mercury extends Scanner{
 		        	int k = 0;
 		    		
 		    		byte[] comm = write_buff("get_command");
-		    		//k = conn.bulkTransfer(epOUT, comm, comm.length , 1000);
 		    		int c = 0;
                     while(true){
                         try{
@@ -238,17 +239,7 @@ public class Scanner_Lumidigm_Mercury extends Scanner{
 				Scanner.finger_sensed = true;
 			}
 			if (taken == true){
-                /*
-                if (((int) read_buffer[8] & 0xFF) != 4 || ((int) read_buffer[12] & 0xFF) != 0){
-                    Log.i("scanner status","waiting for scanner response");
-                    try {
-                        Thread.sleep(250);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    continue;
-                }
-                */
+
 				if (((int) read_buffer[8] & 0xFF) == 4 && ((int) read_buffer[12] & 0xFF) == 0){
 					Log.i("scanner status","image ready!");
                     Log.i("found status:", read_buffer.toString());
@@ -384,10 +375,7 @@ public class Scanner_Lumidigm_Mercury extends Scanner{
 						}
 			        }).start();
 					
-					
-					//Log.i("Finished in "+ count +"rounds", "hooray?");
-					//Log.i("Image Length", Integer.toString(image_holder.length));
-					
+
 					byte[] final_image = new byte[98560];
 					System.arraycopy(image_holder, 20, final_image, 0, 98560);
 					
@@ -440,18 +428,12 @@ public class Scanner_Lumidigm_Mercury extends Scanner{
 			read_buffer = new byte[1024];
 			comm = write_buff("get_busy");
 			k = conn.bulkTransfer(epOUT, comm , comm.length, 1000);
-			//Log.i("len", Integer.toString(k));
 			conn.bulkTransfer(epIN, read_buffer, 1024, 1000);
-			//Log.i("returns", Arrays.toString(read_buffer));
 			read_buffer = new byte[1024];
 			conn.bulkTransfer(epIN, read_buffer, 1024, 1000);
-			//byte[] suba = Arrays.copyOfRange(read_buffer, 0, 20);
-            //Log.i("returns", Arrays.toString(suba));
-            comm = write_buff("mp2");
+			comm = write_buff("mp2");
 			k = conn.bulkTransfer(epOUT, comm , comm.length, 1000);
-			//Log.i("len", Integer.toString(k));
-            //Log.i("check", String.format("[8] %s | [12] %s",((int) read_buffer[8] & 0xFF), ((int) read_buffer[12] & 0xFF)));
-            if(((int) read_buffer[12] == 11)){
+			if(((int) read_buffer[12] == 11)){
                 Log.e(TAG, "Scan Error!");
                 return false;
             }
@@ -500,8 +482,6 @@ public class Scanner_Lumidigm_Mercury extends Scanner{
                 0x00, 0x00};
 		words.put("set_config", set_str);
         words.put("set_config_instant", set_str_inst);
-		//line template
-        //words.put("", new int[] {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00});		
 		words.put("get_config", new int[]{0x0d,0x56,0x49,0x00,0x00,0x00,0x00,0x00,0x04,0x00,0x00,0x00, 0x80,0x00,0x00,0x00,0xc8,0x00});
 		words.put("get_command", new int[]{0x0d,0x56, 0x4c, 0x00, 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00});
 		words.put("get_busy", new int[]{0x0d,0x56, 0x48, 0x00, 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00});
@@ -541,9 +521,7 @@ public class Scanner_Lumidigm_Mercury extends Scanner{
 			}
 			hexString.append(hex);
 		}
-		
-        //Log.i("POD",": "+hexString.toString());
-        
+
 	}
 
     private enum TriggerType{

@@ -61,8 +61,7 @@ public class MainActivity extends Activity {
 				Log.i(TAG, "Starting PipeActivity");
 				startActivityForResult(incoming, REQUEST_CODE);
 			}else{
-                //incoming.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-				incoming.setClass(this, ScanningActivity.class);
+                incoming.setClass(this, ScanningActivity.class);
 				Log.i(TAG, "Starting ScanningActivity");
                 startActivityForResult(incoming, REQUEST_CODE);
 			}
@@ -147,7 +146,6 @@ public class MainActivity extends Activity {
 	    		try {
 					Thread.sleep(3000);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 	    	}

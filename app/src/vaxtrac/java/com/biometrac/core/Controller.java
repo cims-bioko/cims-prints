@@ -65,21 +65,15 @@ public class Controller extends Application {
         super.onCreate();
 
         //init the logging function
-        //check for preference?
         ACRA.init(this);
 
         Controller.context = getApplicationContext();
-        //db_handle = new LocalDatabaseHandler(context);
-        //mEngine = new Engine(Controller.context, 27.0f);
         preference_manager = new SharedPreferencesManager(context);
         pipeSession.init();
         //Start foreground service
         Intent i = new Intent(context, PersistenceService.class);
         context.startService(i);
-        //sync_commcare_default();
-        
-        //db_help = new LocalDatabaseHelper(context);
-        
+
     }
 
     public static Context getAppContext() {
@@ -87,30 +81,10 @@ public class Controller extends Application {
     }
 
     public static void sync_commcare_default(){
-        /*
-    	if(preference_manager.has_preferences()){
-        	Map<String,String> data= preference_manager.get_template_fields();
-        	data.put("case_type", preference_manager.get_case_type());
-        	sync_commcare(data);
-        }else{
-        	Toast.makeText(context, "CommCare Setting are NOT SET. Check BMTCore.", Toast.LENGTH_LONG);
-        }
-        */
     }
     
     public static void sync_commcare(Map<String, String> output){
-    	/*
-        if (CommCareSyncService.is_ready){
-    		Log.i(TAG, "CC Sync Start");
-    		commcare_handler = new CommCareContentHandler(output);
-        	Intent i = new Intent(context, CommCareSyncService.class);
-        	context.startService(i);	
-    	}else{
-    		Log.i(TAG, "Delayed sync queued");
-    		CommCareSyncService.re_sync = true;
-    	}
-    	*/
-    	
+
 	}
     
     public void test(){
@@ -128,7 +102,6 @@ public class Controller extends Application {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	//android.os.Process.killProcess(android.os.Process.myPid());
     	System.exit(0);
 
     }
@@ -164,20 +137,7 @@ public class Controller extends Application {
         Log.i(TAG, "Inducing Crash!");
         enableCrashDialog();
         ACRA.getErrorReporter().handleException(new Exception("Induced Crash"));
-        //Toast.makeText(getAppContext(), "Log captured", Toast.LENGTH_LONG).show();
         disableCrashDialog();
-        /*
-        preference_manager.notify_false_start();
-        context.stopService(new Intent(context, PersistenceService.class));
-        context.stopService(new Intent(context, NotificationReceiver.class));
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        throw new RuntimeException("Induced Crash");
-        */
     }
 
     public static List<Intent> getPipeStack(){
