@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/BMTCore.iml" filepath="$PROJECT_DIR$/BMTCore.iml" />
+      <module fileurl="file://$PROJECT_DIR$/OpenANDIDCore.iml" filepath="$PROJECT_DIR$/OpenANDIDCore.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
