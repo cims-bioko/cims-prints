@@ -92,6 +92,6 @@ public class FingerType {
 		left_ring,
 		right_ring,
 		left_pinky,
-		right_pinky;
+		right_pinky
 	}
 }

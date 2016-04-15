@@ -33,9 +33,9 @@ public class DispatchActivity extends Activity {
         }
         try{
             String sessionID = getIntent().getExtras().getString("sessionID");
-            if(Controller.pipeSession.isNewSession(sessionID)){
+            if(PipeSessionManager.isNewSession(sessionID)){
                 Log.d(TAG, "New Session Found with ID " + sessionID);
-                Controller.pipeSession.registerSession(sessionID, getIntent().getAction(), getIntent().getExtras());
+                PipeSessionManager.registerSession(sessionID, getIntent().getAction(), getIntent().getExtras());
                 doNextIntent();
                 return;
             }else{
@@ -51,24 +51,24 @@ public class DispatchActivity extends Activity {
     }
 
     private void finishCancel() {
-        Controller.pipeSession.endSession(getIntent().getExtras().getString("sessionID"));
+        PipeSessionManager.endSession(getIntent().getExtras().getString("sessionID"));
         setResult(RESULT_CANCELED);
         finish();
     }
 
     protected void doNextIntent(){
-        Intent i = Controller.pipeSession.getIntent();
+        Intent i = PipeSessionManager.getIntent();
         if (i == null){
             throw new NullPointerException("No more intents");
         }
-        int requestCode = Controller.pipeSession.getIntentId();
+        int requestCode = PipeSessionManager.getIntentId();
         Log.d(TAG, String.format("Starting %s with requestCode %s", i.getAction(), requestCode));
         startActivityForResult(i, requestCode);
     }
 
     protected void finishSession(){
-        Bundle bindle = Controller.pipeSession.getResults();
-        Controller.pipeSession.endSession(getIntent().getExtras().getString("sessionID"));
+        Bundle bindle = PipeSessionManager.getResults();
+        PipeSessionManager.endSession(getIntent().getExtras().getString("sessionID"));
         Intent output = new Intent();
         output.putExtras(bindle);
         setResult(RESULT_OK, output);
@@ -80,7 +80,7 @@ public class DispatchActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, String.format("onResult| request: %s | result ok: %s", requestCode, resultCode==RESULT_OK ));
         if (resultCode == RESULT_OK && data != null){
-            boolean succeeded = Controller.pipeSession.registerResult(requestCode, data.getExtras());
+            boolean succeeded = PipeSessionManager.registerResult(requestCode, data.getExtras());
         }else if(data == null){
             Log.e(TAG, String.format("No intent data returned from requestCode %s", requestCode));
         }else{

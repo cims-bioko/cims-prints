@@ -60,8 +60,8 @@ private class IdentifyBG extends AsyncTask<Void, Void, Void> {
 			add("right_thumb");
 			add("left_index");
 			add("right_index");
-		}}; ;
-		Bundle extras;
+		}};
+	Bundle extras;
 		
 	private IdentifyBG(Bundle mExtras) {
 			super();

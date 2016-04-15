@@ -68,7 +68,7 @@ public class Controller extends Application {
 
         Controller.context = getApplicationContext();
         preference_manager = new SharedPreferencesManager(context);
-        pipeSession.init();
+        PipeSessionManager.init();
         //Start foreground service
         Intent i = new Intent(context, PersistenceService.class);
         context.startService(i);

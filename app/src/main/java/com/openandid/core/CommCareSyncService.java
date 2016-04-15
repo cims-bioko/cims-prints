@@ -67,13 +67,13 @@ public class CommCareSyncService extends Service {
                         if(e!= null){
                             e.printStackTrace();
                         }
-                        handler.died();
+                        CommCareContentHandler.died();
 						Log.i(TAG, "Sync Failed.");
 						stopSelf();
 					}
 					
 					int c = 0;
-					while(handler.isWorking()){
+					while(CommCareContentHandler.isWorking()){
 						try {
 							Thread.sleep(3000);
 						} catch (InterruptedException e) {

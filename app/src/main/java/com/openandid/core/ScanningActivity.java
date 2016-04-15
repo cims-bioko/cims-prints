@@ -273,7 +273,7 @@ public class ScanningActivity extends Activity{
             @Override
             public void onClick(View arg0) {
                 handleClick(finger, btn, false, arg0);
-            };
+            }
         };
     }
 
@@ -959,7 +959,7 @@ public class ScanningActivity extends Activity{
 	    	    			if(isCancelled()==true || check_kill_switch() == true){
 		    					return null;
 		    				}
-	    	    			if (Controller.mScanner.scan_cancelled == true){
+	    	    			if (Scanner.scan_cancelled == true){
 	    	    				return null;
 	    	    			}
 	    	    			//if scan init failed
@@ -1031,9 +1031,9 @@ public class ScanningActivity extends Activity{
 		}
 	}
 
-	private enum operation_type{verify, identify, tag, skip};
-	
-	private void finish_activity(){
+	private enum operation_type{verify, identify, tag, skip}
+
+    private void finish_activity(){
 		this.finish();
 	}
 	

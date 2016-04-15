@@ -9,6 +9,8 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import data.CommCareContentHandler;
+
 public class MainActivity extends Activity {
 
 	private static boolean gotResult = false;
@@ -70,7 +72,7 @@ public class MainActivity extends Activity {
 		}
 		else if(action.equals("com.biometrac.core.IDENTIFY")){
 			if (Controller.commcare_handler != null){
-				if (Controller.commcare_handler.isWorking()){
+				if (CommCareContentHandler.isWorking()){
 					//Wait for sync to finish w/ prompt
 					Syncronizing sync = new Syncronizing(this, incoming);
 					sync.execute();
@@ -136,7 +138,7 @@ public class MainActivity extends Activity {
 		}
 		@Override
 		protected Void doInBackground(Void... params) {
-	    	while(Controller.commcare_handler.isWorking()){
+	    	while(CommCareContentHandler.isWorking()){
 	    		try {
 					Thread.sleep(3000);
 				} catch (InterruptedException e) {

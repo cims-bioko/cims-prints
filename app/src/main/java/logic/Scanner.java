@@ -98,7 +98,7 @@ public class Scanner {
 	}
 	
 	public boolean finger_sensed(){
-		return this.finger_sensed;
+		return finger_sensed;
 	}
 
 	public void setBiometrics(String key, String value) {

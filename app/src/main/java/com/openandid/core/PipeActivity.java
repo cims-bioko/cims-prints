@@ -13,6 +13,8 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import data.CommCareContentHandler;
+
 public class PipeActivity extends Activity {
 
     private static int startSequence =0;
@@ -304,7 +306,7 @@ public class PipeActivity extends Activity {
 			output_intent.setClass(this, IdentifyActivity.class);
 			Log.i(TAG, "Starting | IDENTIFY");
 			if (Controller.commcare_handler != null){
-				if (Controller.commcare_handler.isWorking()){
+				if (CommCareContentHandler.isWorking()){
 					//Wait for sync to finish w/ prompt
 					//TODO fix  output_intent -> incoming
 					Syncronizing sync = new Syncronizing(this, incoming);
@@ -441,7 +443,7 @@ public class PipeActivity extends Activity {
 		}
 		@Override
 		protected Void doInBackground(Void... params) {
-	    	while(Controller.commcare_handler.isWorking()){
+	    	while(CommCareContentHandler.isWorking()){
 	    		try {
 					Thread.sleep(3000);
 				} catch (InterruptedException e) {

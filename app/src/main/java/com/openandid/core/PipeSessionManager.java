@@ -126,11 +126,7 @@ public class PipeSessionManager {
     }
 
     public static boolean isNewSession(String id){
-        if(!sessions.containsKey(id)){
-            return true;
-        }else{
-            return false;
-        }
+        return !sessions.containsKey(id);
     }
 
     public static boolean isSessionClosed(String id){
@@ -170,11 +166,7 @@ public class PipeSessionManager {
 
     private static boolean hasIntent(int id){
         try{
-            if(currentSession.containsKey(id)){
-                return true;
-            }else{
-                return false;
-            }
+            return currentSession.containsKey(id);
         }catch (Exception e){
             Log.e(TAG, "hasIntent failed, returning false: " + e.toString());
             return false;

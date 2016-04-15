@@ -526,6 +526,6 @@ public class Scanner_Lumidigm_Mercury extends Scanner{
 
     private enum TriggerType{
         INSTANT,
-        TRIGGERED;
-    }
+        TRIGGERED
+	}
 }

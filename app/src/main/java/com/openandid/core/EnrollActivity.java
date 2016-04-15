@@ -60,8 +60,8 @@ public class EnrollActivity extends Activity{
 			add("right_thumb");
 			add("left_index");
 			add("right_index");
-		}}; ;
-		
+		}};
+
 		Bundle extras;
 	private EnrollBG(Bundle mExtras) {
 			super();
