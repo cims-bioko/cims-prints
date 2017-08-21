@@ -23,15 +23,15 @@ public class USBReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(USB_ON)) {
+        if (USB_ON.equals(intent.getAction())) {
             UsbDevice incomingDevice = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
             Log.e(TAG, String.format("Caught Scanner PLUG signal | %s : %s ", incomingDevice.getProductId(), incomingDevice.getVendorId()));
             Log.e(TAG, "Ignoring, waiting for redispatch");
-        } else if (intent.getAction().equals(LOCAL_USB)) {
+        } else if (LOCAL_USB.equals(intent.getAction())) {
             UsbDevice incomingDevice = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
             Log.e(TAG, String.format("Caught LOCAL PLUG signal | %s : %s ", incomingDevice.getProductId(), incomingDevice.getVendorId()));
             ScanningActivity.setFreeDevice(incomingDevice);
-        } else if (intent.getAction().equals(USB_OFF)) {
+        } else if (USB_OFF.equals(intent.getAction())) {
             UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
             Log.e(TAG, String.format("Caught Scanner UNPLUG signal | %s : %s", device.getProductId(), device.getVendorId()));
             try {
