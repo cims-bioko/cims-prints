@@ -5,14 +5,11 @@ import android.preference.PreferenceActivity;
 
 
 public class AdvancedPreferences extends PreferenceActivity {
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
 }
