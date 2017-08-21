@@ -14,7 +14,7 @@ android {
     buildToolsVersion '25.0.2'
     defaultConfig {
         applicationId 'com.openandid.core'
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 19
         versionName 'OpenANDID Core'
     }
@@ -43,7 +43,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:25.3.1'
+    compile 'com.android.support:support-v4:19.0.0+'
     compile 'ch.acra:acra:4.6.2'
     compile files('libs/bmtafis.jar')
     compile files('libs/json_simple-1.1.jar')
