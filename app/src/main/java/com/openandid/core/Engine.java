@@ -31,7 +31,6 @@ public class Engine {
     private Map<Integer, String> string_alias = null;
     private AtomicInteger _id_generator = null;
     private float threshold;
-    private Context mContext;
 
     private final static String TAG = "AFISEngine";
     private AfisEngine mEngine;
@@ -42,7 +41,6 @@ public class Engine {
 
     public Engine(Context mContext, float threshold) {
         this.threshold = threshold;
-        this.mContext = mContext;
         mEngine = new AfisEngine(mContext);
         mEngine.setThreshold(threshold);
         Log.i(TAG, "Engine Started");
