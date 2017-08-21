@@ -27,33 +27,6 @@ public class USBReceiver extends BroadcastReceiver {
             UsbDevice incomingDevice = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
             Log.e(TAG, String.format("Caught Scanner PLUG signal | %s : %s ", incomingDevice.getProductId(), incomingDevice.getVendorId()));
             Log.e(TAG, "Ignoring, waiting for redispatch");
-            /*
-            try {
-                Map<String, UsbDevice> deviceList = Controller.mUsbManager.getDeviceList();
-                UsbDevice dev = null;
-                Iterator<UsbDevice> deviceIterator = deviceList.values().iterator();
-                while (deviceIterator.hasNext()) {
-                    UsbDevice device = deviceIterator.next();
-                    if (!HostUsbManager.vendor_blacklist.contains(device.getVendorId())) {
-                        Log.i(TAG, "Product ID | " + Integer.toHexString(device.getProductId()));
-                        Log.i(TAG, "Vendor ID | " + Integer.toHexString(device.getVendorId()));
-                        Log.i(TAG, "Vendor = " + Integer.toString(device.getVendorId()));
-                        dev = device;
-                    } else {
-                        Log.i(TAG, "Vendor | " + Integer.toString(device.getVendorId()) + " | is blacklisted");
-                    }
-
-                }
-                if (dev != null) {
-                    Log.e(TAG, "Live USBHostManager | Setting found scanner");
-                    ScanningActivity.setFreeDevice(dev);
-                }
-            }catch (NullPointerException e){
-                Log.e(TAG, "No live USBHostManager");
-                ScanningActivity.setFreeDevice(incomingDevice);
-            }
-            */
-
         } else if (intent.getAction().equals(LOCAL_USB)) {
             UsbDevice incomingDevice = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
             Log.e(TAG, String.format("Caught LOCAL PLUG signal | %s : %s ", incomingDevice.getProductId(), incomingDevice.getVendorId()));
