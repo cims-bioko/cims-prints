@@ -16,10 +16,10 @@ import logic.Scanner;
 
 public class USBReceiver extends BroadcastReceiver {
 
-    private final String USB_ON = "android.hardware.usb.action.USB_DEVICE_ATTACHED";
-    private final String USB_OFF = "android.hardware.usb.action.USB_DEVICE_DETACHED";
-    private final String LOCAL_USB = ScannerCatcher.USB_ON_BROADCAST;
-    private final String TAG = "USBReceiver";
+    private static final String USB_ON = "android.hardware.usb.action.USB_DEVICE_ATTACHED";
+    private static final String USB_OFF = "android.hardware.usb.action.USB_DEVICE_DETACHED";
+    private static final String LOCAL_USB = ScannerCatcher.USB_ON_BROADCAST;
+    private static final String TAG = "USBReceiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {

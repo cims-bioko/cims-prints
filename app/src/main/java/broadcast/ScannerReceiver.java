@@ -11,7 +11,8 @@ import com.openandid.core.ScanningActivity;
 
 
 public class ScannerReceiver extends BroadcastReceiver {
-    private final String TAG = "ScannerReceiver";
+
+    private static final String TAG = "ScannerReceiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {
