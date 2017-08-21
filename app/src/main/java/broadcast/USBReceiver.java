@@ -31,11 +31,9 @@ public class USBReceiver extends BroadcastReceiver {
             UsbDevice incomingDevice = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
             Log.e(TAG, String.format("Caught LOCAL PLUG signal | %s : %s ", incomingDevice.getProductId(), incomingDevice.getVendorId()));
             ScanningActivity.setFreeDevice(incomingDevice);
-        } else if (intent.getAction() == USB_OFF) {
+        } else if (intent.getAction().equals(USB_OFF)) {
             UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
             Log.e(TAG, String.format("Caught Scanner UNPLUG signal | %s : %s", device.getProductId(), device.getVendorId()));
-
-
             try {
                 if (!Controller.mHostUsbManager.scannerConnected()) {
                     Log.i(TAG, "Scanner really isn't connected!");
