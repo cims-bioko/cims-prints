@@ -50,9 +50,6 @@ public class USBReceiver extends BroadcastReceiver {
             } catch (Exception e) {
                 Log.i(TAG, e.toString());
             }
-
         }
-
-
     }
 }
