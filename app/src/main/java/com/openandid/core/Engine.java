@@ -50,7 +50,6 @@ public class Engine {
         int_alias = new HashMap<>();
         string_alias = new HashMap<>();
         _id_generator = new AtomicInteger();
-        //load_candidates();
     }
 
     public void add_candidate_to_cache(String uuid_in, Map<String, String> templates) {
