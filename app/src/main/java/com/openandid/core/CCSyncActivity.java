@@ -27,9 +27,11 @@ import java.util.Set;
 public class CCSyncActivity extends Activity {
 
     public static final int KEY_REQUEST_CODE = 1;
+
     /**
      * Called when the activity is first created.
      */
+
     private static final String TAG = "CCSyncActivity";
     private Map<String, String> template_datum_map;
     Spinner case_spinner;
