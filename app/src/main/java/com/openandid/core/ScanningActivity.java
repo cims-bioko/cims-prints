@@ -590,7 +590,8 @@ public class ScanningActivity extends Activity {
 
     /*
      *    Scanning Task Async
-	 */
+     */
+
     private class FingerScanInterface extends AsyncTask<Void, Void, Void> {
         ImageButton view;
         View parent;

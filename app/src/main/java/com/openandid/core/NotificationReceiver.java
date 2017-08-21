@@ -24,15 +24,6 @@ public class NotificationReceiver extends Service {
 
     @Override
     public void onCreate() {
-
-		/*
-		Intent i = new Intent(this, CleanupActivity.class);
-		Log.i(TAG, "Starting CleanUp");
-		i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-		startActivity(i);
-		CleanUp c = new CleanUp(getApplicationContext());
-		c.execute();
-		*/
         Log.d(TAG, "onCreate");
         super.onCreate();
     }

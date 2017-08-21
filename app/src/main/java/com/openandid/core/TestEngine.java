@@ -93,17 +93,6 @@ public class TestEngine extends Activity {
         for (Engine.Match match : matches) {
             Log.i(TAG, "ID :" + match.uuid + " |" + "score: " + Double.toString(match.score));
         }
-
-		/*
-		for (String id: candidates.keySet()){
-			Log.i(TAG, "Matching for | " + id);
-			List<Engine.Match> matches = Controller.mEngine.get_best_matches(candidates.get(id));
-			for (Engine.Match match: matches){
-				Log.i(TAG, "ID :"+ match.uuid +" |" + "score: " + Double.toString(match.score));
-			}
-
-		}
-		*/
     }
 
 }
