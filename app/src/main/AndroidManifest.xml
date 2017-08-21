@@ -67,7 +67,6 @@
             android:label="Advanced Preferences" >
             <intent-filter>
                 <action android:name=".Preferences" />
-
                 <category android:name="android.intent.category.PREFERENCE" />
             </intent-filter>
         </activity>
@@ -76,7 +75,6 @@
             android:label="AIntentFilterTest" >
             <intent-filter>
                 <action android:name="android.intent.action.View" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -100,22 +98,18 @@
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="com.openandid.core.SCAN" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
                 <action android:name="com.openandid.core.ENROLL" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
                 <action android:name="com.openandid.core.IDENTIFY" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
                 <action android:name="com.openandid.core.PIPE" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -137,7 +131,6 @@
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.View" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -148,7 +141,6 @@
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.View" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -160,12 +152,10 @@
             android:noHistory="false" >
             <intent-filter>
                 <action android:name="android.intent.action.View" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
                 <action android:name="com.openandid.internal.SCAN" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -181,7 +171,6 @@
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
             </intent-filter>
-
             <meta-data
                 android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
                 android:resource="@xml/usb_filter" />
@@ -192,7 +181,6 @@
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="com.openandid.internal.ENROLL" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -202,7 +190,6 @@
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="com.openandid.internal.IDENTIFY" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
