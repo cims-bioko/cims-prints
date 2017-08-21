@@ -46,11 +46,11 @@ public class Engine {
         mEngine = new AfisEngine(mContext);
         mEngine.setThreshold(threshold);
         Log.i(TAG, "Engine Started");
-        candidates = new ArrayList<Person>();
-        candidates_map = new HashMap<Integer, Person>();
+        candidates = new ArrayList<>();
+        candidates_map = new HashMap<>();
 
-        int_alias = new HashMap<String, Integer>();
-        string_alias = new HashMap<Integer, String>();
+        int_alias = new HashMap<>();
+        string_alias = new HashMap<>();
         _id_generator = new AtomicInteger();
         //load_candidates();
     }
@@ -73,8 +73,8 @@ public class Engine {
 
     public void cache_candidates(Map<String, Map<String, String>> candidates_in) {
         is_ready = false;
-        candidates = new ArrayList<Person>();
-        candidates_map = new HashMap<Integer, Person>();
+        candidates = new ArrayList<>();
+        candidates_map = new HashMap<>();
         Log.i(TAG, "Loading Gallery with " + Integer.toString(candidates_in.size()) + " candidates.");
         for (String uuid_in : candidates_in.keySet()) {
             try {
@@ -153,9 +153,9 @@ public class Engine {
 
     public List<Match> get_best_matches(Map<String, String> templates) {
         is_ready = false;
-        Set<Integer> hits = new HashSet<Integer>();
-        Map<Integer, Double> scores = new HashMap<Integer, Double>();
-        Map<Integer, Double> v_scores = new HashMap<Integer, Double>();
+        Set<Integer> hits = new HashSet<>();
+        Map<Integer, Double> scores = new HashMap<>();
+        Map<Integer, Double> v_scores = new HashMap<>();
         List<String> fingers = new ArrayList<String>() {{
             add("left_thumb");
             add("right_thumb");
@@ -229,7 +229,7 @@ public class Engine {
     public static Person map_to_person(Integer uuid, Map<String, String> templates) {
         Person p = new Person();
         p.setId(uuid);
-        List prints = new ArrayList<Fingerprint>();
+        List<Fingerprint> prints = new ArrayList<>();
         List<String> fingers = new ArrayList<String>() {{
             add("left_thumb");
             add("right_thumb");
@@ -276,7 +276,7 @@ public class Engine {
         Person p = new Person();
         if (person_json != null) {
             p.setId(Integer.parseInt(id));
-            List prints = new ArrayList<Fingerprint>();
+            List<Fingerprint> prints = new ArrayList<>();
             if (person_json.get("left_thumb") != null) {
                 Fingerprint f = new Fingerprint();
                 f.setIsoTemplate(hexStringToByteArray((String) person_json.get("left_thumb")));
