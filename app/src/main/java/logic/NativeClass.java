@@ -1,12 +1,5 @@
 package logic;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-
 /*
  * Implementation of NBIS resources
  *
@@ -23,7 +16,7 @@ import java.nio.charset.Charset;
 
 public class NativeClass {
     /*
-	public static int bozorth(String databaseTemplate){
+    public static int bozorth(String databaseTemplate){
 		
 		//TODO make return type int and test.
 		//int score = 0;

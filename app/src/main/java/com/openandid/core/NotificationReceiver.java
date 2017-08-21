@@ -10,23 +10,21 @@ import android.os.AsyncTask;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.openandid.core.Controller;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 
 public class NotificationReceiver extends Service {
 
-	public static final String TAG = "NotificationReceiver";
-	
-	public NotificationReceiver() {
-		
-	}
-	
-	@Override
-	public void onCreate() {
-		
+    public static final String TAG = "NotificationReceiver";
+
+    public NotificationReceiver() {
+
+    }
+
+    @Override
+    public void onCreate() {
+
 		/*
 		Intent i = new Intent(this, CleanupActivity.class);
 		Log.i(TAG, "Starting CleanUp");
@@ -36,17 +34,16 @@ public class NotificationReceiver extends Service {
 		c.execute();
 		*/
         Log.d(TAG, "onCreate");
-		super.onCreate();
-	}
+        super.onCreate();
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String action = intent.getAction();
         Log.d(TAG, "onStartCommand " + intent.getAction());
-        if (action.equals("KILL")){
+        if (action.equals("KILL")) {
             kill_all();
-        }
-        else if(action.equals("CRASH")){
+        } else if (action.equals("CRASH")) {
             crash();
         }
 
@@ -54,10 +51,10 @@ public class NotificationReceiver extends Service {
     }
 
     @Override
-	public IBinder onBind(Intent intent) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public IBinder onBind(Intent intent) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
     public Intent getIntent(PendingIntent pendingIntent) throws IllegalStateException {
         try {
@@ -68,44 +65,47 @@ public class NotificationReceiver extends Service {
         }
     }
 
-	private void kill_all(){
-		Log.i(TAG, "Got Kill Switch");
-		Controller.kill_all();
-		stopSelf();
-		return;
-	}
+    private void kill_all() {
+        Log.i(TAG, "Got Kill Switch");
+        Controller.kill_all();
+        stopSelf();
+        return;
+    }
 
-    private void crash(){
+    private void crash() {
         Log.i(TAG, "Got Crash Switch");
         Controller.crash();
         stopSelf();
         return;
     }
-	
-	class CleanUp extends AsyncTask<Void, Void, Void> {
-		private Context oldContext;
-		
-		public CleanUp(Context context){
-			super();
-			oldContext = context;
-		}
-		protected void onPreExecute() {
-			//Toast.makeText(oldContext, "Cleaning Up", Toast.LENGTH_LONG).show();
-		}
-		@Override
-		protected Void doInBackground(Void... params) {
-	    	ActivityManager am = (ActivityManager) oldContext.getSystemService(Context.ACTIVITY_SERVICE);
 
-	    	for (RunningAppProcessInfo pid : am.getRunningAppProcesses()) {
-	    	    am.killBackgroundProcesses(pid.processName);
-	    	}
-			return null;
-	    }
-		protected void onPostExecute(Void res) {
-			//Toast.makeText(oldContext, "Cleaning Finished...", Toast.LENGTH_LONG).show();
-			kill_all();
-		}
+    class CleanUp extends AsyncTask<Void, Void, Void> {
+        private Context oldContext;
 
-	}
-	
+        public CleanUp(Context context) {
+            super();
+            oldContext = context;
+        }
+
+        protected void onPreExecute() {
+            //Toast.makeText(oldContext, "Cleaning Up", Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            ActivityManager am = (ActivityManager) oldContext.getSystemService(Context.ACTIVITY_SERVICE);
+
+            for (RunningAppProcessInfo pid : am.getRunningAppProcesses()) {
+                am.killBackgroundProcesses(pid.processName);
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Void res) {
+            //Toast.makeText(oldContext, "Cleaning Finished...", Toast.LENGTH_LONG).show();
+            kill_all();
+        }
+
+    }
+
 }

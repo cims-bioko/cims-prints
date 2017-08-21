@@ -16,7 +16,7 @@ import logic.Scanner;
 /**
  * Created by sarwar on 1/9/15.
  */
-public class USBReceiver extends BroadcastReceiver{
+public class USBReceiver extends BroadcastReceiver {
 
     private final String USB_ON = "android.hardware.usb.action.USB_DEVICE_ATTACHED";
     private final String USB_OFF = "android.hardware.usb.action.USB_DEVICE_DETACHED";
@@ -56,34 +56,30 @@ public class USBReceiver extends BroadcastReceiver{
             }
             */
 
-        }
-        else if(intent.getAction().equals(LOCAL_USB)){
+        } else if (intent.getAction().equals(LOCAL_USB)) {
             UsbDevice incomingDevice = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
             Log.e(TAG, String.format("Caught LOCAL PLUG signal | %s : %s ", incomingDevice.getProductId(), incomingDevice.getVendorId()));
             ScanningActivity.setFreeDevice(incomingDevice);
-        }
-
-        else if (intent.getAction() == USB_OFF){
+        } else if (intent.getAction() == USB_OFF) {
             UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
             Log.e(TAG, String.format("Caught Scanner UNPLUG signal | %s : %s", device.getProductId(), device.getVendorId()));
 
 
-
-            try{
-                if(!Controller.mHostUsbManager.scannerConnected()){
+            try {
+                if (!Controller.mHostUsbManager.scannerConnected()) {
                     Log.i(TAG, "Scanner really isn't connected!");
-                    if (!Scanner.isInInit){
+                    if (!Scanner.isInInit) {
                         Log.e(TAG, "Killing Scanner");
                         Controller.mScanner = null;
                         ScanningActivity.setFreeDevice(null);
-                    }else{
+                    } else {
                         Log.e(TAG, "Scanner is initializing, false positive");
                     }
-                }else{
+                } else {
                     Log.i(TAG, "psych, scanner's here");
                     return;
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 Log.i(TAG, e.toString());
             }
 

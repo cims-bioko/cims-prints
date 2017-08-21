@@ -1,26 +1,14 @@
 package logic;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Writer;
-
-import android.content.Context;
-
 /*
  * Classes associated with setup of the native file system/ common file system tasks
  *
  */
 
 public class NativeSetup {
-	//TODO KILL
+    //TODO KILL
     /*
-	private static void copyFile(String assetPath, String localPath, Context context) {
+    private static void copyFile(String assetPath, String localPath, Context context) {
 				
 		try {
 			InputStream in = context.getAssets().open(assetPath);

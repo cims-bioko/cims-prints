@@ -1,8 +1,8 @@
 package com.openandid.core;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.app.Activity;
 import android.util.Log;
 
 public class DispatchActivity extends Activity {
@@ -21,29 +21,29 @@ public class DispatchActivity extends Activity {
     protected void onResume() {
         Log.d(TAG, "Resume");
         super.onResume();
-        if(isCanceled){
+        if (isCanceled) {
             finishCancel();
             return;
         }
-        try{
+        try {
             doNextIntent();
             return;
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "PipeSession Had no intent to dispatch | " + e.toString());
         }
-        try{
+        try {
             String sessionID = getIntent().getExtras().getString("sessionID");
-            if(PipeSessionManager.isNewSession(sessionID)){
+            if (PipeSessionManager.isNewSession(sessionID)) {
                 Log.d(TAG, "New Session Found with ID " + sessionID);
                 PipeSessionManager.registerSession(sessionID, getIntent().getAction(), getIntent().getExtras());
                 doNextIntent();
                 return;
-            }else{
+            } else {
                 Log.d(TAG, "Session Exists with ID " + sessionID);
                 finishSession();
                 return;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "Couldn't check sessionID | " + e.toString());
         }
 
@@ -56,9 +56,9 @@ public class DispatchActivity extends Activity {
         finish();
     }
 
-    protected void doNextIntent(){
+    protected void doNextIntent() {
         Intent i = PipeSessionManager.getIntent();
-        if (i == null){
+        if (i == null) {
             throw new NullPointerException("No more intents");
         }
         int requestCode = PipeSessionManager.getIntentId();
@@ -66,7 +66,7 @@ public class DispatchActivity extends Activity {
         startActivityForResult(i, requestCode);
     }
 
-    protected void finishSession(){
+    protected void finishSession() {
         Bundle bindle = PipeSessionManager.getResults();
         PipeSessionManager.endSession(getIntent().getExtras().getString("sessionID"));
         Intent output = new Intent();
@@ -78,12 +78,12 @@ public class DispatchActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, String.format("onResult| request: %s | result ok: %s", requestCode, resultCode==RESULT_OK ));
-        if (resultCode == RESULT_OK && data != null){
+        Log.d(TAG, String.format("onResult| request: %s | result ok: %s", requestCode, resultCode == RESULT_OK));
+        if (resultCode == RESULT_OK && data != null) {
             boolean succeeded = PipeSessionManager.registerResult(requestCode, data.getExtras());
-        }else if(data == null){
+        } else if (data == null) {
             Log.e(TAG, String.format("No intent data returned from requestCode %s", requestCode));
-        }else{
+        } else {
             Log.e(TAG, String.format("requestCode %s was canceled", requestCode));
             isCanceled = true;
         }

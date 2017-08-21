@@ -24,8 +24,8 @@ public class ScannerCatcher extends Activity {
     protected void onResume() {
         super.onResume();
         Intent intent = getIntent();
-        if(intent != null){
-            if(intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)){
+        if (intent != null) {
+            if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
                 Parcelable usbDevice = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                 device = (UsbDevice) usbDevice;
                 Intent broadcastIntent = new Intent(USB_ON_BROADCAST);

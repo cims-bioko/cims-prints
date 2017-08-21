@@ -3,7 +3,6 @@ package broadcast;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.util.Log;
 
@@ -13,7 +12,7 @@ import com.openandid.core.ScanningActivity;
 /**
  * Created by sarwar on 1/7/15.
  */
-public class ScannerReceiver extends BroadcastReceiver{
+public class ScannerReceiver extends BroadcastReceiver {
     private final String TAG = "ScannerReceiver";
 
     @Override
@@ -29,7 +28,7 @@ public class ScannerReceiver extends BroadcastReceiver{
                     Log.i(TAG, "permission denied for device " + Controller.mDevice);
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, String.format("Error in BroadcastReceiver | %s", e.getMessage()));
         }
 
