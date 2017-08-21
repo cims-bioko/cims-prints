@@ -9,9 +9,7 @@ import android.util.Log;
 import com.openandid.core.Controller;
 import com.openandid.core.ScanningActivity;
 
-/**
- * Created by sarwar on 1/7/15.
- */
+
 public class ScannerReceiver extends BroadcastReceiver {
     private final String TAG = "ScannerReceiver";
 

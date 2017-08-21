@@ -9,9 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-/**
- * Created by sarwar on 10/3/15.
- */
+
 public class PipeSessionManager {
 
     private static final String TAG = "PipeSessionManager";

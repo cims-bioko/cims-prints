@@ -13,9 +13,7 @@ import com.openandid.core.ScanningActivity;
 
 import logic.Scanner;
 
-/**
- * Created by sarwar on 1/9/15.
- */
+
 public class USBReceiver extends BroadcastReceiver {
 
     private final String USB_ON = "android.hardware.usb.action.USB_DEVICE_ATTACHED";
