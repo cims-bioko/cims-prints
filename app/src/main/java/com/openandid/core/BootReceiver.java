@@ -7,13 +7,12 @@ import android.util.Log;
 
 public class BootReceiver extends BroadcastReceiver {
 
-    private final String TAG = "BootReceiver";
+    private static final String TAG = "BootReceiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.i(TAG, "Received Boot Broadcast");
         ((Controller) context.getApplicationContext()).test();
-
     }
 
 }
