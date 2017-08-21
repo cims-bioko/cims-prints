@@ -7,8 +7,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import com.openandid.core.AdvancedPreferences;
-
 import java.util.Iterator;
 import java.util.UUID;
 
@@ -34,7 +32,7 @@ public class LaunchActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.i(TAG, "Dispatcher Has Activity Result");
         Log.d(TAG, String.format("Result Ok: %s", resultCode == RESULT_OK));
-        if(resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
             try {
                 Bundle b = data.getExtras();
                 Iterator<String> keys = b.keySet().iterator();
@@ -58,7 +56,7 @@ public class LaunchActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void setupScreen(){
+    private void setupScreen() {
         Log.d(TAG, "Setting contentview");
         setContentView(R.layout.activity_main);
         //TODO This needs to be its own little screen
@@ -76,7 +74,8 @@ public class LaunchActivity extends Activity {
         });
 
     }
-    public void enable_fire(){
+
+    public void enable_fire() {
         fire_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,7 +91,7 @@ public class LaunchActivity extends Activity {
         });
     }
 
-    private void fire_intent(){
+    private void fire_intent() {
         Intent i = new Intent();
         Log.d(TAG, "Demo for .PIPE");
         //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -109,7 +108,7 @@ public class LaunchActivity extends Activity {
         startActivityForResult(i, 101);
     }
 
-    private void fire_other_intent(){
+    private void fire_other_intent() {
         Log.d(TAG, "Demo for .SCAN");
         Intent i = new Intent();
         //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
