@@ -46,7 +46,6 @@ public class USBReceiver extends BroadcastReceiver {
                     }
                 } else {
                     Log.i(TAG, "psych, scanner's here");
-                    return;
                 }
             } catch (Exception e) {
                 Log.i(TAG, e.toString());
