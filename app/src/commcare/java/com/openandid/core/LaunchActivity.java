@@ -8,8 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import java.util.Iterator;
-
 public class LaunchActivity extends Activity {
 
 
@@ -25,10 +23,9 @@ public class LaunchActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.i(TAG, "Dispatcher Has Activity Result");
         try {
             Bundle extras = data.getExtras();
-            for (String key : extras.keySet())
+            for (String key : extras.keySet()) {
                 try {
                     if (Controller.ODK_SENTINEL.equals(key)) {
                         throw new IllegalArgumentException("Can't read bundle");
@@ -39,8 +36,7 @@ public class LaunchActivity extends Activity {
                 }
             }
         } catch (Exception e) {
-            Log.i(TAG, "No output from activity");
-            Log.i(TAG, e.toString());
+            Log.i(TAG, "No output from activity", e);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
