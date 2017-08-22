@@ -26,11 +26,6 @@ public class CommCareSyncService extends Service {
     public static boolean is_ready = true;
     public static boolean re_sync = false;
 
-    public CommCareSyncService() {
-        // TODO Auto-generated constructor stub
-    }
-
-
     @Override
     public void onCreate() {
         NOTE_ID = PersistenceService.NOTE_ID;

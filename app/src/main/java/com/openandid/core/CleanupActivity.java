@@ -14,10 +14,6 @@ public class CleanupActivity extends Activity {
 
     private static final String TAG = "CleanUp";
 
-    public CleanupActivity() {
-        // TODO Auto-generated constructor stub
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "CleanUp Started");

@@ -16,10 +16,6 @@ public class PersistenceService extends Service {
     public boolean is_foreground = false;
     public static int NOTE_ID = 70503;
 
-    public PersistenceService() {
-        // TODO Auto-generated constructor stub
-    }
-
     @Override
     public void onCreate() {
         show_foreground();
