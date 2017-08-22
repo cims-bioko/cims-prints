@@ -267,8 +267,7 @@ public class Engine {
         try {
             person_json = (JSONObject) parser.parse(json_in);
         } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Log.w(TAG, "failed to parse json", e);
         }
         Person p = new Person();
         if (person_json != null) {
