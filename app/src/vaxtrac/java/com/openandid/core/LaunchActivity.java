@@ -13,6 +13,7 @@ import java.util.UUID;
 public class LaunchActivity extends Activity {
 
     private static final String TAG = "LaunchActivity--VT";
+    private static final int PIPE_REQUEST = 101, SCAN_REQUEST = 102;
 
     private Button launchButton;
     private Button settingsButton;
@@ -84,7 +85,7 @@ public class LaunchActivity extends Activity {
             i.putExtra("right_finger_assignment_0", "right_middle");
             i.putExtra("left_finger_assignment_1", "right_thumb");
             i.putExtra("right_finger_assignment_1", "left_middle");
-            startActivityForResult(i, 101);
+            startActivityForResult(i, PIPE_REQUEST);
         }
 
         private void launchScanDemo() {
@@ -95,7 +96,7 @@ public class LaunchActivity extends Activity {
             i.putExtra("easy_skip", "true");
             i.putExtra("left_finger_assignment", "left_index");
             i.putExtra("right_finger_assignment", "right_middle");
-            startActivityForResult(i, 102);
+            startActivityForResult(i, SCAN_REQUEST);
         }
     }
 
