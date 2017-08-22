@@ -12,20 +12,25 @@ import java.util.UUID;
 
 public class LaunchActivity extends Activity {
 
+    private static final String TAG = "LaunchActivity--VT";
 
     Button fire_btn;
-    private final String TAG = "LaunchActivity--VT";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setupScreen();
+        setContentView(R.layout.activity_main);
+        //TODO This needs to be its own little screen
+        fire_btn = (Button) findViewById(R.id.main_fire_btn);
+        enable_fire();
+        Button advanced = (Button) findViewById(R.id.advanced_settings_btn);
+        advanced.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getBaseContext(), AdvancedPreferences.class);
+                startActivity(i);
+            }
+        });
     }
 
     @Override
@@ -54,25 +59,6 @@ public class LaunchActivity extends Activity {
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    private void setupScreen() {
-        Log.d(TAG, "Setting contentview");
-        setContentView(R.layout.activity_main);
-        //TODO This needs to be its own little screen
-        fire_btn = (Button) findViewById(R.id.main_fire_btn);
-        enable_fire();
-
-        Button advanced = (Button) findViewById(R.id.advanced_settings_btn);
-        advanced.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getBaseContext(), AdvancedPreferences.class);
-                startActivity(i);
-
-            }
-        });
-
     }
 
     public void enable_fire() {
