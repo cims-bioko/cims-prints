@@ -50,7 +50,7 @@ public class NotificationReceiver extends Service {
         try {
             Method getIntent = PendingIntent.class.getDeclaredMethod("getIntent");
             return (Intent) getIntent.invoke(pendingIntent);
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+        } catch (Exception e) {
             throw new IllegalStateException(e);
         }
     }
