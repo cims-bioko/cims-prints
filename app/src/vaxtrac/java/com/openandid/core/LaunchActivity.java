@@ -43,7 +43,7 @@ public class LaunchActivity extends Activity {
                 while (keys.hasNext()) {
                     String key = keys.next();
                     try {
-                        if (key.equals(ignore)) {
+                        if (Controller.ODK_SENTINEL.equals(key)) {
                             throw new IllegalArgumentException("Can't read bundle");
                         }
                         Log.d(TAG, String.format("%s | %s", key, b.getString(key)));

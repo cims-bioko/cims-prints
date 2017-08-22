@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
         Log.i(TAG, "Finishing as Canceled.");
         Intent i = new Intent();
         Bundle b = new Bundle();
-        i.putExtra("odk_intent_bundle", b);
+        i.putExtra(Controller.ODK_SENTINEL, b);
         setResult(RESULT_CANCELED, i);
     }
 
@@ -99,7 +99,7 @@ public class MainActivity extends Activity {
             try {
                 Bundle b = data.getExtras();
                 //IF CCODK
-                data.putExtra("odk_intent_bundle", b);
+                data.putExtra(Controller.ODK_SENTINEL, b);
 
                 Log.i(TAG, "Output from openandidCore");
                 for (String k : b.keySet()) {

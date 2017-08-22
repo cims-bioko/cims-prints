@@ -42,6 +42,8 @@ import logic.Scanner;
 )
 public class Controller extends Application {
 
+    public static final String ODK_SENTINEL = "odk_intent_bundle";
+
     private static final String TAG = "ApplicationController";
     public static Scanner mScanner = null;
     public static UsbDevice mDevice;

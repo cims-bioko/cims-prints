@@ -205,7 +205,7 @@ public class PipeSessionManager {
         Bundle output = new Bundle();
         output.putAll(bindle);
         Log.d(TAG, "Adding CCODK bundle");
-        output.putBundle("odk_intent_bundle", bindle);
+        output.putBundle(Controller.ODK_SENTINEL, bindle);
         Log.d(TAG, "Aggregate bundle ready.");
         return output;
     }
