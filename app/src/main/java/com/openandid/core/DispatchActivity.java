@@ -13,13 +13,11 @@ public class DispatchActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "Create");
         isCanceled = false;
     }
 
     @Override
     protected void onResume() {
-        Log.d(TAG, "Resume");
         super.onResume();
         if (isCanceled) {
             finishCancel();
