@@ -19,7 +19,6 @@ public class PipeSessionManager {
     private static int currentSessionPosition;
 
     public static void init() {
-
         sessions = new LinkedHashMap<>();
         clearSession();
     }
