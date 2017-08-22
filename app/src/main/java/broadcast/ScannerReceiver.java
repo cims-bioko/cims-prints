@@ -21,7 +21,7 @@ public class ScannerReceiver extends BroadcastReceiver {
             synchronized (this) {
                 Controller.mDevice = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                 if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
-                    ScanningActivity.waiting_for_permission = false;
+                    ScanningActivity.waitingForPermission = false;
                     Log.i(TAG, "scanner permission granted");
                 } else {
                     Log.i(TAG, "permission denied for device " + Controller.mDevice);
