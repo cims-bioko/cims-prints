@@ -60,8 +60,7 @@ public class CleanupActivity extends Activity {
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                Log.d(TAG, "interrupted during sleep");
             }
             return null;
         }

@@ -643,8 +643,7 @@ public class ScanningActivity extends Activity {
                             try {
                                 Thread.sleep(100);
                             } catch (InterruptedException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
+                                Log.d(TAG, "interrupted during sleep");
                             }
                         }
                     } catch (Exception e) {
@@ -821,8 +820,7 @@ public class ScanningActivity extends Activity {
                 try {
                     Thread.sleep(250);
                 } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    Log.d(TAG, "interrupted during sleep");
                 }
             }
             return null;
@@ -917,8 +915,7 @@ public class ScanningActivity extends Activity {
                             Thread.sleep(100);
                             Log.i(TAG, String.format("waiting still for permission... killed: %s", kill_switch));
                         } catch (InterruptedException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
+                            Log.d(TAG, "interrupted during sleep");
                         }
                         if (isCancelled() == true || check_kill_switch() == true) {
                             return null;

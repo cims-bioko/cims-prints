@@ -41,8 +41,7 @@ public class FingerScanInterface extends AsyncTask<Void, Void, Void> {
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Log.d(TAG, "interrupted during sleep");
         }
 
         success = mScanner.run_scan(finger);

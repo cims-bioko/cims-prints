@@ -447,8 +447,7 @@ public class PipeActivity extends Activity {
                 try {
                     Thread.sleep(3000);
                 } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    Log.d(TAG, "interrupted during sleep");
                 }
             }
             Log.i(TAG, "Sync Done Found");

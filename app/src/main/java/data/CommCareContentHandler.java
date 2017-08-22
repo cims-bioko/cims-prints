@@ -85,8 +85,7 @@ public class CommCareContentHandler {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                Log.d(TAG, "interrupted during sleep");
             }
         }
         Log.i(TAG, "Finished Sync");

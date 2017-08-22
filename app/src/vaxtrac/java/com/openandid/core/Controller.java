@@ -98,8 +98,7 @@ public class Controller extends Application {
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Log.d(TAG, "interrupted during sleep");
         }
         System.exit(0);
 
