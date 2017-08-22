@@ -38,16 +38,13 @@ public class LaunchActivity extends Activity {
         Log.d(TAG, String.format("Result Ok: %s", resultCode == RESULT_OK));
         if (resultCode == RESULT_OK) {
             try {
-                Bundle b = data.getExtras();
-                Iterator<String> keys = b.keySet().iterator();
-                String ignore = "odk_intent_bundle";
-                while (keys.hasNext()) {
-                    String key = keys.next();
+                Bundle extras = data.getExtras();
+                for (String key : extras.keySet()) {
                     try {
                         if (Controller.ODK_SENTINEL.equals(key)) {
                             throw new IllegalArgumentException("Can't read bundle");
                         }
-                        Log.d(TAG, String.format("%s | %s", key, b.getString(key)));
+                        Log.d(TAG, String.format("%s | %s", key, extras.getString(key)));
                     } catch (Exception e2) {
                         Log.d(TAG, String.format("%s | not readable", key));
                     }
