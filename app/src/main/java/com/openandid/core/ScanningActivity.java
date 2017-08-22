@@ -181,7 +181,7 @@ public class ScanningActivity extends Activity {
 
     private void setupUI() {
 
-        popupView = getLayoutInflater().inflate(R.layout.pop_up_wait, null);
+        popupView = getLayoutInflater().inflate(R.layout.pop_up_wait, (ViewGroup) findViewById(android.R.id.content));
         popupWindow = new PopupWindow(popupView);
         popupWindow.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         popupPrompt = (TextView) popupView.findViewById(R.id.pop_up_wait_title);
