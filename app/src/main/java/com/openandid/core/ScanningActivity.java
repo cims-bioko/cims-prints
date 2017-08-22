@@ -207,9 +207,9 @@ public class ScanningActivity extends Activity {
         proceed = (ImageButton) findViewById(R.id.scan_btn_proceed);
         proceed.setOnClickListener(new Button.OnClickListener() {
             @Override
-            public void onClick(View arg0) {
+            public void onClick(View view) {
                 if (Controller.mScanner == null) {
-                    restart_scanner(arg0);
+                    restart_scanner(view);
                     Toast.makeText(ScanningActivity.this, getResources().getString(R.string.scanner_not_connected), Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -227,7 +227,7 @@ public class ScanningActivity extends Activity {
         } else {
             skip.setOnClickListener(new Button.OnClickListener() {
                 @Override
-                public void onClick(View arg0) {
+                public void onClick(View view) {
                     //TODO add confirmation?
                     finish_cancel();
                 }
@@ -263,8 +263,8 @@ public class ScanningActivity extends Activity {
     private OnClickListener getScanClickListener(final FingerType finger, final ImageButton btn) {
         return new Button.OnClickListener() {
             @Override
-            public void onClick(View arg0) {
-                handleClick(finger, btn, false, arg0);
+            public void onClick(View view) {
+                handleClick(finger, btn, false, view);
             }
         };
     }
@@ -272,16 +272,16 @@ public class ScanningActivity extends Activity {
     private Button.OnLongClickListener getScanLongClickListener(final FingerType finger, final ImageButton btn) {
         return new View.OnLongClickListener() {
             @Override
-            public boolean onLongClick(View arg0) {
-                handleClick(finger, btn, true, arg0);
+            public boolean onLongClick(View view) {
+                handleClick(finger, btn, true, view);
                 return true;
             }
         };
     }
 
-    private void handleClick(final FingerType finger, final ImageButton btn, final boolean instant, View arg0) {
+    private void handleClick(final FingerType finger, final ImageButton btn, final boolean instant, View view) {
         if (Controller.mScanner == null) {
-            restart_scanner(arg0);
+            restart_scanner(view);
             Toast.makeText(this, getResources().getString(R.string.scanner_not_connected), Toast.LENGTH_SHORT).show();
             return;
         } else {
@@ -289,7 +289,7 @@ public class ScanningActivity extends Activity {
             Iterator<UsbDevice> deviceIterator = deviceList.values().iterator();
             if (!deviceIterator.hasNext()) {
                 Log.i(TAG, "Device Unplugged");
-                restart_scanner(arg0);
+                restart_scanner(view);
                 Toast.makeText(this, getResources().getString(R.string.scanner_not_connected), Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -297,8 +297,8 @@ public class ScanningActivity extends Activity {
         if (Controller.mScanner.get_ready()) {
             popupPrompt.setText(getResources().getString(R.string.scan_prompt) + " " + finger.finger_name);
             popupWindow.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            popupWindow.showAtLocation(arg0, Gravity.CENTER_VERTICAL, 0, 0);
-            final FingerScanInterface f = new FingerScanInterface(finger.finger_key, Controller.mScanner, btn, arg0, instant);
+            popupWindow.showAtLocation(view, Gravity.CENTER_VERTICAL, 0, 0);
+            final FingerScanInterface f = new FingerScanInterface(finger.finger_key, Controller.mScanner, btn, view, instant);
             cancelPopupButton.setOnClickListener(new Button.OnClickListener() {
                 @Override
                 public void onClick(View v) {
