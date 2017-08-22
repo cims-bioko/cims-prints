@@ -9,7 +9,7 @@
     tools:context=".MainActivity" >
 
     <Button
-        android:id="@+id/main_fire_btn"
+        android:id="@+id/launch_scan_button"
         style="@style/button_dark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,12 +19,12 @@
         android:text="Launch Scanning Demo" />
 
     <Button
-        android:id="@+id/advanced_settings_btn"
+        android:id="@+id/advanced_settings_button"
         style="@style/button_dark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/main_fire_btn"
+        android:layout_below="@+id/launch_scan_button"
         android:layout_marginBottom="20dp"
         android:text="Modify Advanced Settings" />
 

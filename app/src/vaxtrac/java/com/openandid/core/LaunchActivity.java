@@ -14,23 +14,21 @@ public class LaunchActivity extends Activity {
 
     private static final String TAG = "LaunchActivity--VT";
 
-    Button fire_btn;
+    private Button launchButton;
+    private Button settingsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //TODO This needs to be its own little screen
-        fire_btn = (Button) findViewById(R.id.main_fire_btn);
-        enable_fire();
-        Button advanced = (Button) findViewById(R.id.advanced_settings_btn);
-        advanced.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getBaseContext(), AdvancedPreferences.class);
-                startActivity(i);
-            }
-        });
+
+        launchButton = (Button) findViewById(R.id.launch_scan_button);
+        LaunchHandler launchHandler = new LaunchHandler();
+        launchButton.setOnClickListener(launchHandler);
+        launchButton.setOnLongClickListener(launchHandler);
+
+        settingsButton = (Button) findViewById(R.id.advanced_settings_button);
+        settingsButton.setOnClickListener(new SettingsHandler());
     }
 
     @Override
@@ -61,50 +59,54 @@ public class LaunchActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    public void enable_fire() {
-        fire_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fire_intent();
-            }
-        });
-        fire_btn.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                fire_other_intent();
-                return true;
-            }
-        });
+    private class LaunchHandler implements View.OnClickListener, View.OnLongClickListener {
+
+        @Override
+        public void onClick(View v) {
+            launchPipeDemo();
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            launchScanDemo();
+            return true;
+        }
+
+        private void launchPipeDemo() {
+            Intent i = new Intent();
+            i.setAction("com.openandid.core.SCAN");
+            i.putExtra("sessionID", UUID.randomUUID().toString());
+            i.putExtra("prompt_0", ".PIPE Test 1");
+            i.putExtra("easy_skip_0", "true");
+            i.putExtra("prompt_1", ".PIPE Test 2");
+            i.putExtra("easy_skip_1", "true");
+            i.putExtra("left_finger_assignment_0", "left_index");
+            i.putExtra("right_finger_assignment_0", "right_middle");
+            i.putExtra("left_finger_assignment_1", "right_thumb");
+            i.putExtra("right_finger_assignment_1", "left_middle");
+            startActivityForResult(i, 101);
+        }
+
+        private void launchScanDemo() {
+            Intent i = new Intent();
+            i.setAction("com.openandid.core.SCAN");
+            i.putExtra("sessionID", UUID.randomUUID().toString());
+            i.putExtra("prompt", ".SCAN Test");
+            i.putExtra("easy_skip", "true");
+            i.putExtra("left_finger_assignment", "left_index");
+            i.putExtra("right_finger_assignment", "right_middle");
+            startActivityForResult(i, 102);
+        }
     }
 
-    private void fire_intent() {
-        Intent i = new Intent();
-        Log.d(TAG, "Demo for .PIPE");
-        //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        i.setAction("com.openandid.core.SCAN");
-        i.putExtra("sessionID", UUID.randomUUID().toString());
-        i.putExtra("prompt_0", ".PIPE Test 1");
-        i.putExtra("easy_skip_0", "true");
-        i.putExtra("prompt_1", ".PIPE Test 2");
-        i.putExtra("easy_skip_1", "true");
-        i.putExtra("left_finger_assignment_0", "left_index");
-        i.putExtra("right_finger_assignment_0", "right_middle");
-        i.putExtra("left_finger_assignment_1", "right_thumb");
-        i.putExtra("right_finger_assignment_1", "left_middle");
-        startActivityForResult(i, 101);
-    }
 
-    private void fire_other_intent() {
-        Log.d(TAG, "Demo for .SCAN");
-        Intent i = new Intent();
-        //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        i.setAction("com.openandid.core.SCAN");
-        i.putExtra("sessionID", UUID.randomUUID().toString());
-        i.putExtra("prompt", ".SCAN Test");
-        i.putExtra("easy_skip", "true");
-        i.putExtra("left_finger_assignment", "left_index");
-        i.putExtra("right_finger_assignment", "right_middle");
-        startActivityForResult(i, 102);
+    private class SettingsHandler implements View.OnClickListener {
+
+        @Override
+        public void onClick(View view) {
+            Intent i = new Intent(getBaseContext(), AdvancedPreferences.class);
+            startActivity(i);
+        }
     }
 
 }
