@@ -188,18 +188,19 @@ public class ScanningActivity extends Activity {
 
         cancelPopupButton = (Button) popupView.findViewById(R.id.pop_up_wait_cancel_btn);
 
-        leftButton = (ImageButton) findViewById(R.id.scanner_btn_finger_1);
-        leftButton.setImageDrawable(getResources().getDrawable(leftFinger.finger_image_location));
         TextView leftButtonText = (TextView) findViewById(R.id.scanner_txt_finger_1_title);
         leftButtonText.setText(leftFinger.finger_name);
+
+        leftButton = (ImageButton) findViewById(R.id.scanner_btn_finger_1);
+        leftButton.setImageDrawable(getResources().getDrawable(leftFinger.finger_image_location));
         leftButton.setOnClickListener(getScanClickListener(leftFinger, leftButton));
         leftButton.setOnLongClickListener(getScanLongClickListener(leftFinger, leftButton));
 
+        TextView rightButtonText = (TextView) findViewById(R.id.scanner_txt_finger_2_title);
+        rightButtonText.setText(rightFinger.finger_name);
 
         rightButton = (ImageButton) findViewById(R.id.scanner_btn_finger_2);
         rightButton.setImageDrawable(getResources().getDrawable(rightFinger.finger_image_location));
-        TextView rightButtonText = (TextView) findViewById(R.id.scanner_txt_finger_2_title);
-        rightButtonText.setText(rightFinger.finger_name);
         rightButton.setOnClickListener(getScanClickListener(rightFinger, rightButton));
         rightButton.setOnLongClickListener(getScanLongClickListener(rightFinger, rightButton));
 
