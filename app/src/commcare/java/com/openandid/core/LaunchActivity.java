@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import java.lang.IllegalArgumentException;
 import java.util.Iterator;
 
 public class LaunchActivity extends Activity {
@@ -27,43 +26,42 @@ public class LaunchActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.i(TAG, "Dispatcher Has Activity Result");
-        try{
-            Bundle b = data.getExtras();
-            Iterator<String> keys = b.keySet().iterator();
-            String ignore = "odk_intent_bundle";
-            while(keys.hasNext()){
-                String key = keys.next();
-                try{
-                    if (key.equals(ignore)){throw new IllegalArgumentException("Can't read bundle");}
-                    Log.d(TAG, String.format("%s | %s", key, b.getString(key)));
-                }catch(Exception e2){
+        try {
+            Bundle extras = data.getExtras();
+            for (String key : extras.keySet())
+                try {
+                    if (Controller.ODK_SENTINEL.equals(key)) {
+                        throw new IllegalArgumentException("Can't read bundle");
+                    }
+                    Log.d(TAG, String.format("%s | %s", key, extras.getString(key)));
+                } catch (Exception e2) {
                     Log.d(TAG, String.format("%s | not readable", key));
                 }
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             Log.i(TAG, "No output from activity");
-            Log.i(TAG,e.toString());
+            Log.i(TAG, e.toString());
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void setupScreen(){
+    private void setupScreen() {
         Log.d(TAG, "Setting contentview");
         setContentView(R.layout.activity_main);
         fire_btn = (Button) findViewById(R.id.main_fire_btn);
         enable_fire();
         Button sync_button = (Button) findViewById(R.id.main_sync_btn);
-        if(!Controller.preference_manager.has_preferences()){
+        if (!Controller.preference_manager.has_preferences()) {
             sync_button.setVisibility(View.GONE);
-        }else{
+        } else {
             sync_button.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
-                    if(!Controller.commcare_handler.isWorking()){
+                    if (!Controller.commcare_handler.isWorking()) {
                         Controller.sync_commcare_default();
                         Toast.makeText(getBaseContext(), "Sync Started.", Toast.LENGTH_LONG).show();
-                    }else{
+                    } else {
                         Toast.makeText(getBaseContext(), "Sync is Already Running.", Toast.LENGTH_LONG).show();
                     }
                 }
@@ -75,11 +73,11 @@ public class LaunchActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-                if(!Controller.commcare_handler.isWorking()){
+                if (!Controller.commcare_handler.isWorking()) {
                     Intent i = new Intent(getBaseContext(), CCSyncActivity.class);
                     startActivity(i);
                     finish();
-                }else{
+                } else {
                     Toast.makeText(getBaseContext(), "Please wait for Sync to Complete...", Toast.LENGTH_LONG).show();
                 }
 
@@ -96,7 +94,8 @@ public class LaunchActivity extends Activity {
         });
 
     }
-    public void enable_fire(){
+
+    public void enable_fire() {
         fire_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,7 +111,7 @@ public class LaunchActivity extends Activity {
         });
     }
 
-    private void fire_intent(){
+    private void fire_intent() {
         Intent i = new Intent();
         Log.d(TAG, "Demo for .PIPE");
         //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -128,7 +127,7 @@ public class LaunchActivity extends Activity {
         startActivityForResult(i, 101);
     }
 
-    private void fire_other_intent(){
+    private void fire_other_intent() {
         Log.d(TAG, "Demo for .SCAN");
         Intent i = new Intent();
         //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

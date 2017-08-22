@@ -38,15 +38,15 @@ import logic.Scanner;
         mode = ReportingInteractionMode.SILENT,
         resNotifTitle = R.string.app_name,
         resNotifText = R.string.crash_body,
-        logcatArguments = { "-t", "10000", "-v", "time"}
+        logcatArguments = {"-t", "10000", "-v", "time"}
 )
 public class Controller extends Application {
 
-	private static final String TAG = "ApplicationController";
-	public static Scanner mScanner = null;
-	public static UsbDevice mDevice;
-	public static UsbManager mUsbManager;
-	public static HostUsbManager mHostUsbManager;
+    private static final String TAG = "ApplicationController";
+    public static Scanner mScanner = null;
+    public static UsbDevice mDevice;
+    public static UsbManager mUsbManager;
+    public static HostUsbManager mHostUsbManager;
     public static PipeSessionManager pipeSession;
 
     private static List<Intent> stack = null;
@@ -54,16 +54,16 @@ public class Controller extends Application {
     private static boolean pipeFinished = false;
     private static Bundle lastStackOutput = null;
 
-	public static Engine mEngine = null;
-	public static Random mRandom = new Random();
-	public static LocalDatabaseHandler db_handle = null;
+    public static Engine mEngine = null;
+    public static Random mRandom = new Random();
+    public static LocalDatabaseHandler db_handle = null;
     public static LocalDatabaseHelper db_help = null;
-	public static CommCareContentHandler commcare_handler = null;
-	public static SharedPreferencesManager preference_manager = null;
-	
-	private static Context context;
+    public static CommCareContentHandler commcare_handler = null;
+    public static SharedPreferencesManager preference_manager = null;
 
-    public void onCreate(){
+    private static Context context;
+
+    public void onCreate() {
         super.onCreate();
 
         //init the logging function
@@ -79,57 +79,57 @@ public class Controller extends Application {
         Intent i = new Intent(context, PersistenceService.class);
         context.startService(i);
         sync_commcare_default();
-        
+
         db_help = new LocalDatabaseHelper(context);
-        
+
     }
 
     public static Context getAppContext() {
         return Controller.context;
     }
 
-    public static void sync_commcare_default(){
-    	if(preference_manager.has_preferences()){
-        	Map<String,String> data= preference_manager.get_template_fields();
-        	data.put("case_type", preference_manager.get_case_type());
-        	sync_commcare(data);
-        }else{
-        	Toast.makeText(context, "CommCare Setting are NOT SET. Check BMTCore.", Toast.LENGTH_LONG);
+    public static void sync_commcare_default() {
+        if (preference_manager.has_preferences()) {
+            Map<String, String> data = preference_manager.get_template_fields();
+            data.put("case_type", preference_manager.get_case_type());
+            sync_commcare(data);
+        } else {
+            Toast.makeText(context, "CommCare Setting are NOT SET. Check BMTCore.", Toast.LENGTH_LONG);
         }
     }
-    
-    public static void sync_commcare(Map<String, String> output){
-    	if (CommCareSyncService.is_ready){
-    		Log.i(TAG, "CC Sync Start");
-    		commcare_handler = new CommCareContentHandler(output);
-        	Intent i = new Intent(context, CommCareSyncService.class);
-        	context.startService(i);	
-    	}else{
-    		Log.i(TAG, "Delayed sync queued");
-    		CommCareSyncService.re_sync = true;
-    	}
-    	
-	}
-    
-    public void test(){
-    	Log.i(TAG, "Received Message");
-    }
-    
-    public static void kill_all(){
-    	Log.i(TAG, "SHUT IT DOWN!");
-    	preference_manager.notify_false_start();
-    	context.stopService(new Intent(context, PersistenceService.class));
-    	context.stopService(new Intent(context, NotificationReceiver.class));
-    	try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			Log.d(TAG, "interrupted during sleep");
-		}
-    	System.exit(0);
+
+    public static void sync_commcare(Map<String, String> output) {
+        if (CommCareSyncService.is_ready) {
+            Log.i(TAG, "CC Sync Start");
+            commcare_handler = new CommCareContentHandler(output);
+            Intent i = new Intent(context, CommCareSyncService.class);
+            context.startService(i);
+        } else {
+            Log.i(TAG, "Delayed sync queued");
+            CommCareSyncService.re_sync = true;
+        }
 
     }
 
-    public static void enableCrashDialog(){
+    public void test() {
+        Log.i(TAG, "Received Message");
+    }
+
+    public static void kill_all() {
+        Log.i(TAG, "SHUT IT DOWN!");
+        preference_manager.notify_false_start();
+        context.stopService(new Intent(context, PersistenceService.class));
+        context.stopService(new Intent(context, NotificationReceiver.class));
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            Log.d(TAG, "interrupted during sleep");
+        }
+        System.exit(0);
+
+    }
+
+    public static void enableCrashDialog() {
         Log.d(TAG, "Enabling crash dialog");
         ACRAConfiguration config = ACRA.getConfig();
         config.setLogcatArguments(new String[]{"-t", "20000", "-v", "time"});
@@ -156,54 +156,61 @@ public class Controller extends Application {
         }
     }
 
-    public static void crash(){
+    public static void crash() {
         Log.i(TAG, "Inducing Crash!");
         enableCrashDialog();
         ACRA.getErrorReporter().handleException(new Exception("Induced Crash"));
         disableCrashDialog();
     }
 
-    public static List<Intent> getPipeStack(){
+    public static List<Intent> getPipeStack() {
         return stack;
     }
 
-    public static int getPipeStackPosition(){
+    public static int getPipeStackPosition() {
         return stackPosition;
     }
-    public static void setPipeStack(List<Intent> pipeStack, int pipePosition){
+
+    public static void setPipeStack(List<Intent> pipeStack, int pipePosition) {
         setPipeStack(pipeStack);
         setPipePosition(pipePosition);
     }
 
-    public static void setPipeStack(List<Intent> pipeStack){
+    public static void setPipeStack(List<Intent> pipeStack) {
         Log.i(TAG, "Setting PipeStack");
         stack = pipeStack;
         pipeFinished = false;
     }
-    public static void setPipePosition(int pipePosition){
+
+    public static void setPipePosition(int pipePosition) {
         stackPosition = pipePosition;
     }
 
-    public static void nullPipeStack(){
+    public static void nullPipeStack() {
         setPipeStack(null, 0);
     }
 
-    public static boolean isStackFinished(){return pipeFinished;}
+    public static boolean isStackFinished() {
+        return pipeFinished;
+    }
 
-    public static void resetStack(){
+    public static void resetStack() {
         Log.i(TAG, "ResetStack.");
         pipeFinished = false;
         nullPipeStack();
         lastStackOutput = null;
     }
-    public static void setStackFinished(){pipeFinished = true;}
 
-    public static Bundle getLastStackOutput(){
+    public static void setStackFinished() {
+        pipeFinished = true;
+    }
+
+    public static Bundle getLastStackOutput() {
         return lastStackOutput;
     }
 
-    public static void setLastStackOutput(Bundle bundle){
+    public static void setLastStackOutput(Bundle bundle) {
         lastStackOutput = bundle;
     }
-    
+
 }
