@@ -32,8 +32,6 @@ public class EnrollActivity extends Activity {
         //show spinner
         //run asynch with extras
         //finish with code
-
-
     }
 
     private void finish_ok() {
