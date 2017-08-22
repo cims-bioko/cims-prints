@@ -59,14 +59,12 @@ public class NotificationReceiver extends Service {
         Log.i(TAG, "Got Kill Switch");
         Controller.kill_all();
         stopSelf();
-        return;
     }
 
     private void crash() {
         Log.i(TAG, "Got Crash Switch");
         Controller.crash();
         stopSelf();
-        return;
     }
 
     class CleanUp extends AsyncTask<Void, Void, Void> {
