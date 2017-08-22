@@ -34,8 +34,6 @@ public class LaunchActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.i(TAG, "Dispatcher Has Activity Result");
-        Log.d(TAG, String.format("Result Ok: %s", resultCode == RESULT_OK));
         if (resultCode == RESULT_OK) {
             try {
                 Bundle extras = data.getExtras();
@@ -50,8 +48,7 @@ public class LaunchActivity extends Activity {
                     }
                 }
             } catch (Exception e) {
-                Log.i(TAG, "No output from activity");
-                Log.i(TAG, e.toString());
+                Log.i(TAG, "No output from activity", e);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
