@@ -43,6 +43,7 @@ import logic.Scanner_Lumidigm_Mercury;
 public class ScanningActivity extends Activity {
 
     private static final String ACTION_USB_PERMISSION = "com.openandid.screentest.ScanningActivity.USB_PERMISSION";
+    private static final String TAG = "ScanningActivity";
 
     /*
         I'm embarrassed by this mess. Please, refactor...
@@ -74,9 +75,7 @@ public class ScanningActivity extends Activity {
     Context mContext = this;
     Map<String, String> opts = null;
     Map<String, Object> binary_opts = null;
-    public boolean kill_switch = false;
-
-    private static String TAG = "ScanningActivity";
+    boolean kill_switch = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
