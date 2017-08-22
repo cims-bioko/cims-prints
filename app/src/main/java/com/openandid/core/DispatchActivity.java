@@ -27,7 +27,7 @@ public class DispatchActivity extends Activity {
             doNextIntent();
             return;
         } catch (Exception e) {
-            Log.e(TAG, "PipeSession Had no intent to dispatch | " + e.toString());
+            Log.e(TAG, "PipeSession Had no intent to dispatch", e);
         }
         try {
             String sessionID = getIntent().getExtras().getString("sessionID");
