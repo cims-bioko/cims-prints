@@ -299,13 +299,9 @@ public class ScanningActivity extends Activity {
             }
         }
         if (Controller.mScanner.get_ready() == true) {
-            //TODO
             pop_prompt.setText(getResources().getString(R.string.scan_prompt) + " " + finger.finger_name);
             popUp.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
             popUp.showAtLocation(arg0, Gravity.CENTER_VERTICAL, 0, 0);
-            //TODO
-
             final FingerScanInterface f = new FingerScanInterface(finger.finger_key, Controller.mScanner, btn, arg0, instant);
             pop_cancel.setOnClickListener(new Button.OnClickListener() {
                 @Override

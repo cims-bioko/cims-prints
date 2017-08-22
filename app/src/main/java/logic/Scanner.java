@@ -92,7 +92,6 @@ public class Scanner {
     }
 
     public boolean get_ready() {
-        // TODO Auto-generated method stub
         return ready;
     }
 

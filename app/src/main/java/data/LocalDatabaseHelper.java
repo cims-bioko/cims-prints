@@ -21,8 +21,6 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase database) {
         Log.i(LOG_ID, "Creating new Tables");
         database.execSQL(TABLE_CREATE_USERS);
-        // TODO Auto-generated method stub
-
     }
 
     @Override

@@ -21,7 +21,6 @@ public class IdentifyActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         Log.i(TAG, "ID Started");
         requestWindowFeature(Window.FEATURE_NO_TITLE);

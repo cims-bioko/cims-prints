@@ -44,7 +44,6 @@ public class IntentFilterTest extends Activity {
                     txt += k + " : " + b.get(k) + "\n";
                 }
                 Toast.makeText(this, txt, Toast.LENGTH_LONG).show();
-                // TODO Auto-generated method stub
             } catch (Exception e) {
                 Log.i(TAG, "No result returned");
             }
