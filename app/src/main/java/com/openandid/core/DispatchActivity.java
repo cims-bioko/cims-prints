@@ -74,7 +74,7 @@ public class DispatchActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, String.format("onResult| request: %s | result ok: %s", requestCode, resultCode == RESULT_OK));
         if (resultCode == RESULT_OK && data != null) {
-            boolean succeeded = PipeSessionManager.registerResult(requestCode, data.getExtras());
+            PipeSessionManager.registerResult(requestCode, data.getExtras());
         } else if (data == null) {
             Log.e(TAG, String.format("No intent data returned from requestCode %s", requestCode));
         } else {
