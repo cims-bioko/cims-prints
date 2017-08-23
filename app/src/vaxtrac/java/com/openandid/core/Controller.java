@@ -18,8 +18,6 @@ import org.acra.sender.HttpSender.Type;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-
 import data.CommCareContentHandler;
 import data.LocalDatabaseHandler;
 import data.SharedPreferencesManager;
@@ -55,7 +53,6 @@ public class Controller extends Application {
     private static Bundle lastStackOutput = null;
 
     public static Engine mEngine = null;
-    public static Random mRandom = new Random();
     public static LocalDatabaseHandler db_handle = null;
     public static CommCareContentHandler commcare_handler = null;
     public static SharedPreferencesManager preference_manager = null;
