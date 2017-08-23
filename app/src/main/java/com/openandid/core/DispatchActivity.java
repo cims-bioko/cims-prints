@@ -35,17 +35,13 @@ public class DispatchActivity extends Activity {
                 Log.d(TAG, "New Session Found with ID " + sessionID);
                 PipeSessionManager.registerSession(sessionID, getIntent().getAction(), getIntent().getExtras());
                 doNextIntent();
-                return;
             } else {
                 Log.d(TAG, "Session Exists with ID " + sessionID);
                 finishSession();
-                return;
             }
         } catch (Exception e) {
             Log.e(TAG, "Couldn't check sessionID | " + e.toString());
         }
-
-
     }
 
     private void finishCancel() {
