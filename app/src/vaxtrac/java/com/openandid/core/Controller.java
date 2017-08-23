@@ -45,7 +45,6 @@ public class Controller extends Application {
     public static UsbDevice mDevice;
     public static UsbManager mUsbManager;
     public static HostUsbManager mHostUsbManager;
-    public static PipeSessionManager pipeSession;
 
     private static List<Intent> stack = null;
     private static int stackPosition = 0;
