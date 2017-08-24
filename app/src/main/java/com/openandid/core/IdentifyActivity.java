@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,13 +15,6 @@ import java.util.Map;
 public class IdentifyActivity extends Activity {
 
     private static final String TAG = "IdentifyActivity";
-
-    private static final List<String> FINGERS = new ArrayList<String>() {{
-        add("left_thumb");
-        add("right_thumb");
-        add("left_index");
-        add("right_index");
-    }};
 
     private Bundle output;
 
@@ -69,10 +61,10 @@ public class IdentifyActivity extends Activity {
 
             Map<String, String> templates = new HashMap<>();
 
-            for (String f : FINGERS) {
-                String temp = extras.getString(f);
+            for (SupportedFinger f : SupportedFinger.values()) {
+                String temp = extras.getString(f.name());
                 if (temp != null) {
-                    templates.put(f, temp);
+                    templates.put(f.name(), temp);
                 }
             }
 

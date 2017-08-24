@@ -7,21 +7,12 @@ import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class EnrollActivity extends Activity {
 
     private static final String TAG = "EnrollActivity";
-
-    private static final List<String> FINGERS = new ArrayList<String>() {{
-        add("left_thumb");
-        add("right_thumb");
-        add("left_index");
-        add("right_index");
-    }};
 
     private boolean enrolled = false;
     private String previousId = null;
@@ -66,10 +57,10 @@ public class EnrollActivity extends Activity {
             String uuid = extras.getString("uuid");
 
             Map<String, String> templates = new HashMap<>();
-            for (String f : FINGERS) {
-                String temp = extras.getString(f);
+            for (SupportedFinger f : SupportedFinger.values()) {
+                String temp = extras.getString(f.name());
                 if (temp != null) {
-                    templates.put(f, temp);
+                    templates.put(f.name(), temp);
                 }
             }
             try {

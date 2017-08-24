@@ -13,7 +13,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import bmtafis.simple.AfisEngine;
-import bmtafis.simple.Finger;
 import bmtafis.simple.Fingerprint;
 import bmtafis.simple.Person;
 
@@ -21,12 +20,7 @@ import bmtafis.simple.Person;
 public class Engine {
 
     private static final String TAG = "AFISEngine";
-    private static final List<String> FINGERS = new ArrayList<String>() {{
-        add("left_thumb");
-        add("right_thumb");
-        add("left_index");
-        add("right_index");
-    }};
+
     private static final double MATCH_THRESOLD = 70.0;
 
     public static boolean ready = true;
@@ -103,10 +97,10 @@ public class Engine {
         Person whole_person = mapToPerson(999999999, templates);
         Map<String, Person> p_hold = new HashMap<>();
 
-        for (String finger : FINGERS) {
+        for (SupportedFinger finger : SupportedFinger.values()) {
             Map<String, String> f_hold = new HashMap<>();
-            f_hold.put(finger, templates.get(finger));
-            p_hold.put(finger, mapToPerson(999999999, f_hold));
+            f_hold.put(finger.name(), templates.get(finger.name()));
+            p_hold.put(finger.name(), mapToPerson(999999999, f_hold));
         }
 
         List<Person> spikes = identify(whole_person);
@@ -120,8 +114,8 @@ public class Engine {
         List<Integer> super_threshold = new ArrayList<>();
         for (int id : hits) {
             double score = 0.0;
-            for (String finger : FINGERS) {
-                double f_score = verifyInCache(p_hold.get(finger), id);
+            for (SupportedFinger finger : SupportedFinger.values()) {
+                double f_score = verifyInCache(p_hold.get(finger.name()), id);
                 Log.i(TAG, "Verify finger for id: " + Integer.toString(id) + " : " + Double.toString(f_score));
                 score += f_score;
             }
@@ -164,13 +158,13 @@ public class Engine {
 
         if (templates != null) {
             int c = 0;
-            for (String finger : FINGERS) {
-                String temp = templates.get(finger);
+            for (SupportedFinger finger : SupportedFinger.values()) {
+                String temp = templates.get(finger.name());
                 if (temp != null) {
                     Fingerprint f = new Fingerprint();
                     try {
                         f.setIsoTemplate(hexToBytes(temp));
-                        f.setFinger(Finger.valueOf(finger.toUpperCase()));
+                        f.setFinger(finger.getAFISFinger());
                         prints.add(f);
                         c += 1;
                     } catch (Exception e) {
