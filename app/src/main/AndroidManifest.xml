@@ -48,13 +48,6 @@
                 <action android:name="org.commcare.dalvik.api.action.session.login" />
             </intent-filter>
         </receiver>
-        <receiver
-            android:name=".BootReceiver"
-            android:enabled="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
 
         <activity
             android:name="org.acra.CrashReportDialog"
@@ -68,21 +61,6 @@
             <intent-filter>
                 <action android:name=".Preferences" />
                 <category android:name="android.intent.category.PREFERENCE" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".IntentFilterTest"
-            android:label="AIntentFilterTest" >
-            <intent-filter>
-                <action android:name="android.intent.action.View" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".TestEngine"
-            android:label="ATestEngine" >
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity

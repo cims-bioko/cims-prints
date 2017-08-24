@@ -6,85 +6,35 @@ import android.util.Log;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 public class HostUsbManager {
 
-    private final String TAG = "HostUsbManager";
-    private UsbManager mUsbManager;
-    private UsbDevice dev;
-    private HashMap<String, UsbDevice> deviceList;
-    private boolean status_busy;
-    private HashMap<String, String> scanner_info;
+    private static final String TAG = "HostUsbManager";
 
-    public static final Set<Integer> vendor_blacklist = new HashSet<Integer>() {{
+    /* make this private and consolidate client code */
+    public static final Set<Integer> VENDOR_BLACKLIST = new HashSet<Integer>() {{
         add(6531); //NVIDIA Shield
         add(1478); //Moto Nexus 6
     }};
 
+    private UsbManager mUsbManager;
+    private HashMap<String, UsbDevice> deviceList;
+
     public HostUsbManager(UsbManager manager) {
         mUsbManager = manager;
-        find_device();
     }
 
-    private void find_device() {
-        status_busy = true;
+    public boolean isPermittedDeviceConnected() {
         deviceList = mUsbManager.getDeviceList();
-        dev = null;
-        Iterator<UsbDevice> deviceIterator = deviceList.values().iterator();
-        while (deviceIterator.hasNext()) {
-            UsbDevice device = deviceIterator.next();
-            if (!HostUsbManager.vendor_blacklist.contains(device.getVendorId())) {
-                Log.i(TAG, "Product ID | " + Integer.toHexString(device.getProductId()));
-                Log.i(TAG, "Vendor ID | " + Integer.toHexString(device.getVendorId()));
-                Log.i(TAG, "Vendor = " + Integer.toString(device.getVendorId()));
-                dev = device;
+        for (UsbDevice device : deviceList.values()) {
+            if (VENDOR_BLACKLIST.contains(device.getVendorId())) {
+                Log.d(TAG, "ignoring blacklisted device " + device);
             } else {
-                Log.i(TAG, "Vendor | " + Integer.toString(device.getVendorId()) + " | is blacklisted");
-            }
-
-        }
-        if (dev != null) {
-            scanner_info = new HashMap<String, String>();
-            scanner_info.put("ProductID", Integer.toHexString(dev.getProductId()));
-            scanner_info.put("VendorID", Integer.toHexString(dev.getVendorId()));
-        } else {
-            scanner_info = null;
-        }
-        status_busy = false;
-
-    }
-
-    public boolean scannerConnected() {
-        deviceList = mUsbManager.getDeviceList();
-        Iterator<UsbDevice> deviceIterator = deviceList.values().iterator();
-        while (deviceIterator.hasNext()) {
-            UsbDevice device = deviceIterator.next();
-            if (!HostUsbManager.vendor_blacklist.contains(device.getVendorId())) {
-                Log.i(TAG, "Product ID | " + Integer.toHexString(device.getProductId()));
-                Log.i(TAG, "Vendor ID | " + Integer.toHexString(device.getVendorId()));
-                Log.i(TAG, "Vendor = " + Integer.toString(device.getVendorId()));
+                Log.d(TAG, "connected " + device);
                 return true;
-            } else {
-                Log.i(TAG, "Vendor | " + Integer.toString(device.getVendorId()) + " | is blacklisted");
             }
-
         }
         return false;
-    }
-
-    public boolean get_status() {
-        return status_busy;
-    }
-
-    public UsbDevice get_device() {
-        return dev;
-    }
-
-    @SuppressWarnings("rawtypes")
-    public HashMap get_device_info() {
-        return scanner_info;
-
     }
 }

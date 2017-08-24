@@ -7,7 +7,8 @@ import android.util.Log;
 
 public class DispatchActivity extends Activity {
 
-    public static final String TAG = "DispatchActivity";
+    private static final String TAG = "DispatchActivity";
+
     private static boolean isCanceled = false;
 
     @Override

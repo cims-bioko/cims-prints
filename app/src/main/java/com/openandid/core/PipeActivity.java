@@ -11,36 +11,36 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import data.CommCareContentHandler;
 
 public class PipeActivity extends Activity {
 
+    private static final String TAG = "PIPE";
+
+    private static int requestCode = 1;
+
     private static int startSequence = 0;
     private static int createSequence = 0;
     private static boolean caughtCancelled = false;
-    private final String TAG = "PIPE";
-    boolean finished = false;
-    Intent output_intent;
-    List<Intent> stack;
-    int stackPosition;
     private static boolean gotResult = false;
 
-    int REQUEST_CODE = 1;
+    private boolean finished = false;
+    private Intent outputIntent;
+    private List<Intent> stack;
+    private int stackPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, String.format("onCreate | %s", createSequence));
         createSequence += 1;
-        output_intent = new Intent();
-        stack = new ArrayList<Intent>();
+        outputIntent = new Intent();
+        stack = new ArrayList<>();
         stackPosition = 0;
         if (savedInstanceState != null) {
             Log.i(TAG, "Found saved instance, reporting and restoring");
             restoreAssets(savedInstanceState);
-            print_bundle(savedInstanceState);
             if (caughtCancelled) {
                 Log.e(TAG, "This was already canceled!");
                 caughtCancelled = false;
@@ -51,7 +51,6 @@ public class PipeActivity extends Activity {
             } else {
                 if (stack != null) {
                     Log.i(TAG, "Dispatching existing stack");
-                    //dispatch_intent(stack);
                 } else {
                     Log.e(TAG, "Using last known bundle as output for looped instance");
                     Intent i = new Intent();
@@ -95,11 +94,8 @@ public class PipeActivity extends Activity {
         } else {
             Intent incoming = getIntent();
             Log.i(TAG, "Pipe NOT finished.");
-            log_intent(incoming);
-            output_intent.putExtras(merge_bundles(output_intent, incoming));
-            //process_request(incoming);
+            outputIntent.putExtras(mergeBundles(outputIntent, incoming));
         }
-
     }
 
     @Override
@@ -108,7 +104,7 @@ public class PipeActivity extends Activity {
         super.onResume();
         if (!gotResult && stackPosition == 0) {
             Log.i(TAG, "New Stack");
-            process_request(getIntent());
+            processRequest(getIntent());
             return;
         }
         gotResult = false;
@@ -120,7 +116,7 @@ public class PipeActivity extends Activity {
             finish();
         } else {
             Log.d(TAG, "Dispatch from resume");
-            dispatch_intent(stack);
+            dispatchIntent(stack);
         }
     }
 
@@ -131,7 +127,6 @@ public class PipeActivity extends Activity {
 
     public boolean checkStack(List<Intent> stack, int stackPosition) {
         int controlStackPosition = Controller.getPipeStackPosition();
-        List<Intent> controlStack = Controller.getPipeStack();
         if (stackPosition != controlStackPosition) {
             Log.e(TAG, "Stack is out of sync!");
             return false;
@@ -149,7 +144,6 @@ public class PipeActivity extends Activity {
             Log.e(TAG, e.getMessage());
             return false;
         }
-
     }
 
     @Override
@@ -186,6 +180,7 @@ public class PipeActivity extends Activity {
         return bundle;
     }
 
+    @SuppressWarnings("unchecked")
     public void restoreAssets(Bundle bundle) {
         Log.i(TAG, "Restoring State");
         caughtCancelled = bundle.getBoolean("caughtCancelled");
@@ -206,38 +201,30 @@ public class PipeActivity extends Activity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         saveAssets(outState);
-
     }
 
-    private void log_intent(Intent incoming) {
-        Log.i(TAG, "INCOMING INTENT | CHECKIT");
-        Log.i(TAG, "Action : " + incoming.getAction());
-
-    }
-
-    private void process_request(Intent incoming) {
+    private void processRequest(Intent incoming) {
         try {
-            REQUEST_CODE = incoming.getExtras().getInt("requestCode");
+            requestCode = incoming.getExtras().getInt("requestCode");
         } catch (Exception e) {
             Log.i(TAG, "Couldn't get requestcode from intent.");
         }
         String action = incoming.getAction();
         if (action.equals("com.openandid.core.PIPE")) {
-            process_pipe(incoming);
+            processPipe(incoming);
         } else if (action.equals("com.openandid.core.SCAN")) {
-            append_scans(incoming);
+            appendScans(incoming);
         }
-        dispatch_intent(stack);
+        dispatchIntent(stack);
     }
 
-    private void process_pipe(Intent incoming) {
+    private void processPipe(Intent incoming) {
         Bundle b = incoming.getExtras();
-        List<String> actions = new ArrayList<String>();
         for (int x = 0; x < 10; x++) {
             String a = b.getString("action_" + Integer.toString(x));
             if (a != null) {
                 if (a.equals("com.openandid.core.SCAN")) {
-                    append_scans(incoming);
+                    appendScans(incoming);
                 } else {
                     Log.i(TAG, "Stacking | " + a);
                     Intent i = new Intent();
@@ -247,21 +234,18 @@ public class PipeActivity extends Activity {
             }
         }
         Log.d(TAG, "Stack size: " + Integer.toString(stack.size()));
-
     }
 
-    private void append_scans(Intent incoming) {
+    private void appendScans(Intent incoming) {
         Log.i(TAG, "Append Scans");
-        int iter = ScanningActivity.get_total_scans_from_bundle(incoming.getExtras());
+        int iter = ScanningActivity.getScanCount(incoming.getExtras());
         Log.i(TAG, "Total Scans: " + Integer.toString(iter));
         if (stack == null) {
-            stack = new ArrayList<Intent>();
+            stack = new ArrayList<>();
         }
         for (int x = 0; x < iter; x++) {
-            Intent b = ScanningActivity.get_next_scanning_bundle(incoming, x);
+            Intent b = ScanningActivity.getNextScan(incoming, x);
             if (b != null) {
-                Log.i(TAG, "Stacking | SCAN -- details follow");
-                print_bundle(b);
                 stack.add(b);
             } else {
                 Log.i(TAG, "Scan Bundle Null");
@@ -270,14 +254,12 @@ public class PipeActivity extends Activity {
         Log.d(TAG, "Stack size: " + Integer.toString(stack.size()));
     }
 
-    private void dispatch_intent(List<Intent> stack) {
-        Log.i(TAG, "Dispatching Stack");
-
+    private void dispatchIntent(List<Intent> stack) {
         try {
             Intent currentIntent = stack.get(stackPosition);
             setStackPosition(stackPosition + 1);
             Log.i(TAG, String.format("Current Stack Position %s of %s", stackPosition, stack.size()));
-            dispatch_intent(currentIntent);
+            dispatchIntent(currentIntent);
         } catch (IndexOutOfBoundsException e) {
             try {
                 Log.e(TAG, e.getMessage());
@@ -296,69 +278,46 @@ public class PipeActivity extends Activity {
             gotResult = false;
             finish();
         }
-
     }
 
-    private void dispatch_intent(Intent incoming) {
+    private void dispatchIntent(Intent incoming) {
 
         String action = incoming.getAction();
-        Log.i(TAG, "Dispatching Activity | " + action);
-        if (action.equals("com.openandid.core.IDENTIFY")) {
-            output_intent.setClass(this, IdentifyActivity.class);
-            Log.i(TAG, "Starting | IDENTIFY");
-            if (Controller.commcare_handler != null) {
-                if (CommCareContentHandler.isWorking()) {
-                    //Wait for sync to finish w/ prompt
-                    //TODO fix  output_intent -> incoming
-                    Syncronizing sync = new Syncronizing(this, incoming);
-                    sync.execute();
-                    return;
+
+        switch (action) {
+            case "com.openandid.core.IDENTIFY":
+                outputIntent.setClass(this, IdentifyActivity.class);
+                Log.i(TAG, "Starting | IDENTIFY");
+                if (Controller.commCareHandler != null) {
+                    if (CommCareContentHandler.isInSync()) {
+                        SyncTask sync = new SyncTask(this, incoming);
+                        sync.execute();
+                        return;
+                    }
                 }
-            }
-            startActivityForResult(output_intent, REQUEST_CODE);
-        } else if (action.equals("com.openandid.core.SCAN")) {
-            incoming.setClass(this, ScanningActivity.class);
-            Log.i(TAG, "Starting | SCAN");
-            startActivityForResult(incoming, REQUEST_CODE);
-        } else if (action.equals("com.openandid.core.ENROLL")) {
-            output_intent.setClass(this, EnrollActivity.class);
-            Log.i(TAG, "Starting | ENROLL");
-            startActivityForResult(output_intent, REQUEST_CODE);
-        } else if (action.equals("com.openandid.core.VERIFY")) {
-
-        } else {
-            if (stackPosition >= stack.size()) {
-                Bundle b = output_intent.getExtras();
-                b.putString("pipe_finished", "true");
-                output_intent.putExtras(b);
-                setResult(Activity.RESULT_OK, output_intent);
-            } else {
-                Log.i(TAG, "More intents to dispatch!");
-                dispatch_intent(stack);
-            }
-
-        }
-
-    }
-
-    private void print_bundle(Intent data) {
-
-        Log.i(TAG, "Print Bundle");
-        Bundle b = data.getExtras();
-        print_bundle(b);
-    }
-
-    private void print_bundle(Bundle b) {
-        String txt = "";
-
-        try {
-            Set<String> keys = b.keySet();
-            for (String k : keys) {
-                txt += k + " : " + b.get(k) + "\n";
-            }
-            Log.i(TAG, txt);
-        } catch (Exception e) {
-            Log.i(TAG, "No result returned");
+                startActivityForResult(outputIntent, requestCode);
+                break;
+            case "com.openandid.core.SCAN":
+                incoming.setClass(this, ScanningActivity.class);
+                Log.i(TAG, "Starting | SCAN");
+                startActivityForResult(incoming, requestCode);
+                break;
+            case "com.openandid.core.ENROLL":
+                outputIntent.setClass(this, EnrollActivity.class);
+                Log.i(TAG, "Starting | ENROLL");
+                startActivityForResult(outputIntent, requestCode);
+                break;
+            default:
+                if (stackPosition >= stack.size()) {
+                    Bundle b = outputIntent.getExtras();
+                    b.putString("pipe_finished", "true");
+                    outputIntent.putExtras(b);
+                    setResult(Activity.RESULT_OK, outputIntent);
+                } else {
+                    Log.i(TAG, "More intents to dispatch!");
+                    dispatchIntent(stack);
+                }
+                break;
         }
     }
 
@@ -375,11 +334,8 @@ public class PipeActivity extends Activity {
         if (data == null) {
             Log.i(TAG, "Previous Activity DIED... Returning null");
             cancelPipe();
-            super.onActivityResult(requestCode, resultCode, data);
+            super.onActivityResult(requestCode, resultCode, null);
             return;
-        } else {
-            Log.i(TAG, "Child data != null");
-            print_bundle(data);
         }
         if (resultCode == RESULT_CANCELED) {
             Log.i(TAG, "Previous Activity Canceled...");
@@ -387,48 +343,44 @@ public class PipeActivity extends Activity {
             super.onActivityResult(requestCode, resultCode, data);
             return;
         }
-        output_intent.putExtras(merge_bundles(output_intent, data));
+        outputIntent.putExtras(mergeBundles(outputIntent, data));
 
         if (stackPosition >= stack.size()) {
             Log.i(TAG, "No more intents, finished with PIPE");
 
             Controller.nullPipeStack();
             Controller.setStackFinished();
-            setResult(resultCode, output_intent);
+            setResult(resultCode, outputIntent);
             finished = true;
             super.onActivityResult(requestCode, resultCode, data);
 
         } else {
             Log.i(TAG, String.format("Dispatching #%s of %s", stackPosition, stack.size()));
-            dispatch_intent(stack);
+            dispatchIntent(stack);
             super.onActivityResult(requestCode, resultCode, data);
         }
 
     }
 
-    private Bundle merge_bundles(Intent a, Intent b) {
+    private Bundle mergeBundles(Intent a, Intent b) {
         Bundle c = new Bundle();
         Bundle ba = a.getExtras();
         if (ba != null) {
-            Log.i(TAG, "Merge A:");
-            print_bundle(a);
             c.putAll(ba);
         }
         Bundle bb = b.getExtras();
         if (bb != null) {
-            Log.i(TAG, "Merge B:");
-            print_bundle(b);
             c.putAll(bb);
         }
         Controller.setLastStackOutput(c);
         return c;
     }
 
-    class Syncronizing extends AsyncTask<Void, Void, Void> {
+    private class SyncTask extends AsyncTask<Void, Void, Void> {
         private Context oldContext;
         private Intent incoming;
 
-        public Syncronizing(Context context, Intent incoming) {
+        SyncTask(Context context, Intent incoming) {
             super();
             oldContext = context;
             this.incoming = incoming;
@@ -443,7 +395,7 @@ public class PipeActivity extends Activity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            while (CommCareContentHandler.isWorking()) {
+            while (CommCareContentHandler.isInSync()) {
                 try {
                     Thread.sleep(3000);
                 } catch (InterruptedException e) {
@@ -456,9 +408,7 @@ public class PipeActivity extends Activity {
 
         protected void onPostExecute(Void res) {
             Toast.makeText(oldContext, "Sync Finished...", Toast.LENGTH_LONG).show();
-            dispatch_intent(incoming);
+            dispatchIntent(incoming);
         }
-
     }
-
 }

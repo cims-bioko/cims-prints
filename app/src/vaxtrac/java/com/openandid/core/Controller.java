@@ -19,7 +19,6 @@ import org.acra.sender.HttpSender.Type;
 import java.util.List;
 import java.util.Map;
 import data.CommCareContentHandler;
-import data.LocalDatabaseHandler;
 import data.SharedPreferencesManager;
 import logic.HostUsbManager;
 import logic.Scanner;
@@ -52,45 +51,31 @@ public class Controller extends Application {
     private static Bundle lastStackOutput = null;
 
     public static Engine mEngine = null;
-    public static LocalDatabaseHandler db_handle = null;
-    public static CommCareContentHandler commcare_handler = null;
-    public static SharedPreferencesManager preference_manager = null;
+    public static CommCareContentHandler commCareHandler = null;
+    public static SharedPreferencesManager prefsMgr = null;
 
     private static Context context;
 
     public void onCreate() {
         super.onCreate();
-
-        //init the logging function
         ACRA.init(this);
-
         Controller.context = getApplicationContext();
-        preference_manager = new SharedPreferencesManager(context);
+        prefsMgr = new SharedPreferencesManager(context);
         PipeSessionManager.init();
-        //Start foreground service
         Intent i = new Intent(context, PersistenceService.class);
         context.startService(i);
-
     }
 
     public static Context getAppContext() {
         return Controller.context;
     }
 
-    public static void sync_commcare_default() {
+    public static void syncCommCare(Map<String, String> output) {
+        // stub
     }
 
-    public static void sync_commcare(Map<String, String> output) {
-
-    }
-
-    public void test() {
-        Log.i(TAG, "Received Message");
-    }
-
-    public static void kill_all() {
-        Log.i(TAG, "SHUT IT DOWN!");
-        preference_manager.notify_false_start();
+    public static void killAll() {
+        prefsMgr.notify_false_start();
         context.stopService(new Intent(context, PersistenceService.class));
         context.stopService(new Intent(context, NotificationReceiver.class));
         try {
@@ -99,11 +84,9 @@ public class Controller extends Application {
             Log.d(TAG, "interrupted during sleep");
         }
         System.exit(0);
-
     }
 
     public static void enableCrashDialog() {
-        Log.d(TAG, "Enabling crash dialog");
         ACRAConfiguration config = ACRA.getConfig();
         config.setLogcatArguments(new String[]{"-t", "20000", "-v", "time"});
         try {
@@ -114,13 +97,11 @@ public class Controller extends Application {
             config.setResDialogCommentPrompt(R.string.crash_prompt);
             config.setMode(ReportingInteractionMode.DIALOG);
         } catch (ACRAConfigurationException e) {
-            Log.e(TAG, "Couldn't set Acra dialog options");
-            e.printStackTrace();
+            Log.e(TAG, "Couldn't set Acra dialog options", e);
         }
     }
 
     public static void disableCrashDialog() {
-        Log.d(TAG, "Disabling crash dialog");
         ACRAConfiguration config = ACRA.getConfig();
         try {
             config.setMode(ReportingInteractionMode.SILENT);
@@ -130,7 +111,6 @@ public class Controller extends Application {
     }
 
     public static void crash() {
-        Log.i(TAG, "Inducing Crash!");
         enableCrashDialog();
         ACRA.getErrorReporter().handleException(new Exception("Induced Crash"));
         disableCrashDialog();
@@ -150,7 +130,6 @@ public class Controller extends Application {
     }
 
     public static void setPipeStack(List<Intent> pipeStack) {
-        Log.i(TAG, "Setting PipeStack");
         stack = pipeStack;
         pipeFinished = false;
     }
@@ -168,7 +147,6 @@ public class Controller extends Application {
     }
 
     public static void resetStack() {
-        Log.i(TAG, "ResetStack.");
         pipeFinished = false;
         nullPipeStack();
         lastStackOutput = null;

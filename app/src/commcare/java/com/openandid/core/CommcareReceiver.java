@@ -13,9 +13,7 @@ public class CommcareReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.i(TAG, "Received Commcare Broadcast");
-        ((Controller) context.getApplicationContext()).test();
-        Controller.sync_commcare_default();
+        Controller.syncCommCareDefault();
         Toast.makeText(context, "Biometric Sync Started.", Toast.LENGTH_SHORT).show();
     }
-
 }

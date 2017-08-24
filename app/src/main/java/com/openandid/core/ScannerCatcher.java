@@ -15,12 +15,6 @@ public class ScannerCatcher extends Activity {
     public static final String TAG = "ScannerCatcher";
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.d(TAG, "Create.");
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         Intent intent = getIntent();

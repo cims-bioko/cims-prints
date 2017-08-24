@@ -4,21 +4,26 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 
-public class PipeSessionManager {
+class PipeSessionManager {
+
 
     private static final String TAG = "PipeSessionManager";
+    private static final String PIPE_ACTION = "com.openandid.core.PIPE";
+    private static final String SCAN_ACTION = "com.openandid.core.SCAN";
+    private static final String INTERNAL_IDENTIFY_ACTION = "com.openandid.internal.IDENTIFY";
+    private static final String INTERNAL_ENROLL_ACTION = "com.openandid.internal.ENROLL";
+    private static final String ENROLL = "ENROLL";
+    private static final String IDENTIFY = "IDENTIFY";
+
     private static LinkedHashMap<String, Boolean> sessions;
     private static LinkedHashMap<Integer, Intent> currentSession;
     private static LinkedHashMap<Integer, Bundle> currentSessionResults;
     private static int currentSessionPosition;
 
-    public static void init() {
+    static void init() {
         sessions = new LinkedHashMap<>();
         clearSession();
     }
@@ -29,13 +34,11 @@ public class PipeSessionManager {
         currentSessionPosition = 0;
     }
 
-    public static boolean registerSession(String id, String action, Bundle info) {
+    static boolean registerSession(String id, String action, Bundle info) {
         if (isNewSession(id)) {
-            // new session created
             startSession(id, action, info);
             return true;
         } else {
-            // new session could not be created
             return false;
         }
     }
@@ -46,23 +49,23 @@ public class PipeSessionManager {
         currentSessionPosition = 0;
     }
 
-    public static void endSession(String id) {
+    static void endSession(String id) {
         Log.d(TAG, "Closing Session: " + id);
         sessions.put(id, true);
         clearSession();
     }
 
     private static void digestSession(String action, Bundle info) {
-        if (action.equals("com.openandid.core.PIPE")) {
-            process_pipe(info);
-        } else if (action.equals("com.openandid.core.SCAN")) {
-            append_scans(info, 0);
+        if (PIPE_ACTION.equals(action)) {
+            digestPipe(info);
+        } else if (SCAN_ACTION.equals(action)) {
+            importScans(info, 0);
         } else {
-            process_single(action, info);
+            processSingle(action, info);
         }
     }
 
-    private static void process_single(String action, Bundle info) {
+    private static void processSingle(String action, Bundle info) {
         Log.i(TAG, String.format("Stacking | %s @ # %s ", action, 0));
         Intent i = new Intent();
         i.putExtras(info);
@@ -70,48 +73,32 @@ public class PipeSessionManager {
         currentSession.put(0, i);
     }
 
-    private static void process_pipe(Bundle info) {
-        Log.d(TAG, "Processing Pipe");
-        printBundle(info);
-        List<String> actions = new ArrayList<String>();
-        int x = 0;
-        int actionCounter = 0;
-        while (true) {
-            String a = info.getString("action_" + Integer.toString(actionCounter));
-            Log.d(TAG, String.format("action #%s -> %s", actionCounter, a));
-            if (a != null) {
-                if (a.equals("com.openandid.core.SCAN")) {
-                    x += append_scans(info, x);
+    private static void digestPipe(Bundle bundle) {
+        int x = 0, actionCounter = 0;
+        String action;
+        do {
+            action = bundle.getString("action_" + Integer.toString(actionCounter));
+            if (action != null) {
+                if (SCAN_ACTION.equals(action)) {
+                    x += importScans(bundle, x);
                     actionCounter += 1;
                 } else {
-                    Log.i(TAG, String.format("Stacking | %s @ # %s ", a, Integer.toString(x)));
+                    Log.i(TAG, String.format("Stacking | %s @ # %s ", action, Integer.toString(x)));
                     Intent i = new Intent();
-                    i.setAction(rectifyAction(a));
+                    i.setAction(rectifyAction(action));
                     currentSession.put(x, i);
                     actionCounter += 1;
                     x += 1;
                 }
-
-            } else {
-                Log.d(TAG, String.format("Finished processing with %s intents", x));
-                break;
             }
-        }
+        } while (action != null);
+        Log.d(TAG, String.format("Finished processing with %s intents", x));
     }
 
-    private static void printBundle(Bundle bundle) {
-        Iterator<String> keys = bundle.keySet().iterator();
-        while (keys.hasNext()) {
-            Log.d(TAG, String.format("BundleKeys | %s", keys.next()));
-        }
-    }
-
-    private static Integer append_scans(Bundle b, int starting) {
-        Log.i(TAG, "Append Scans");
-        int iter = ScanningActivity.get_total_scans_from_bundle(b);
-        Log.i(TAG, "Total Scans: " + Integer.toString(iter));
+    private static Integer importScans(Bundle bundle, int starting) {
+        int iter = ScanningActivity.getScanCount(bundle);
         for (int x = 0; x < iter; x++) {
-            Intent i = ScanningActivity.get_next_scanning_bundle(b, x);
+            Intent i = ScanningActivity.getNextScan(bundle, x);
             if (i != null) {
                 Log.i(TAG, String.format("Stacking | .SCAN @ # %s ", Integer.toString(starting + x)));
                 currentSession.put(starting + x, i);
@@ -122,19 +109,11 @@ public class PipeSessionManager {
         return iter;
     }
 
-    public static boolean isNewSession(String id) {
+    static boolean isNewSession(String id) {
         return !sessions.containsKey(id);
     }
 
-    public static boolean isSessionClosed(String id) {
-        if (!sessions.containsKey(id)) {
-            Log.e(TAG, "Session doesn't exist at all!");
-            return true;
-        }
-        return sessions.get(id);
-    }
-
-    public static boolean registerResult(int intentId, Bundle result) {
+    static boolean registerResult(int intentId, Bundle result) {
         if (!currentSessionResults.containsKey(intentId)) {
             currentSessionResults.put(intentId, result);
             loadNextIntent();
@@ -179,21 +158,17 @@ public class PipeSessionManager {
         return null;
     }
 
-    public static int getIntentId() {
+    static int getIntentId() {
         return currentSessionPosition;
     }
 
-    private static void combineBundles(Bundle bindle, Bundle input) {
-        bindle.putAll(input);
-        return;
+    private static void combineBundles(Bundle bundle, Bundle input) {
+        bundle.putAll(input);
     }
 
     private static Bundle aggregateResults() {
         Bundle bindle = new Bundle();
-        Iterator<Integer> keys = currentSessionResults.keySet().iterator();
-        while (keys.hasNext()) {
-            int key = keys.next();
-            Log.d(TAG, String.format("Combining bindle and %s", key));
+        for (Integer key : currentSessionResults.keySet()) {
             Bundle current = currentSessionResults.get(key);
             if (current != null) {
                 combineBundles(bindle, current);
@@ -203,28 +178,24 @@ public class PipeSessionManager {
         }
         Bundle output = new Bundle();
         output.putAll(bindle);
-        Log.d(TAG, "Adding CCODK bundle");
         output.putBundle(Controller.ODK_SENTINEL, bindle);
-        Log.d(TAG, "Aggregate bundle ready.");
         return output;
     }
 
     public static Bundle getResults() {
         if (!hasNextIntent()) {
-            Log.d(TAG, "Returning bundle to Dispatch");
             return aggregateResults();
         } else {
             Log.e(TAG, "getResult called before session was complete. Returning null");
             return null;
         }
-
     }
 
-    public static String rectifyAction(String action) {
-        if (action.contains("IDENTIFY")) {
-            return "com.openandid.internal.IDENTIFY";
-        } else if (action.contains("ENROLL")) {
-            return "com.openandid.internal.ENROLL";
+    private static String rectifyAction(String action) {
+        if (action.contains(IDENTIFY)) {
+            return INTERNAL_IDENTIFY_ACTION;
+        } else if (action.contains(ENROLL)) {
+            return INTERNAL_ENROLL_ACTION;
         } else {
             return action;
         }

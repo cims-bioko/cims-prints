@@ -9,76 +9,50 @@ import android.hardware.usb.UsbManager;
 import android.util.Log;
 
 import java.util.HashMap;
-import java.util.Set;
 
 public class Scanner {
 
     private static final String TAG = "Scanner";
-    public UsbDeviceConnection conn;
-    public UsbInterface usbIf;
-    public UsbManager manager;
-    public UsbDevice dev;
-    public UsbEndpoint epIN;
-    public UsbEndpoint epOUT;
-    public static boolean isInInit = false;
-    public boolean ready;
-    public static boolean finger_sensed = false;
-    public static boolean scan_cancelled = false;
 
-    private boolean makes_iso_templates = false;
+    UsbDeviceConnection devConn;
+    UsbInterface usbInterface;
+    UsbManager usbManager;
+    UsbDevice usbDevice;
+    protected UsbEndpoint in, out;
 
-    private HashMap<String, String> device_info;
+    static boolean inInit = false, fingerSensed, scanCancelled = false;
+
+    private boolean ready;
+
     private HashMap<String, Bitmap> images;
-    private HashMap<String, String> biometrics;
-    private HashMap<String, String> iso_templates;
+    private HashMap<String, String> biometrics, isoTemplates;
 
-    public Scanner(UsbDevice device, UsbManager uManager) {
-        dev = device;
-        manager = uManager;
-        conn = manager.openDevice(device);
-        device_info = new HashMap<String, String>();
-        reset_dicts();
+    Scanner(UsbDevice device, UsbManager uManager) {
+        usbDevice = device;
+        usbManager = uManager;
+        devConn = usbManager.openDevice(device);
+        initMaps();
     }
 
-    public void init_scanner() {
+    public void makeReady() {
         ready = true;
     }
 
-    public void reconnect() {
-        conn = manager.openDevice(dev);
+    public void initMaps() {
+        images = new HashMap<>();
+        biometrics = new HashMap<>();
+        isoTemplates = new HashMap<>();
     }
 
-    public void reset_dicts() {
-        images = new HashMap<String, Bitmap>();
-        biometrics = new HashMap<String, String>();
-        iso_templates = new HashMap<String, String>();
-    }
-
-    public boolean run_scan(String finger) {
+    public boolean scan(String finger) {
         return false;
     }
 
-    public boolean run_scan(String finger, boolean trigger) {
+    public boolean scan(String finger, boolean trigger) {
         return false;
     }
 
-    public boolean shut_down() {
-        return false;
-    }
-
-    public void set_info(HashMap<String, String> info) {
-        device_info = info;
-    }
-
-    public HashMap<String, String> get_info() {
-        return device_info;
-    }
-
-    public Set<String> get_image_list() {
-        return images.keySet();
-    }
-
-    public Bitmap get_image(String name) {
+    public Bitmap getImage(String name) {
         if (images.containsKey(name)) {
             return images.get(name);
         } else {
@@ -86,54 +60,48 @@ public class Scanner {
         }
     }
 
-    public void set_image(String name, Bitmap img) {
+    void setImage(String name, Bitmap img) {
         images.put(name, img);
-        return;
     }
 
-    public boolean get_ready() {
+    public void setReady(boolean ready) {
+        this.ready = ready;
+    }
+
+    public boolean isReady() {
         return ready;
     }
 
-    public boolean finger_sensed() {
-        return finger_sensed;
+    public static boolean isInInit() {
+        return inInit;
+    }
+
+    public boolean isFingerSensed() {
+        return fingerSensed;
+    }
+
+    public static boolean isScanCancelled() {
+        return scanCancelled;
     }
 
     public void setBiometrics(String key, String value) {
         biometrics.put(key, value);
     }
 
-    public String getBiometrics(String key) {
+    public HashMap<String, String> getIsoTemplates() {
         try {
-            return biometrics.get(key);
+            return isoTemplates;
         } catch (NullPointerException e) {
             Log.e(TAG, "Biometrics Map was null! Returning nothing");
-            return "";
+            return new HashMap<>();
         }
     }
 
-    public HashMap<String, String> get_iso_biometrics() {
-        try {
-            return iso_templates;
-        } catch (NullPointerException e) {
-            Log.e(TAG, "Biometrics Map was null! Returning nothing");
-            return new HashMap<String, String>();
+    public void setIsoTemplate(String key, String value) {
+        if (isoTemplates == null) {
+            isoTemplates = new HashMap<>();
         }
-    }
-
-    public void set_iso_template(String key, String value) {
-        if (iso_templates == null) {
-            iso_templates = new HashMap<String, String>();
-        }
-        iso_templates.put(key, value);
-    }
-
-    public String get_iso_template(String key) {
-        if (makes_iso_templates == true) {
-            return iso_templates.get(key);
-        } else {
-            return null;
-        }
+        isoTemplates.put(key, value);
     }
 
     public HashMap<String, String> getBiometrics() {
@@ -141,11 +109,11 @@ public class Scanner {
             return biometrics;
         } catch (NullPointerException e) {
             Log.e(TAG, "Biometrics were null! Returning nothing");
-            return new HashMap<String, String>();
+            return new HashMap<>();
         }
     }
 
-    public void cancel_scan() {
-        scan_cancelled = true;
+    public void cancelScan() {
+        scanCancelled = true;
     }
 }

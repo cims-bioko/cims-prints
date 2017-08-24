@@ -7,28 +7,25 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import java.util.Iterator;
 import java.util.UUID;
 
 public class LaunchActivity extends Activity {
 
     private static final String TAG = "LaunchActivity--VT";
-    private static final int PIPE_REQUEST = 101, SCAN_REQUEST = 102;
 
-    private Button launchButton;
-    private Button settingsButton;
+    private static final int PIPE_REQUEST = 101, SCAN_REQUEST = 102;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        launchButton = (Button) findViewById(R.id.launch_scan_button);
+        Button launchButton = (Button) findViewById(R.id.launch_scan_button);
         LaunchHandler launchHandler = new LaunchHandler();
         launchButton.setOnClickListener(launchHandler);
         launchButton.setOnLongClickListener(launchHandler);
 
-        settingsButton = (Button) findViewById(R.id.advanced_settings_button);
+        Button settingsButton = (Button) findViewById(R.id.advanced_settings_button);
         settingsButton.setOnClickListener(new SettingsHandler());
     }
 
@@ -96,7 +93,6 @@ public class LaunchActivity extends Activity {
 
 
     private class SettingsHandler implements View.OnClickListener {
-
         @Override
         public void onClick(View view) {
             Intent i = new Intent(getBaseContext(), AdvancedPreferences.class);

@@ -44,7 +44,7 @@ public class FingerScanInterface extends AsyncTask<Void, Void, Void> {
             Log.d(TAG, "interrupted during sleep");
         }
 
-        success = mScanner.run_scan(finger);
+        success = mScanner.scan(finger);
         return null;
 
 
@@ -53,7 +53,7 @@ public class FingerScanInterface extends AsyncTask<Void, Void, Void> {
     protected void onPostExecute(Void res) {
         if (success == true) {
             Log.i("PostExec", "Started");
-            Bitmap result = mScanner.get_image(finger);
+            Bitmap result = mScanner.getImage(finger);
             Log.i(TAG, "Result H: " + Integer.toString(result.getHeight()));
             Log.i(TAG, "Result W: " + Integer.toString(result.getWidth()));
 

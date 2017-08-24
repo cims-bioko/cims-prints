@@ -29,7 +29,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -38,7 +37,7 @@ import java.util.Map;
 import logic.FingerType;
 import logic.HostUsbManager;
 import logic.Scanner;
-import logic.Scanner_Lumidigm_Mercury;
+import logic.LumidigmMercuryScanner;
 
 public class ScanningActivity extends Activity {
 
@@ -54,27 +53,22 @@ public class ScanningActivity extends Activity {
     private static UsbDevice freeScanner = null;
     private static HashMap<String, Bitmap> scanImages;
     private static HashMap<String, Boolean> scannedFingers;
-    private static HashMap<String, String> templateCache;
-    private static HashMap<String, String> isoTemplateCache;
+    private static HashMap<String, String> templateCache, isoTemplateCache;
 
     private PendingIntent mPermissionIntent;
 
-    FingerType leftFinger;
-    FingerType rightFinger;
-    ImageButton leftButton;
-    ImageButton rightButton;
-    ImageButton proceed;
-    ImageButton skip;
-
-    boolean easySkip = false;
-    ImageView restartScanner;
+    FingerType leftFinger, rightFinger;
+    ImageButton leftButton, rightButton, proceedButton, skipButton;
     Button cancelPopupButton;
+
+    boolean easySkip = false, killSwitch = false;
+    ImageView restartScanner;
     View popupView;
     PopupWindow popupWindow;
     TextView popupPrompt;
+
     Map<String, String> opts = null;
     Map<String, Object> binaryOpts = null;
-    boolean killSwitch = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,15 +81,7 @@ public class ScanningActivity extends Activity {
         isoTemplateCache = new HashMap<>();
 
         if (savedInstanceState != null) {
-            Log.i(TAG, "Found saved instance");
-            ArrayList<String> keyList = new ArrayList<>();
-            for (String key : savedInstanceState.keySet()) {
-                keyList.add(key);
-            }
-            Log.i(TAG, String.format("Found keys: %s", Arrays.toString(keyList.toArray())));
             loadAssets(savedInstanceState);
-        } else {
-            Log.i(TAG, "No saved instance");
         }
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -118,12 +104,12 @@ public class ScanningActivity extends Activity {
             setCorrectContentView(Configuration.ORIENTATION_PORTRAIT);
         }
 
-        load_options(getIntent().getExtras());
+        loadOptions(getIntent().getExtras());
         //If we have options from the intent Bundle, parse and enact them
         if (opts != null || binaryOpts != null) {
-            parse_options();
+            applyOptions();
         } else {
-            default_options();
+            loadDefaultOptions();
         }
 
         //TODO Enable or edit exit button
@@ -135,32 +121,13 @@ public class ScanningActivity extends Activity {
     }
 
     @Override
-    protected void onResume() {
-        Log.i(TAG, "Resumed.");
-        super.onResume();
-    }
-
-    @Override
     protected void onSaveInstanceState(Bundle outState) {
         saveAssets(outState);
         super.onSaveInstanceState(outState);
     }
 
     @Override
-    protected void onPause() {
-        Log.i(TAG, "Paused.");
-        super.onPause();
-    }
-
-    @Override
-    protected void onRestart() {
-        Log.i(TAG, "Restart.");
-        super.onRestart();
-    }
-
-    @Override
     protected void onDestroy() {
-        Log.i(TAG, "Destroy");
         dismissProgressDialog();
         super.onDestroy();
     }
@@ -204,42 +171,41 @@ public class ScanningActivity extends Activity {
         rightButton.setOnClickListener(getScanClickListener(rightFinger, rightButton));
         rightButton.setOnLongClickListener(getScanLongClickListener(rightFinger, rightButton));
 
-        proceed = (ImageButton) findViewById(R.id.scan_btn_proceed);
-        proceed.setOnClickListener(new Button.OnClickListener() {
+        proceedButton = (ImageButton) findViewById(R.id.scan_btn_proceed);
+        proceedButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (Controller.mScanner == null) {
-                    restart_scanner(view);
+                    restartScanner(view);
                     Toast.makeText(ScanningActivity.this, getResources().getString(R.string.scanner_not_connected), Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (Controller.mScanner.get_ready()) {
-                    check_nfiq_scores();
+                if (Controller.mScanner.isReady()) {
+                    finalizeScans();
                 } else {
                     Toast.makeText(ScanningActivity.this, getResources().getString(R.string.please_wait), Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        skip = (ImageButton) findViewById(R.id.scan_btn_skip);
+        skipButton = (ImageButton) findViewById(R.id.scan_btn_skip);
         if (!easySkip) {
-            skip.setVisibility(View.GONE);
+            skipButton.setVisibility(View.GONE);
         } else {
-            skip.setOnClickListener(new Button.OnClickListener() {
+            skipButton.setOnClickListener(new Button.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     //TODO add confirmation?
-                    finish_cancel();
+                    finishCancel();
                 }
             });
-
         }
 
         restartScanner = (ImageView) findViewById(R.id.headbar_scanner_btn);
         restartScanner.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                unplug_scanner(v);
+                unplugScanner(v);
             }
         });
 
@@ -249,12 +215,9 @@ public class ScanningActivity extends Activity {
     private void setCorrectContentView(int configuration) {
         switch (configuration) {
             case Configuration.ORIENTATION_LANDSCAPE:
-                Log.i(TAG, "landscape");
                 setContentView(R.layout.scanner_flex_layout_landscape);
                 break;
             case Configuration.ORIENTATION_PORTRAIT:
-                Log.i(TAG, "portrait");
-                //setContentView(R.layout.scanner_flex_layout);
                 setContentView(R.layout.scanner_flex_layout);
                 break;
         }
@@ -281,7 +244,7 @@ public class ScanningActivity extends Activity {
 
     private void handleClick(final FingerType finger, final ImageButton btn, final boolean instant, View view) {
         if (Controller.mScanner == null) {
-            restart_scanner(view);
+            restartScanner(view);
             Toast.makeText(this, getResources().getString(R.string.scanner_not_connected), Toast.LENGTH_SHORT).show();
             return;
         } else {
@@ -289,20 +252,20 @@ public class ScanningActivity extends Activity {
             Iterator<UsbDevice> deviceIterator = deviceList.values().iterator();
             if (!deviceIterator.hasNext()) {
                 Log.i(TAG, "Device Unplugged");
-                restart_scanner(view);
+                restartScanner(view);
                 Toast.makeText(this, getResources().getString(R.string.scanner_not_connected), Toast.LENGTH_SHORT).show();
                 return;
             }
         }
-        if (Controller.mScanner.get_ready()) {
+        if (Controller.mScanner.isReady()) {
             popupPrompt.setText(getResources().getString(R.string.scan_prompt) + " " + finger.finger_name);
             popupWindow.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             popupWindow.showAtLocation(view, Gravity.CENTER_VERTICAL, 0, 0);
-            final FingerScanInterface f = new FingerScanInterface(finger.finger_key, Controller.mScanner, btn, view, instant);
+            final FingerScanTask f = new FingerScanTask(finger.finger_key, Controller.mScanner, btn, view, instant);
             cancelPopupButton.setOnClickListener(new Button.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    cancel_scan(f);
+                    cancelScan(f);
                 }
             });
             cancelPopupButton.setVisibility(View.VISIBLE);
@@ -312,7 +275,6 @@ public class ScanningActivity extends Activity {
     }
 
     public Bundle saveAssets(Bundle bundle) {
-
         bundle.putSerializable("scanImages", scanImages);
         bundle.putSerializable("scannedFingers", scannedFingers);
         bundle.putSerializable("template_cache", templateCache);
@@ -353,16 +315,15 @@ public class ScanningActivity extends Activity {
         } else {
             Log.i(TAG, "Right image is null");
         }
-        //colorFinger();
     }
 
     @Override
     public void onBackPressed() {
-        finish_cancel();
+        finishCancel();
     }
 
 
-    public boolean check_kill_switch() {
+    public boolean checkKillSwitch() {
         if (!killSwitch) {
             return false;
         }
@@ -371,7 +332,6 @@ public class ScanningActivity extends Activity {
     }
 
     public static void setFreeDevice(UsbDevice device) {
-        Log.d(TAG, "Found free device!");
         freeScanner = device;
     }
 
@@ -379,7 +339,7 @@ public class ScanningActivity extends Activity {
         return freeScanner;
     }
 
-    private void load_options(Bundle extras) {
+    private void loadOptions(Bundle extras) {
         try {
             if (opts == null || binaryOpts == null) {
                 opts = new HashMap<>();
@@ -391,10 +351,9 @@ public class ScanningActivity extends Activity {
                     if (val == null) {
                         throw new Exception();
                     }
-                    Log.i(TAG, "Key " + key + " val " + val);
                     opts.put(key, val);
                 } catch (Exception e) {
-                    Log.i(TAG, "Couldn't get string value for key " + key);
+                    Log.e(TAG, "Couldn't get string value for key " + key);
                     try {
                         binaryOpts.put(key, extras.getParcelable(key));
                     } catch (Exception e2) {
@@ -403,8 +362,7 @@ public class ScanningActivity extends Activity {
                 }
             }
         } catch (Exception e) {
-            Log.i(TAG, "Error parsing options from bundle");
-            e.printStackTrace();
+            Log.e(TAG, "Error parsing options from bundle", e);
             if (opts.isEmpty()) {
                 opts = null;
             }
@@ -414,22 +372,20 @@ public class ScanningActivity extends Activity {
         }
     }
 
-    private void parse_options() {
-        //TODO Write API for .SCAN broadcast
-
+    private void applyOptions() {
         try {
-            String prompt = opts.get("prompt");
-            TextView prompt_text = (TextView) findViewById(R.id.scanner_view_prompt);
-            if (prompt_text != null) {
-                prompt_text.setText(prompt);
+            String promptVal = opts.get("prompt");
+            TextView promptText = (TextView) findViewById(R.id.scanner_view_prompt);
+            if (promptText != null) {
+                promptText.setText(promptVal);
             }
         } catch (Exception e) {
             Log.i(TAG, "No prompt to load");
         }
         try {
-            String easy_skip_str = opts.get("easy_skip");
-            if (easy_skip_str != null) {
-                easySkip = Boolean.parseBoolean(easy_skip_str);
+            String skipVal = opts.get("easy_skip");
+            if (skipVal != null) {
+                easySkip = Boolean.parseBoolean(skipVal);
             } else {
                 Log.i(TAG, "easy_skip_str was null...");
             }
@@ -437,36 +393,34 @@ public class ScanningActivity extends Activity {
             Log.i(TAG, "Couldn't parse for Easy Skip");
         }
         try {
-            String left_finger_assignment = opts.get("left_finger_assignment");
-            if (left_finger_assignment == null) {
+            String leftVal = opts.get("left_finger_assignment");
+            if (leftVal == null) {
                 throw new NullPointerException();
             }
-            leftFinger = new FingerType(left_finger_assignment);
+            leftFinger = new FingerType(leftVal);
         } catch (Exception e) {
             Log.i(TAG, "No assignment for left_finger, defaulting to thumb");
             leftFinger = new FingerType("left_thumb");
         }
         try {
-            String right_finger_assignment = opts.get("right_finger_assignment");
-            if (right_finger_assignment == null) {
+            String rightVal = opts.get("right_finger_assignment");
+            if (rightVal == null) {
                 throw new NullPointerException();
             }
-            rightFinger = new FingerType(right_finger_assignment);
+            rightFinger = new FingerType(rightVal);
         } catch (Exception e) {
             Log.i(TAG, "No assignment for right_finger, defaulting to thumb");
             rightFinger = new FingerType("right_thumb");
         }
-
     }
 
-    private void default_options() {
-        //TODO Write API for .SCAN broadcast
+    private void loadDefaultOptions() {
         easySkip = false;
         leftFinger = new FingerType("left_thumb");
         rightFinger = new FingerType("right_thumb");
     }
 
-    public void colorFinger() {
+    public void highlightScannedFingers() {
         if (scannedFingers.get(leftFinger.finger_key) != null) {
             leftButton.setBackground(getResources().getDrawable(R.drawable.bg_shape_green_round));
         }
@@ -475,7 +429,8 @@ public class ScanningActivity extends Activity {
         }
     }
 
-    public void check_nfiq_scores() {
+    public void finalizeScans() {
+
         if (scannedFingers.keySet().size() < 2) {
             Toast t = Toast.makeText(this, getResources().getString(R.string.scan_all_fingers), Toast.LENGTH_LONG);
             t.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
@@ -483,84 +438,73 @@ public class ScanningActivity extends Activity {
             Log.i("scanning", "quality not enough keys");
             return;
         }
-        Map<String, String> iso_set = Controller.mScanner.get_iso_biometrics();
 
-        Map<String, String> out = new HashMap<>();
-        for (String key : iso_set.keySet()) {
-            String iso_key = key + "_iso";
-            Log.i("Debug", "Found Key: " + iso_key);
-            Log.i("Debug", "Val: " + iso_set.get(key));
+        Map<String, String> isoTemplates = Controller.mScanner.getIsoTemplates();
+
+        Map<String, String> scans = new HashMap<>();
+        for (String key : isoTemplates.keySet()) {
+            String isoKey = key + "_iso";
             if (opts != null) {
                 if (opts.get(key) != null) {
-                    String new_name = opts.get(iso_key);
-                    Log.i(TAG, "New name! :" + new_name);
-                    out.put(new_name, iso_set.get(key));
+                    String newName = opts.get(isoKey);
+                    scans.put(newName, isoTemplates.get(key));
                 } else {
-                    Log.i(TAG, "No rename rule for " + key);
-                    out.put(key, iso_set.get(key));
+                    Log.d(TAG, "No rename rule for " + key);
+                    scans.put(key, isoTemplates.get(key));
                 }
             } else {
-                Log.i(TAG, "No rename rule for " + key);
-                out.put(key, iso_set.get(key));
+                Log.d(TAG, "No rename rule for " + key);
+                scans.put(key, isoTemplates.get(key));
             }
-
         }
-        finish_ok(out);
+
+        finishOk(scans);
     }
 
-    public void cancel_scan(FingerScanInterface inter) {
+    public void cancelScan(FingerScanTask inter) {
         inter.cancel(true);
     }
 
-    public void restart_scanner(View parent) {
-        //TEST
+    public void restartScanner(View parent) {
         Log.i(TAG, "Starting restart");
-        ScannerSetup ss = new ScannerSetup(this, parent);
+        ScannerSetupTask ss = new ScannerSetupTask(this, parent);
         ss.execute();
     }
 
-    protected void unplug_scanner(View parent) {
+    protected void unplugScanner(View parent) {
         Log.i(TAG, "Starting Unplug");
-        ScannerUnplug s = new ScannerUnplug(parent);
+        UnplugTask s = new UnplugTask(parent);
         s.execute();
     }
 
-    protected void finish_ok(Map<String, String> output) {
-        Log.i(TAG, "Finish OK -- Start");
-        Log.i(TAG, "package keys -- " + output.keySet().toString());
-        Intent i = new Intent();
-        for (String k : output.keySet()) {
-            i.putExtra(k, output.get(k));
-            Log.i(TAG, String.format("K: %s V: %s", k, output.get(k)));
+    protected void finishOk(Map<String, String> scans) {
+        Intent resultIntent = new Intent();
+        for (String key : scans.keySet()) {
+            resultIntent.putExtra(key, scans.get(key));
         }
-        setResult(Activity.RESULT_OK, i);
-        Log.i(TAG, "Finish OK -- Finished");
-        try {
-            Controller.mScanner.reset_dicts();
-        } catch (Exception e) {
-            Log.d(TAG, "Couldn't clear scanner");
-        }
+        setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }
 
-    protected void finish_cancel() {
-        Log.i(TAG, "Caught Cancel Signal");
-        Intent i = new Intent();
-        setResult(RESULT_CANCELED, i);
-        //finished = true;
+    protected void finishCancel() {
+        Intent resultIntent = new Intent();
+        setResult(RESULT_CANCELED, resultIntent);
+        finish();
+    }
+
+    public void finish() {
         try {
-            Controller.mScanner.reset_dicts();
+            Controller.mScanner.initMaps();
         } catch (Exception e) {
             Log.d(TAG, "Couldn't clear scanner");
         }
-        finish();
+        super.finish();
     }
 
     /*
      *    Scanning Task Async
      */
-
-    private class FingerScanInterface extends AsyncTask<Void, Void, Void> {
+    private class FingerScanTask extends AsyncTask<Void, Void, Void> {
 
         ImageButton view;
         View parent;
@@ -571,7 +515,7 @@ public class ScanningActivity extends Activity {
         boolean triggered = false;
         int starting_image_width, starting_image_height;
 
-        private FingerScanInterface(String name, Scanner scanner, ImageButton spot, View parent, boolean instant) {
+        private FingerScanTask(String name, Scanner scanner, ImageButton spot, View parent, boolean instant) {
             super();
             this.parent = parent;
             view = spot;
@@ -586,7 +530,6 @@ public class ScanningActivity extends Activity {
         protected void onPreExecute() {
             super.onPreExecute();
             if (Controller.mScanner == null) {
-                Log.d(TAG, "Reconnect pre!");
                 reconnect = true;
                 cancel(true);
             }
@@ -594,8 +537,8 @@ public class ScanningActivity extends Activity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            if (isCancelled() || check_kill_switch()) {
-                Log.d(TAG, "Canceled background!");
+
+            if (isCancelled() || checkKillSwitch()) {
                 success = false;
                 return null;
             }
@@ -603,12 +546,12 @@ public class ScanningActivity extends Activity {
             new Thread(new Runnable() {
                 public void run() {
                     try {
-                        while (!Controller.mScanner.finger_sensed()) {
-                            if (isCancelled() || check_kill_switch()) {
-                                Controller.mScanner.cancel_scan();
+                        while (!Controller.mScanner.isFingerSensed()) {
+                            if (isCancelled() || checkKillSwitch()) {
+                                Controller.mScanner.cancelScan();
                                 return;
                             }
-                            if (Controller.mScanner.get_ready()) {
+                            if (Controller.mScanner.isReady()) {
                                 break;
                             }
                             try {
@@ -619,7 +562,7 @@ public class ScanningActivity extends Activity {
                         }
                     } catch (Exception e) {
                         if (Controller.mScanner != null) {
-                            Controller.mScanner.cancel_scan();
+                            Controller.mScanner.cancelScan();
                         }
                         return;
                     }
@@ -643,7 +586,9 @@ public class ScanningActivity extends Activity {
                     });
                 }
             }).start();
-            success = mScanner.run_scan(finger, triggered);
+
+            success = mScanner.scan(finger, triggered);
+
             if (success) {
                 //in case of disconnect, cache items locally
                 try {
@@ -651,12 +596,12 @@ public class ScanningActivity extends Activity {
                     if (!existingBiometrics.isEmpty()) {
                         templateCache = existingBiometrics;
                     }
-                    existingBiometrics = Controller.mScanner.get_iso_biometrics();
+                    existingBiometrics = Controller.mScanner.getIsoTemplates();
                     if (!existingBiometrics.isEmpty()) {
                         isoTemplateCache = existingBiometrics;
                     }
                     Log.i("PostExec", "Started");
-                    Bitmap result = mScanner.get_image(finger);
+                    Bitmap result = mScanner.getImage(finger);
                     Log.i("bmp_info", Integer.toString(result.getHeight()));
                     Log.i("bmp_info", Integer.toString(result.getWidth()));
 
@@ -699,7 +644,7 @@ public class ScanningActivity extends Activity {
                 Log.i(TAG, "Caught Scan Failure. Canceling");
                 this.cancel(true);
             }
-            while (!mScanner.ready) {
+            while (!mScanner.isReady()) {
                 try {
                     Thread.sleep(200);
                 } catch (Exception e) {
@@ -707,7 +652,7 @@ public class ScanningActivity extends Activity {
                 }
                 if (isCancelled()) {
                     Log.i(TAG, "Caught Cancel. Killing");
-                    mScanner.ready = true;
+                    mScanner.setReady(true);
                     return null;
                 }
             }
@@ -718,7 +663,7 @@ public class ScanningActivity extends Activity {
         protected void onCancelled() {
             try {
                 dismissProgressDialog();
-                unplug_scanner(parent);
+                unplugScanner(parent);
             } catch (IllegalArgumentException e) {
                 Log.e(TAG, String.format("Cancel: %s", e.getMessage()));
             }
@@ -727,31 +672,30 @@ public class ScanningActivity extends Activity {
 
         protected void onPostExecute(Void res) {
             dismissProgressDialog();
-            colorFinger();
+            highlightScannedFingers();
             if (!success) {
                 Log.i(TAG, "Scan failed!");
             }
             if (reconnect) {
                 Log.d(TAG, "Reconnect post!");
-                unplug_scanner(view);
+                unplugScanner(view);
             }
-
         }
     }
 
     /*
      *    Scanner Unplug Async
      */
-    private class ScannerUnplug extends AsyncTask<Void, Void, Void> {
+    private class UnplugTask extends AsyncTask<Void, Void, Void> {
+
         View parent;
 
-        private ScannerUnplug(View parent) {
+        private UnplugTask(View parent) {
             this.parent = parent;
         }
 
         @Override
         protected void onPreExecute() {
-            //popUp.setBackgroundDrawable(grey_box);
             popupPrompt.setText(getResources().getString(R.string.unplug_scanner));
             cancelPopupButton.setVisibility(View.GONE);
             popupWindow.showAtLocation(parent, Gravity.CENTER_VERTICAL, 0, 0);
@@ -778,7 +722,7 @@ public class ScanningActivity extends Activity {
                     boolean foundValid = false;
                     while (deviceIterator.hasNext()) {
                         UsbDevice device = deviceIterator.next();
-                        if (!HostUsbManager.vendor_blacklist.contains(device.getVendorId())) {
+                        if (!HostUsbManager.VENDOR_BLACKLIST.contains(device.getVendorId())) {
                             foundValid = true;
                         }
                     }
@@ -793,13 +737,12 @@ public class ScanningActivity extends Activity {
                 }
             }
             return null;
-
         }
 
         @Override
         protected void onPostExecute(Void result) {
             dismissProgressDialog();
-            restart_scanner(parent);
+            restartScanner(parent);
             super.onPostExecute(result);
         }
     }
@@ -807,12 +750,13 @@ public class ScanningActivity extends Activity {
     /*
     *    Scanner Setup Async
     */
-    private class ScannerSetup extends AsyncTask<Void, Void, Void> {
+    private class ScannerSetupTask extends AsyncTask<Void, Void, Void> {
+
         private Context oldContext;
         private View parent;
-        ScannerSetup a_process;
+        private ScannerSetupTask a_process;
 
-        ScannerSetup(Context context, View parent) {
+        ScannerSetupTask(Context context, View parent) {
             super();
             a_process = this;
             this.parent = parent;
@@ -866,7 +810,6 @@ public class ScanningActivity extends Activity {
                         }
                         break;
                     }
-
                 } catch (NullPointerException e2) {
                     Log.i(TAG, "no permission...");
                 } catch (Exception e2) {
@@ -886,7 +829,7 @@ public class ScanningActivity extends Activity {
                         } catch (InterruptedException e) {
                             Log.d(TAG, "interrupted during sleep");
                         }
-                        if (isCancelled() || check_kill_switch()) {
+                        if (isCancelled() || checkKillSwitch()) {
                             return null;
                         }
                         c += 1;
@@ -902,11 +845,11 @@ public class ScanningActivity extends Activity {
                         }
                         if (Controller.mScanner == null) {
                             Log.i(TAG, "Scanner is null!");
-                            Controller.mScanner = new Scanner_Lumidigm_Mercury(Controller.mDevice, Controller.mUsbManager);
+                            Controller.mScanner = new LumidigmMercuryScanner(Controller.mDevice, Controller.mUsbManager);
                         } else {
                             Log.i(TAG, "Scanner already exists!");
                             Log.i(TAG, "Wiping Scanner");
-                            Controller.mScanner = new Scanner_Lumidigm_Mercury(Controller.mDevice, Controller.mUsbManager);
+                            Controller.mScanner = new LumidigmMercuryScanner(Controller.mDevice, Controller.mUsbManager);
                         }
                         runOnUiThread(new Runnable() {
                             @Override
@@ -923,11 +866,11 @@ public class ScanningActivity extends Activity {
                                 }
                             }
                         });
-                        while (!Controller.mScanner.get_ready()) {
-                            if (isCancelled() || check_kill_switch()) {
+                        while (!Controller.mScanner.isReady()) {
+                            if (isCancelled() || checkKillSwitch()) {
                                 return null;
                             }
-                            if (Scanner.scan_cancelled) {
+                            if (Scanner.isScanCancelled()) {
                                 return null;
                             }
                             //if scan init failed
@@ -981,14 +924,12 @@ public class ScanningActivity extends Activity {
                         Controller.mScanner.setBiometrics(k, templateCache.get(k));
                     }
                     for (String k : isoTemplateCache.keySet()) {
-                        Controller.mScanner.set_iso_template(k, isoTemplateCache.get(k));
+                        Controller.mScanner.setIsoTemplate(k, isoTemplateCache.get(k));
                     }
                 }
                 dismissProgressDialog();
-                Log.d(TAG, "Finished Setup.");
             } catch (NullPointerException np) {
-                Log.e(TAG, "Couldn't finish scanner setup");
-                np.printStackTrace();
+                Log.e(TAG, "Couldn't finish scanner setup", np);
                 try {
                     dismissProgressDialog();
                 } catch (Exception e2) {
@@ -998,73 +939,63 @@ public class ScanningActivity extends Activity {
         }
     }
 
-    public static Intent get_next_scanning_bundle(Intent i, int index) {
-        Log.i(TAG, "Getting Next Scanning Bundle");
-        Bundle data = i.getExtras();
-        return get_next_scanning_bundle(data, index);
+    public static Intent getNextScan(Intent i, int index) {
+        Bundle extras = i.getExtras();
+        return getNextScan(extras, index);
     }
 
-    public static Intent get_next_scanning_bundle(Bundle data, int index) {
+    public static Intent getNextScan(Bundle data, int index) {
+
         List<String> fields = new ArrayList<String>() {{
             add("prompt");
             add("left_finger_assignment");
             add("right_finger_assignment");
             add("easy_skip");
         }};
-        Bundle b = new Bundle();
-        boolean all_null = true;
+
+        Bundle extras = new Bundle();
+
         if (index == 0) {
             for (String field : fields) {
                 try {
-                    String a = data.getString(field);
-                    if (a != null) {
-                        b.putString(field, a);
-                        Log.i(TAG, "Plain Field found | " + a + " | for" + field + " for # " + Integer.toString(index));
-                        all_null = false;
-                    } else {
-                        Log.i(TAG, "Plain Field empty | " + field + " for # " + Integer.toString(index));
+                    String value = data.getString(field);
+                    if (value != null) {
+                        extras.putString(field, value);
                     }
                 } catch (Exception e) {
-                    Log.i(TAG, "Error in bundle");
+                    Log.e(TAG, "error constructing intent extras from bundle", e);
                     return null;
                 }
             }
         }
-        if (all_null) {
+
+        if (extras.isEmpty()) {
             for (String field : fields) {
                 try {
-                    String a = data.getString(field + "_" + Integer.toString(index));
-                    if (a != null) {
-                        b.putString(field, a);
-                    } else {
-                        Log.i(TAG, "Numbered Field empty | " + field + " for # " + Integer.toString(index));
-                    }
-                    b.putString(field, a);
+                    String value = data.getString(field + "_" + Integer.toString(index));
+                    extras.putString(field, value);
                 } catch (Exception e) {
-                    Log.i(TAG, "Error in bundle");
+                    Log.i(TAG, "error constructing intent extras from bundle", e);
                     return null;
                 }
             }
         }
 
-        Intent out = new Intent();
-        out.setAction("com.openandid.internal.SCAN");
-        out.putExtras(b);
-        return out;
+        Intent result = new Intent();
+        result.setAction("com.openandid.internal.SCAN");
+        result.putExtras(extras);
+        return result;
     }
 
-    public static int get_total_scans_from_bundle(Bundle data) {
-        Log.i(TAG, "Looking for many scan bundle");
+    public static int getScanCount(Bundle data) {
         int out = 1;
         for (int x = 0; x < 10; x++) {
             String left = data.getString("left_finger_assignment_" + Integer.toString(x));
             if (left == null) {
                 out = x;
-                Log.i(TAG, "broke on " + Integer.toString(out));
                 break;
             }
         }
-        Log.i(TAG, String.format("Found %s scans in bundle", out));
         if (out < 1) {
             return 1;
         }

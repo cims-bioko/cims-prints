@@ -13,113 +13,91 @@ import data.CommCareContentHandler;
 
 public class MainActivity extends Activity {
 
+    private static final String TAG = "MainActivity--VT";
+
+    private static final String SCAN_ACTION = "com.openandid.core.SCAN";
+    private static final String ENROLL_ACTION = "com.openandid.core.ENROLL";
+    private static final String IDENTIFY_ACTION = "com.openandid.core.IDENTIFY";
+    private static final String PIPE_ACTION = "com.openandid.core.PIPE";
+
+    private static final int REQUEST_CODE = 1;
+
     private static boolean gotResult = false;
-    private final String TAG = "MainActivity--VT";
-    int REQUEST_CODE = 1;
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.i(TAG, "onCreate");
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "Resume");
         if (!gotResult) {
-            Log.i(TAG, "No Result");
-            dispatch_intent(getIntent());
-            return;
+            dispatchIntent(getIntent());
         } else {
             gotResult = false;
-            Log.i(TAG, "Has Result, finished.");
             finish();
         }
     }
 
-    private void finish_cancel() {
-        Log.i(TAG, "Finishing as Canceled.");
-        Intent i = new Intent();
-        Bundle b = new Bundle();
-        i.putExtra(Controller.ODK_SENTINEL, b);
-        setResult(RESULT_CANCELED, i);
+    private void finishCancel() {
+        Intent resultIntent = new Intent();
+        Bundle bundle = new Bundle();
+        resultIntent.putExtra(Controller.ODK_SENTINEL, bundle);
+        setResult(RESULT_CANCELED, resultIntent);
     }
 
+    private void dispatchIntent(Intent incoming) {
 
-    private void dispatch_intent(Intent incoming) {
         String action = incoming.getAction();
-        Log.i(TAG, "Started via... " + action);
-        if (action.equals("com.openandid.core.SCAN")) {
-            if (ScanningActivity.get_total_scans_from_bundle(incoming.getExtras()) > 1) {
-                incoming.setClass(this, PipeActivity.class);
-                Log.i(TAG, "Starting PipeActivity");
-                startActivityForResult(incoming, REQUEST_CODE);
-            } else {
-                incoming.setClass(this, ScanningActivity.class);
-                Log.i(TAG, "Starting ScanningActivity");
-                startActivityForResult(incoming, REQUEST_CODE);
-            }
 
-        } else if (action.equals("com.openandid.core.ENROLL")) {
-            incoming.setClass(this, EnrollActivity.class);
-            startActivityForResult(incoming, REQUEST_CODE);
-        } else if (action.equals("com.openandid.core.VERIFY")) {
-
-        } else if (action.equals("com.openandid.core.IDENTIFY")) {
-            if (Controller.commcare_handler != null) {
-                if (CommCareContentHandler.isWorking()) {
-                    //Wait for sync to finish w/ prompt
-                    Syncronizing sync = new Syncronizing(this, incoming);
-                    sync.execute();
-                    return;
+        switch (action) {
+            case SCAN_ACTION:
+                if (ScanningActivity.getScanCount(incoming.getExtras()) > 1) {
+                    incoming.setClass(this, PipeActivity.class);
+                } else {
+                    incoming.setClass(this, ScanningActivity.class);
                 }
-            }
-            incoming.setClass(this, IdentifyActivity.class);
-            startActivityForResult(incoming, REQUEST_CODE);
-        } else if (action.equals("com.openandid.core.LOAD")) {
-
-        } else if (action.equals("com.openandid.core.PIPE")) {
-            incoming.setClass(this, PipeActivity.class);
-            startActivityForResult(incoming, REQUEST_CODE);
+                break;
+            case ENROLL_ACTION:
+                incoming.setClass(this, EnrollActivity.class);
+                break;
+            case IDENTIFY_ACTION:
+                if (Controller.commCareHandler != null) {
+                    if (CommCareContentHandler.isInSync()) {
+                        SyncTask sync = new SyncTask(this, incoming);
+                        sync.execute();
+                        return;
+                    }
+                }
+                incoming.setClass(this, IdentifyActivity.class);
+                break;
+            case PIPE_ACTION:
+                incoming.setClass(this, PipeActivity.class);
+                break;
         }
+
+        startActivityForResult(incoming, REQUEST_CODE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.i(TAG, "Dispatcher Has Activity Result");
         gotResult = true;
         if (resultCode == RESULT_CANCELED) {
-            Log.d(TAG, "Got Cancelled flag");
-            finish_cancel();
-            return;
+            finishCancel();
         } else {
-            Log.d(TAG, "Previous Activity Finished");
             try {
-                Bundle b = data.getExtras();
-                //IF CCODK
-                data.putExtra(Controller.ODK_SENTINEL, b);
-
-                Log.i(TAG, "Output from openandidCore");
-                for (String k : b.keySet()) {
-                    Log.i(TAG, k + ": " + b.getString(k));
-                }
+                Bundle extras = data.getExtras();
+                data.putExtra(Controller.ODK_SENTINEL, extras);
             } catch (Exception e) {
-                Log.i(TAG, "No output from activity");
-                Log.i(TAG, e.toString());
+                Log.i(TAG, "No output from activity", e);
             }
             setResult(resultCode, data);
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
-    //Sets up the NDK file system and utilities on the apps first run
-    class Syncronizing extends AsyncTask<Void, Void, Void> {
+    private class SyncTask extends AsyncTask<Void, Void, Void> {
+
         private Context oldContext;
         private Intent incoming;
 
-        public Syncronizing(Context context, Intent incoming) {
+        SyncTask(Context context, Intent incoming) {
             super();
             oldContext = context;
             this.incoming = incoming;
@@ -134,7 +112,7 @@ public class MainActivity extends Activity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            while (CommCareContentHandler.isWorking()) {
+            while (CommCareContentHandler.isInSync()) {
                 try {
                     Thread.sleep(3000);
                 } catch (InterruptedException e) {
@@ -147,9 +125,8 @@ public class MainActivity extends Activity {
 
         protected void onPostExecute(Void res) {
             Toast.makeText(oldContext, "Sync Finished...", Toast.LENGTH_LONG).show();
-            dispatch_intent(incoming);
+            dispatchIntent(incoming);
         }
-
     }
 }
 

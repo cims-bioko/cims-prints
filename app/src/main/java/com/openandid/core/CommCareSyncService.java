@@ -11,7 +11,6 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.Map;
 
@@ -19,33 +18,32 @@ import data.CommCareContentHandler;
 
 public class CommCareSyncService extends Service {
 
-    private Context mContext;
-    private int NOTE_ID;
-    private final String TAG = "CCSyncService";
+    private static final String TAG = "CCSyncService";
+    private static final int NOTIFICATION_ID = PersistenceService.NOTIFICATION_ID;
 
-    public static boolean is_ready = true;
-    public static boolean re_sync = false;
+    private static boolean resync = false;
+    private static boolean ready = true;
+
+    private Context mContext;
 
     @Override
     public void onCreate() {
-        NOTE_ID = PersistenceService.NOTE_ID;
         mContext = this;
-        show_message("Staring CommCare Load");
+        showNotification("Staring CommCare Load");
         sync();
     }
 
-    private Runnable sync_thread() {
-        return new Runnable() {
+    public void sync() {
+        new Thread(new Runnable() {
             public void run() {
                 while (true) {
-                    is_ready = false;
-                    CommCareContentHandler handler = Controller.commcare_handler;
+                    ready = false;
+                    CommCareContentHandler handler = Controller.commCareHandler;
                     try {
                         handler.sync((CommCareSyncService) mContext);
                     } catch (Exception e) {
-                        Log.i(TAG, "Couldn't Sync to CC");
-                        show_message("Couldn't sync with Commcare.");
-                        Log.e(TAG, String.format("%s", e.getMessage()));
+                        Log.e(TAG, "Couldn't Sync to CC", e);
+                        showNotification("Couldn't sync with Commcare.");
                         try {
                             if (handler != null) {
                                 Map<String, String> cc_instructions = handler.getInstructions();
@@ -59,16 +57,12 @@ public class CommCareSyncService extends Service {
                         } catch (Exception e1) {
                             Log.e(TAG, "Couldn't report CC Instruction set");
                         }
-                        if (e != null) {
-                            e.printStackTrace();
-                        }
-                        CommCareContentHandler.died();
+                        CommCareContentHandler.setInSync(false);
                         Log.i(TAG, "Sync Failed.");
                         stopSelf();
                     }
 
-                    int c = 0;
-                    while (CommCareContentHandler.isWorking()) {
+                    while (CommCareContentHandler.isInSync()) {
                         try {
                             Thread.sleep(3000);
                         } catch (InterruptedException e) {
@@ -76,29 +70,17 @@ public class CommCareSyncService extends Service {
                         }
                     }
 
-                    //show_message("CommCare Sync Complete");
-                    if (!re_sync) {
+                    if (!resync) {
                         Log.i(TAG, "Finished Sync");
-                        is_ready = true;
+                        ready = true;
                         stopSelf();
                         break;
                     } else {
                         Log.i(TAG, "New Data ping since start of sync. ReSyncing.");
                     }
-
                 }
-
             }
-        };
-    }
-
-    private void commcare_error() {
-        Toast.makeText(mContext, "Couldn't sync to CommCare", Toast.LENGTH_SHORT).show();
-    }
-
-    public void sync() {
-        Thread mythread = new Thread(sync_thread());
-        mythread.start();
+        }).start();
     }
 
     @Override
@@ -106,39 +88,49 @@ public class CommCareSyncService extends Service {
         return null;
     }
 
-
-    public void show_message(String message) {
-        Notification n = get_notification(message);
+    public void showNotification(String message) {
+        Notification n = buildNotification(message);
         NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.notify(NOTE_ID, n);
+        nm.notify(NOTIFICATION_ID, n);
     }
 
-    private Notification get_notification(String message) {
-        Intent kill = new Intent(this, NotificationReceiver.class);
-        kill.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        kill.setAction("KILL");
-        Intent crash = new Intent(this, NotificationReceiver.class);
-        crash.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        crash.setAction("CRASH");
-        PendingIntent kill_intent = PendingIntent.getService(this, 0, kill, 0);
-        PendingIntent crash_intent = PendingIntent.getService(this, 0, crash, 0);
+    private Notification buildNotification(String message) {
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+
         Builder builder = new Builder(getApplicationContext());
         builder.setContentTitle("OpenANDIDCore");
         builder.setContentText(message);
         builder.setSmallIcon(R.drawable.bmt_icon);
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+
         if (sharedPref.getBoolean("bmt.allowkill", false)) {
-            builder.addAction(android.R.drawable.ic_input_delete, "Stop Service", kill_intent);
+            Intent killIntent = new Intent(this, NotificationReceiver.class);
+            killIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            killIntent.setAction("KILL");
+            builder.addAction(android.R.drawable.ic_input_delete, "Stop Service",
+                    PendingIntent.getService(this, 0, killIntent, 0));
         }
+
         if (sharedPref.getBoolean("acra.verbose", false)) {
-            builder.addAction(android.R.drawable.ic_delete, "Send Error Report", crash_intent);
+            Intent crashIntent = new Intent(this, NotificationReceiver.class);
+            crashIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            crashIntent.setAction("CRASH");
+            builder.addAction(android.R.drawable.ic_delete, "Send Error Report",
+                    PendingIntent.getService(this, 0, crashIntent, 0));
         }
-        //builder.addAction(R.drawable.error_icon, "Kill BMT", kill_intent);
-        Intent notificationIntent = new Intent(this, PersistenceService.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+        Intent persistIntent = new Intent(this, PersistenceService.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, persistIntent, 0);
         builder.setContentIntent(pendingIntent);
-        Notification n = builder.build();
-        return n;
+
+        return builder.build();
     }
 
+    public static boolean isReady() {
+        return ready;
+    }
+
+    public static void setResync(boolean resync) {
+        CommCareSyncService.resync = resync;
+    }
 }

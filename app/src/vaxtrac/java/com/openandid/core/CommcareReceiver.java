@@ -7,12 +7,10 @@ import android.util.Log;
 
 public class CommcareReceiver extends BroadcastReceiver {
 
-    private final String TAG = "CommcareReceiver";
+    private static final String TAG = "CommcareReceiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.i(TAG, "Received Commcare Broadcast");
-        Log.i(TAG, "Ignoring");
+        Log.i(TAG, "received CommCare broadcast, ignoring");
     }
-
 }

@@ -23,33 +23,24 @@ public class USBReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (USB_ON.equals(intent.getAction())) {
-            UsbDevice incomingDevice = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
-            Log.e(TAG, String.format("Caught Scanner PLUG signal | %s : %s ", incomingDevice.getProductId(), incomingDevice.getVendorId()));
-            Log.e(TAG, "Ignoring, waiting for redispatch");
-        } else if (LOCAL_USB.equals(intent.getAction())) {
-            UsbDevice incomingDevice = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
-            Log.e(TAG, String.format("Caught LOCAL PLUG signal | %s : %s ", incomingDevice.getProductId(), incomingDevice.getVendorId()));
-            ScanningActivity.setFreeDevice(incomingDevice);
-        } else if (USB_OFF.equals(intent.getAction())) {
-            UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
-            Log.e(TAG, String.format("Caught Scanner UNPLUG signal | %s : %s", device.getProductId(), device.getVendorId()));
-            try {
-                if (!Controller.mHostUsbManager.scannerConnected()) {
-                    Log.i(TAG, "Scanner really isn't connected!");
-                    if (!Scanner.isInInit) {
-                        Log.e(TAG, "Killing Scanner");
-                        Controller.mScanner = null;
-                        ScanningActivity.setFreeDevice(null);
-                    } else {
-                        Log.e(TAG, "Scanner is initializing, false positive");
+        String action = intent.getAction();
+        switch (action) {
+            case LOCAL_USB:
+                UsbDevice incomingDevice = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                ScanningActivity.setFreeDevice(incomingDevice);
+                break;
+            case USB_OFF:
+                try {
+                    if (!Controller.mHostUsbManager.isPermittedDeviceConnected()) {
+                        if (!Scanner.isInInit()) {
+                            Controller.mScanner = null;
+                            ScanningActivity.setFreeDevice(null);
+                        }
                     }
-                } else {
-                    Log.i(TAG, "psych, scanner's here");
+                } catch (Exception e) {
+                    Log.i(TAG, e.toString());
                 }
-            } catch (Exception e) {
-                Log.i(TAG, e.toString());
-            }
+                break;
         }
     }
 }

@@ -15,9 +15,16 @@ import java.util.Map;
 
 public class IdentifyActivity extends Activity {
 
-    final String TAG = "IdentifyActivity";
-    boolean enrolled = false;
-    Bundle output;
+    private static final String TAG = "IdentifyActivity";
+
+    private static final List<String> FINGERS = new ArrayList<String>() {{
+        add("left_thumb");
+        add("right_thumb");
+        add("left_index");
+        add("right_index");
+    }};
+
+    private Bundle output;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,67 +33,50 @@ public class IdentifyActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.spinner_view);
-        Bundle extras = getIntent().getExtras();
-        IdentifyBG bg = new IdentifyBG(extras);
+        IdentifyTask bg = new IdentifyTask(getIntent().getExtras());
         bg.execute();
-        //show spinner
-        //run asynch with extras
-        //finish with code
     }
 
     @Override
     public void onBackPressed() {
-        finish_error();
+        finishCancel();
     }
 
-    private void finish_ok() {
-        //send all clear and id
+    private void finishOk() {
         Intent i = new Intent();
         i.putExtras(output);
         setResult(RESULT_OK, i);
-        this.finish();
+        finish();
     }
 
-    private void finish_error() {
-        //send error code
+    private void finishCancel() {
         Intent i = new Intent();
         setResult(RESULT_CANCELED, i);
-        this.finish();
+        finish();
     }
 
-    private class IdentifyBG extends AsyncTask<Void, Void, Void> {
+    private class IdentifyTask extends AsyncTask<Void, Void, Void> {
 
-        final List<String> fingers = new ArrayList<String>() {{
-            add("left_thumb");
-            add("right_thumb");
-            add("left_index");
-            add("right_index");
-        }};
-        Bundle extras;
+        private Bundle extras;
 
-        private IdentifyBG(Bundle mExtras) {
+        private IdentifyTask(Bundle mExtras) {
             super();
             extras = mExtras;
-
         }
 
         @Override
         protected Void doInBackground(Void... params) {
 
+            Map<String, String> templates = new HashMap<>();
 
-            Map<String, String> templates = new HashMap<String, String>();
-            for (String f : fingers) {
+            for (String f : FINGERS) {
                 String temp = extras.getString(f);
                 if (temp != null) {
                     templates.put(f, temp);
-                    Log.i(TAG, "Found input template for finger: " + f);
-                } else {
-                    Log.i(TAG, "null template for finger: " + f);
                 }
             }
 
-            List<Engine.Match> matches = Controller.mEngine.get_best_matches(templates);
-
+            List<Engine.Match> matches = Controller.mEngine.getBestMatches(templates);
 
             output = new Bundle();
             int max_matches = 10;
@@ -96,9 +86,9 @@ public class IdentifyActivity extends Activity {
                     max_matches = max;
                 }
             } catch (Exception e) {
-
+                Log.e(TAG, "failed to get max matches");
             }
-            if (matches.isEmpty() == true) {
+            if (matches.isEmpty()) {
                 output.putString("matches_found", "0");
             } else {
                 output.putString("matches_found", Integer.toString(matches.size()));
@@ -117,8 +107,7 @@ public class IdentifyActivity extends Activity {
         }
 
         protected void onPostExecute(Void res) {
-            finish_ok();
-
+            finishOk();
         }
     }
 

@@ -16,7 +16,6 @@ public class ScannerReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.i(TAG, "Caught Broadcast");
         try {
             synchronized (this) {
                 Controller.mDevice = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
@@ -30,6 +29,5 @@ public class ScannerReceiver extends BroadcastReceiver {
         } catch (Exception e) {
             Log.e(TAG, String.format("Error in BroadcastReceiver | %s", e.getMessage()));
         }
-
     }
 }
