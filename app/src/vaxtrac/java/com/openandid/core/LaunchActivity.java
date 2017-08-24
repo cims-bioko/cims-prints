@@ -9,6 +9,8 @@ import android.widget.Button;
 
 import java.util.UUID;
 
+import static com.openandid.core.Constants.SCAN_ACTION;
+
 public class LaunchActivity extends Activity {
 
     private static final String TAG = "LaunchActivity--VT";
@@ -66,7 +68,7 @@ public class LaunchActivity extends Activity {
 
         private void launchPipeDemo() {
             Intent i = new Intent();
-            i.setAction("com.openandid.core.SCAN");
+            i.setAction(SCAN_ACTION);
             i.putExtra("sessionID", UUID.randomUUID().toString());
             i.putExtra("prompt_0", ".PIPE Test 1");
             i.putExtra("easy_skip_0", "true");
@@ -81,7 +83,7 @@ public class LaunchActivity extends Activity {
 
         private void launchScanDemo() {
             Intent i = new Intent();
-            i.setAction("com.openandid.core.SCAN");
+            i.setAction(SCAN_ACTION);
             i.putExtra("sessionID", UUID.randomUUID().toString());
             i.putExtra("prompt", ".SCAN Test");
             i.putExtra("easy_skip", "true");

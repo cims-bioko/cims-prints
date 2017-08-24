@@ -6,17 +6,17 @@ import android.util.Log;
 
 import java.util.LinkedHashMap;
 
+import static com.openandid.core.Constants.ENROLL;
+import static com.openandid.core.Constants.IDENTIFY;
+import static com.openandid.core.Constants.INTERNAL_ENROLL_ACTION;
+import static com.openandid.core.Constants.INTERNAL_IDENTIFY_ACTION;
+import static com.openandid.core.Constants.PIPE_ACTION;
+import static com.openandid.core.Constants.SCAN_ACTION;
+
 
 class PipeSessionManager {
 
-
     private static final String TAG = "PipeSessionManager";
-    private static final String PIPE_ACTION = "com.openandid.core.PIPE";
-    private static final String SCAN_ACTION = "com.openandid.core.SCAN";
-    private static final String INTERNAL_IDENTIFY_ACTION = "com.openandid.internal.IDENTIFY";
-    private static final String INTERNAL_ENROLL_ACTION = "com.openandid.internal.ENROLL";
-    private static final String ENROLL = "ENROLL";
-    private static final String IDENTIFY = "IDENTIFY";
 
     private static LinkedHashMap<String, Boolean> sessions;
     private static LinkedHashMap<Integer, Intent> currentSession;

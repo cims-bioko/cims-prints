@@ -10,10 +10,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import static com.openandid.core.Constants.KILL_ACTION;
+
 public class CleanupActivity extends Activity {
 
     private static final String TAG = "CleanUp";
-    private static final String KILL_ACTION = "com.openandid.core.KILL";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

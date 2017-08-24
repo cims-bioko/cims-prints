@@ -11,14 +11,14 @@ import android.widget.Toast;
 
 import data.CommCareContentHandler;
 
+import static com.openandid.core.Constants.ENROLL_ACTION;
+import static com.openandid.core.Constants.IDENTIFY_ACTION;
+import static com.openandid.core.Constants.PIPE_ACTION;
+import static com.openandid.core.Constants.SCAN_ACTION;
+
 public class MainActivity extends Activity {
 
     private static final String TAG = "MainActivity--VT";
-
-    private static final String SCAN_ACTION = "com.openandid.core.SCAN";
-    private static final String ENROLL_ACTION = "com.openandid.core.ENROLL";
-    private static final String IDENTIFY_ACTION = "com.openandid.core.IDENTIFY";
-    private static final String PIPE_ACTION = "com.openandid.core.PIPE";
 
     private static final int REQUEST_CODE = 1;
 

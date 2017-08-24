@@ -14,9 +14,15 @@ import java.util.List;
 
 import data.CommCareContentHandler;
 
+import static com.openandid.core.Constants.ENROLL_ACTION;
+import static com.openandid.core.Constants.IDENTIFY_ACTION;
+import static com.openandid.core.Constants.PIPE_ACTION;
+import static com.openandid.core.Constants.SCAN_ACTION;
+
 public class PipeActivity extends Activity {
 
     private static final String TAG = "PIPE";
+
 
     private static int requestCode = 1;
 
@@ -210,9 +216,9 @@ public class PipeActivity extends Activity {
             Log.i(TAG, "Couldn't get requestcode from intent.");
         }
         String action = incoming.getAction();
-        if (action.equals("com.openandid.core.PIPE")) {
+        if (action.equals(PIPE_ACTION)) {
             processPipe(incoming);
-        } else if (action.equals("com.openandid.core.SCAN")) {
+        } else if (action.equals(SCAN_ACTION)) {
             appendScans(incoming);
         }
         dispatchIntent(stack);
@@ -223,7 +229,7 @@ public class PipeActivity extends Activity {
         for (int x = 0; x < 10; x++) {
             String a = b.getString("action_" + Integer.toString(x));
             if (a != null) {
-                if (a.equals("com.openandid.core.SCAN")) {
+                if (a.equals(SCAN_ACTION)) {
                     appendScans(incoming);
                 } else {
                     Log.i(TAG, "Stacking | " + a);
@@ -285,7 +291,7 @@ public class PipeActivity extends Activity {
         String action = incoming.getAction();
 
         switch (action) {
-            case "com.openandid.core.IDENTIFY":
+            case IDENTIFY_ACTION:
                 outputIntent.setClass(this, IdentifyActivity.class);
                 Log.i(TAG, "Starting | IDENTIFY");
                 if (Controller.commCareHandler != null) {
@@ -297,12 +303,12 @@ public class PipeActivity extends Activity {
                 }
                 startActivityForResult(outputIntent, requestCode);
                 break;
-            case "com.openandid.core.SCAN":
+            case SCAN_ACTION:
                 incoming.setClass(this, ScanningActivity.class);
                 Log.i(TAG, "Starting | SCAN");
                 startActivityForResult(incoming, requestCode);
                 break;
-            case "com.openandid.core.ENROLL":
+            case ENROLL_ACTION:
                 outputIntent.setClass(this, EnrollActivity.class);
                 Log.i(TAG, "Starting | ENROLL");
                 startActivityForResult(outputIntent, requestCode);

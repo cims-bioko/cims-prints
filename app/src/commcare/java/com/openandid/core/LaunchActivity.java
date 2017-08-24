@@ -10,11 +10,11 @@ import android.widget.Toast;
 
 import java.util.UUID;
 
+import static com.openandid.core.Constants.SCAN_ACTION;
+
 public class LaunchActivity extends Activity {
 
     private static final String TAG = "LaunchActivity--CC";
-
-    public static final String SCAN_ACTION = "com.openandid.core.SCAN";
 
     Button launchButton;
 
