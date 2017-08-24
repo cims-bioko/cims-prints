@@ -43,8 +43,9 @@ import static com.openandid.core.Constants.INTERNAL_SCAN_ACTION;
 
 public class ScanningActivity extends Activity {
 
-    private static final String ACTION_USB_PERMISSION = "com.openandid.screentest.ScanningActivity.USB_PERMISSION";
     private static final String TAG = "ScanningActivity";
+
+    private static final String ACTION_USB_PERMISSION = "com.openandid.screentest.ScanningActivity.USB_PERMISSION";
 
     /*
         I'm embarrassed by this mess. Please, refactor...
