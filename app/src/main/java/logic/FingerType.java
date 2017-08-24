@@ -10,7 +10,6 @@ import com.openandid.core.R;
  * muddled. There are at most 10 values. This is insanity.
  *
  * @see bmtafis.simple.Finger
- * @see sourceafis.simple.Finger
  * @see com.openandid.core.SupportedFinger
  */
 public enum FingerType {
