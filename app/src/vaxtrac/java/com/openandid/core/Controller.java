@@ -75,7 +75,7 @@ public class Controller extends Application {
     }
 
     public static void killAll() {
-        prefsMgr.notify_false_start();
+        prefsMgr.notifyFalseStart();
         context.stopService(new Intent(context, PersistenceService.class));
         context.stopService(new Intent(context, NotificationReceiver.class));
         try {

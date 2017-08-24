@@ -46,7 +46,7 @@ public class SharedPreferencesManager {
         preferences.edit().putBoolean("saved_preferences", true).apply();
     }
 
-    public void notify_false_start() {
+    public void notifyFalseStart() {
         Log.i(TAG, "Setting hard_restart flag -> True");
         preferences.edit().putBoolean("hard_restart", true).apply();
     }
