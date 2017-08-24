@@ -12,8 +12,6 @@ import java.util.Map;
 
 public class EnrollActivity extends Activity {
 
-    private static final String TAG = "EnrollActivity";
-
     private boolean enrolled = false;
     private String previousId = null;
     private String newId = null;
