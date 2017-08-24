@@ -1,27 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation">
-
-    <string name="app_name">OpenANDID Core</string>
+<resources>
+    <string name="app_name" translatable="false">OpenANDID Core</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="right">Right</string>
-    <string name="left">Left</string>
-    <string name="thumb">Thumb</string>
-    <string name="index">Index</string>
-    <string name="middle">Middle</string>
-    <string name="ring">Ring</string>
-    <string name="pinky">Pinky</string>
-    <string name="finger">Finger</string>
     <string name="left_thumb">Left Thumb</string>
     <string name="right_thumb">Right Thumb</string>
     <string name="left_index">Left Index Finger</string>
     <string name="right_index">Right Index Finger</string>
+    <string name="left_middle">Left Middle Finger</string>
+    <string name="right_middle">Right Middle Finger</string>
+    <string name="left_ring">Left Ring Finger</string>
+    <string name="right_ring">Right Ring Finger</string>
+    <string name="left_pinky">Left Pinky Finger</string>
+    <string name="right_pinky">Right Pinky Finger</string>
     <string name="scan_prompt">Please Scan the</string>
     <string name="scanner_not_connected">Scanner isn\'t connected...</string>
     <string name="please_wait">Please Wait...</string>
     <string name="scan_all_fingers">Please ensure all fingers\nhave been scanned.</string>
-    <string name="scan_quality">Please ensure all fingers \nare of Good Quality! \nPlease Try Again.</string>
     <string name="scan_complete">Scan Complete.\nProcessing Image.</string>
     <string name="unplug_scanner">Please Unplug the Scanner</string>
     <string name="attach_scanner">Please Attach the Scanner</string>
@@ -32,6 +26,4 @@
         <item>Horizontal</item>
         <item>Vertical</item>
     </string-array>
-    <string name="title_activity_launch">LaunchActivity</string>
-    <string name="title_activity_dispatch">DispatchActivity</string>
 </resources>

@@ -1,27 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation">
-    <string name="app_name">OpenANDIDCore</string>
+<resources>
     <string name="action_settings">सेटिङ </string>
     <string name="attach_scanner">कृपया स्क्यानर लाई जोड्नुहोस् </string>
     <string name="unplug_scanner">कृपया स्क्यानर लाई छुटाउनुहोस् </string>
-    <string name="left">बायाँ </string>
-    <string name="thumb">हातको बुढी औंला </string>
-    <string name="index">हातको चोर औंला </string>
-    <string name="pinky">कान्छी औंला </string>
-    <string name="finger">औंला </string>
     <string name="left_index">बायाँहातको चोर औंला </string>
     <string name="left_thumb">बायाँहातको बुढी औंला </string>
-    <string name="middle">हातको माझि औंला </string>
     <string name="scan_prompt">स्क्यान गर्नुहोस् </string>
     <string name="scanner_not_connected">स्क्यानर जोडिएको छैन..... </string>
-    <string name="scan_quality">कृपया सबै औंलाहरु राम्रो भए / नभएको  सुनिश्चित गर्नुहोस्। </string>
     <string name="scan_complete">स्क्यान पुरा भयो। </string>
     <string name="scan_all_fingers">कृपया सबै औंलाहरु स्क्यान गरे / नगरेको सुनिश्चित गर्नुहोस्। </string>
-    <string name="ring">हातको साँहिली औंला </string>
     <string name="right_thumb">दाँयाहातको बुढी औंला </string>
     <string name="right_index">दाँयाहातको चोर औंला </string>
-    <string name="right">दाँया </string>
     <string name="please_wait">कृपया प्रतीक्षा गर्नुहोस् ... </string>
-    <string name="hello_world">सबैलाई नमस्कार ! </string>
 </resources>

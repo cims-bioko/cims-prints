@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation">
-    <string name="app_name">OpenANDIDCore</string>
-    <string name="thumb">Pouce</string>
-    <string name="index">Index</string>
-    <string name="middle">Majeur</string>
-    <string name="ring">Annulaire</string>
-    <string name="pinky">Auriculaire</string>
-    <string name="left">Gauche</string>
-    <string name="right">Droit</string>
-    <string name="hello_world">Allo monde!</string>
-    <string name="finger">Doigt</string>
+<resources>
     <string name="left_thumb">Pouce Gauche</string>
     <string name="right_thumb">Pouce Droit</string>
     <string name="left_index">Index Gauche</string>
@@ -22,6 +11,5 @@
     <string name="scan_prompt">SVP Scannez Le</string>
     <string name="scanner_not_connected">Scanner ne est pas connecté</string>
     <string name="unplug_scanner">SVP Déconnecter le scanner</string>
-    <string name="scan_quality">l\'Image n\'est pas de bonne qualité.\nEssayez encore.</string>
     <string name="attach_scanner">SVP Connectez le Scanner</string>
 </resources>

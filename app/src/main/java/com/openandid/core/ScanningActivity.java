@@ -162,7 +162,7 @@ public class ScanningActivity extends Activity {
         leftButtonText.setText(leftFinger.getLabel());
 
         leftButton = (ImageButton) findViewById(R.id.scanner_btn_finger_1);
-        leftButton.setImageDrawable(getResources().getDrawable(leftFinger.getDrawableId()));
+        leftButton.setImageDrawable(getResources().getDrawable(leftFinger.getDrawable()));
         leftButton.setOnClickListener(getScanClickListener(leftFinger, leftButton));
         leftButton.setOnLongClickListener(getScanLongClickListener(leftFinger, leftButton));
 
@@ -170,7 +170,7 @@ public class ScanningActivity extends Activity {
         rightButtonText.setText(rightFinger.getLabel());
 
         rightButton = (ImageButton) findViewById(R.id.scanner_btn_finger_2);
-        rightButton.setImageDrawable(getResources().getDrawable(rightFinger.getDrawableId()));
+        rightButton.setImageDrawable(getResources().getDrawable(rightFinger.getDrawable()));
         rightButton.setOnClickListener(getScanClickListener(rightFinger, rightButton));
         rightButton.setOnLongClickListener(getScanLongClickListener(rightFinger, rightButton));
 
@@ -400,27 +400,27 @@ public class ScanningActivity extends Activity {
             if (leftVal == null) {
                 throw new NullPointerException();
             }
-            leftFinger = new FingerType(leftVal);
+            leftFinger = FingerType.valueOf(leftVal);
         } catch (Exception e) {
             Log.i(TAG, "No assignment for left_finger, defaulting to thumb");
-            leftFinger = new FingerType("left_thumb");
+            leftFinger = FingerType.left_thumb;
         }
         try {
             String rightVal = opts.get("right_finger_assignment");
             if (rightVal == null) {
                 throw new NullPointerException();
             }
-            rightFinger = new FingerType(rightVal);
+            rightFinger = FingerType.valueOf(rightVal);
         } catch (Exception e) {
             Log.i(TAG, "No assignment for right_finger, defaulting to thumb");
-            rightFinger = new FingerType("right_thumb");
+            rightFinger = FingerType.right_thumb;
         }
     }
 
     private void loadDefaultOptions() {
         easySkip = false;
-        leftFinger = new FingerType("left_thumb");
-        rightFinger = new FingerType("right_thumb");
+        leftFinger = FingerType.left_thumb;
+        rightFinger = FingerType.right_thumb;
     }
 
     public void highlightScannedFingers() {

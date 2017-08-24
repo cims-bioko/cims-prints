@@ -1,102 +1,48 @@
 package logic;
 
-import android.content.res.Resources;
-import android.util.Log;
-
 import com.openandid.core.Controller;
 import com.openandid.core.R;
 
-public class FingerType {
+/**
+ * An enumeration for each finger.
+ *
+ * There are currently far too many enums/constants for this and they should be unified so that the purpose is not so
+ * muddled. There are at most 10 values. This is insanity.
+ *
+ * @see bmtafis.simple.Finger
+ * @see sourceafis.simple.Finger
+ * @see com.openandid.core.SupportedFinger
+ */
+public enum FingerType {
 
-    public final String TAG = "FingerType";
+    left_thumb(R.string.left_thumb, R.drawable.l_thumb),
+    right_thumb(R.string.right_thumb, R.drawable.l_thumb),
+    left_index(R.string.left_index, R.drawable.l_index),
+    right_index(R.string.right_index, R.drawable.r_index),
+    left_middle(R.string.left_middle, R.drawable.l_middle),
+    right_middle(R.string.right_middle, R.drawable.r_middle),
+    left_ring(R.string.left_ring, R.drawable.l_middle),
+    right_ring(R.string.right_ring, R.drawable.r_middle),
+    left_pinky(R.string.left_pinky, R.drawable.l_pinky),
+    right_pinky(R.string.right_pinky, R.drawable.r_pinky);
 
-    private String label;
-    private String key;
-    private int drawableId;
+    private int label;
+    private int drawable;
 
     public String getLabel() {
-        return label;
+        return Controller.getAppContext().getResources().getString(label);
     }
 
     public String getKey() {
-        return key;
+        return name();
     }
 
-    public int getDrawableId() {
-        return drawableId;
+    public int getDrawable() {
+        return drawable;
     }
 
-    public FingerType(String type) throws IllegalArgumentException {
-        Resources res = Controller.getAppContext().getResources();
-        ReadableFinger f;
-        try {
-            f = ReadableFinger.valueOf(type);
-        } catch (Exception e) {
-            Log.i(TAG, "Couldn't parse string for finger: " + type);
-            throw new IllegalArgumentException();
-        }
-        key = f.name();
-        switch (f) {
-            case left_thumb:
-                label = String.format("%s", res.getString((R.string.left_thumb)));
-                drawableId = R.drawable.l_thumb;
-                break;
-            case right_thumb:
-                label = String.format("%s", res.getString(R.string.right_thumb));
-                drawableId = R.drawable.r_thumb;
-                break;
-            case left_index:
-                label = String.format("%s", res.getString(R.string.left_index));
-                drawableId = R.drawable.l_index;
-                break;
-            case right_index:
-                label = String.format("%s", res.getString(R.string.right_index));
-                drawableId = R.drawable.r_index;
-                break;
-            case left_middle:
-                label = String.format("%s %s %s", res.getString(R.string.left), res.getString(R.string.middle), res.getString(R.string.finger));
-                drawableId = R.drawable.l_middle;
-                break;
-            case right_middle:
-                label = String.format("%s %s %s", res.getString(R.string.right), res.getString(R.string.middle), res.getString(R.string.finger));
-                drawableId = R.drawable.r_middle;
-                break;
-            case left_ring:
-                label = String.format("%s %s %s", res.getString(R.string.left), res.getString(R.string.ring), res.getString(R.string.finger));
-                drawableId = R.drawable.l_ring;
-                break;
-            case right_ring:
-                label = String.format("%s %s %s", res.getString(R.string.right), res.getString(R.string.ring), res.getString(R.string.finger));
-                drawableId = R.drawable.r_ring;
-                break;
-            case left_pinky:
-                label = String.format("%s %s %s", res.getString(R.string.left), res.getString(R.string.pinky), res.getString(R.string.finger));
-                drawableId = R.drawable.l_pinky;
-                break;
-            case right_pinky:
-                label = String.format("%s %s %s", res.getString(R.string.right), res.getString(R.string.pinky), res.getString(R.string.finger));
-                drawableId = R.drawable.r_pinky;
-                break;
-        }
-    }
-
-    /**
-     * Too many enums/constants for the same things. They all should be unified so that the purpose is not so muddled.
-     *
-     * @see bmtafis.simple.Finger
-     * @see sourceafis.simple.Finger
-     * @see com.openandid.core.SupportedFinger
-     */
-    private enum ReadableFinger {
-        left_thumb,
-        right_thumb,
-        left_index,
-        right_index,
-        left_middle,
-        right_middle,
-        left_ring,
-        right_ring,
-        left_pinky,
-        right_pinky
+    FingerType(int label, int drawable) {
+        this.label = label;
+        this.drawable = drawable;
     }
 }
