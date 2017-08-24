@@ -158,18 +158,18 @@ public class ScanningActivity extends Activity {
         cancelPopupButton = (Button) popupView.findViewById(R.id.pop_up_wait_cancel_btn);
 
         TextView leftButtonText = (TextView) findViewById(R.id.scanner_txt_finger_1_title);
-        leftButtonText.setText(leftFinger.finger_name);
+        leftButtonText.setText(leftFinger.getLabel());
 
         leftButton = (ImageButton) findViewById(R.id.scanner_btn_finger_1);
-        leftButton.setImageDrawable(getResources().getDrawable(leftFinger.finger_image_location));
+        leftButton.setImageDrawable(getResources().getDrawable(leftFinger.getDrawableId()));
         leftButton.setOnClickListener(getScanClickListener(leftFinger, leftButton));
         leftButton.setOnLongClickListener(getScanLongClickListener(leftFinger, leftButton));
 
         TextView rightButtonText = (TextView) findViewById(R.id.scanner_txt_finger_2_title);
-        rightButtonText.setText(rightFinger.finger_name);
+        rightButtonText.setText(rightFinger.getLabel());
 
         rightButton = (ImageButton) findViewById(R.id.scanner_btn_finger_2);
-        rightButton.setImageDrawable(getResources().getDrawable(rightFinger.finger_image_location));
+        rightButton.setImageDrawable(getResources().getDrawable(rightFinger.getDrawableId()));
         rightButton.setOnClickListener(getScanClickListener(rightFinger, rightButton));
         rightButton.setOnLongClickListener(getScanLongClickListener(rightFinger, rightButton));
 
@@ -260,10 +260,10 @@ public class ScanningActivity extends Activity {
             }
         }
         if (Controller.mScanner.isReady()) {
-            popupPrompt.setText(getResources().getString(R.string.scan_prompt) + " " + finger.finger_name);
+            popupPrompt.setText(getResources().getString(R.string.scan_prompt) + " " + finger.getLabel());
             popupWindow.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             popupWindow.showAtLocation(view, Gravity.CENTER_VERTICAL, 0, 0);
-            final FingerScanTask f = new FingerScanTask(finger.finger_key, Controller.mScanner, btn, view, instant);
+            final FingerScanTask f = new FingerScanTask(finger.getKey(), Controller.mScanner, btn, view, instant);
             cancelPopupButton.setOnClickListener(new Button.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -303,14 +303,14 @@ public class ScanningActivity extends Activity {
         for (String key : scanImages.keySet()) {
             Log.d(TAG, "found in scan Images: " + key);
         }
-        Bitmap leftScanImage = scanImages.get(leftFinger.finger_key);
+        Bitmap leftScanImage = scanImages.get(leftFinger.getKey());
         if (leftScanImage != null) {
             leftButton.setImageBitmap(leftScanImage);
             Log.i(TAG, "Drew left Image from previous");
         } else {
             Log.i(TAG, "Left image is null");
         }
-        Bitmap rightScanImage = scanImages.get(rightFinger.finger_key);
+        Bitmap rightScanImage = scanImages.get(rightFinger.getKey());
         if (rightScanImage != null) {
             rightButton.setImageBitmap(rightScanImage);
             Log.i(TAG, "Drew right Image from previous");
@@ -423,10 +423,10 @@ public class ScanningActivity extends Activity {
     }
 
     public void highlightScannedFingers() {
-        if (scannedFingers.get(leftFinger.finger_key) != null) {
+        if (scannedFingers.get(leftFinger.getKey()) != null) {
             leftButton.setBackground(getResources().getDrawable(R.drawable.bg_shape_green_round));
         }
-        if (scannedFingers.get(rightFinger.finger_key) != null) {
+        if (scannedFingers.get(rightFinger.getKey()) != null) {
             rightButton.setBackground(getResources().getDrawable(R.drawable.bg_shape_green_round));
         }
     }

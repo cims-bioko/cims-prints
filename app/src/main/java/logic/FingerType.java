@@ -1,6 +1,5 @@
 package logic;
 
-
 import android.content.res.Resources;
 import android.util.Log;
 
@@ -11,77 +10,84 @@ public class FingerType {
 
     public final String TAG = "FingerType";
 
-    public String finger_name;
-    public String finger_key;
-    public int finger_code;
-    public int finger_image_location;
-    Resources res;
+    private String label;
+    private String key;
+    private int drawableId;
+
+    public String getLabel() {
+        return label;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public int getDrawableId() {
+        return drawableId;
+    }
 
     public FingerType(String type) throws IllegalArgumentException {
-        res = Controller.getAppContext().getResources();
-        readable_finger f;
+        Resources res = Controller.getAppContext().getResources();
+        ReadableFinger f;
         try {
-            f = readable_finger.valueOf(type);
+            f = ReadableFinger.valueOf(type);
         } catch (Exception e) {
             Log.i(TAG, "Couldn't parse string for finger: " + type);
             throw new IllegalArgumentException();
         }
-        finger_key = f.toString();
+        key = f.name();
         switch (f) {
             case left_thumb:
-                finger_name = String.format("%s", res.getString((R.string.left_thumb)));
-                finger_code = 4;
-                finger_image_location = R.drawable.l_thumb;
+                label = String.format("%s", res.getString((R.string.left_thumb)));
+                drawableId = R.drawable.l_thumb;
                 break;
             case right_thumb:
-                finger_name = String.format("%s", res.getString(R.string.right_thumb));
-                finger_code = 5;
-                finger_image_location = R.drawable.r_thumb;
+                label = String.format("%s", res.getString(R.string.right_thumb));
+                drawableId = R.drawable.r_thumb;
                 break;
             case left_index:
-                finger_name = String.format("%s", res.getString(R.string.left_index));
-                finger_code = 3;
-                finger_image_location = R.drawable.l_index;
+                label = String.format("%s", res.getString(R.string.left_index));
+                drawableId = R.drawable.l_index;
                 break;
             case right_index:
-                finger_name = String.format("%s", res.getString(R.string.right_index));
-                finger_code = 6;
-                finger_image_location = R.drawable.r_index;
+                label = String.format("%s", res.getString(R.string.right_index));
+                drawableId = R.drawable.r_index;
                 break;
             case left_middle:
-                finger_name = String.format("%s %s %s", res.getString(R.string.left), res.getString(R.string.middle), res.getString(R.string.finger));
-                finger_code = 2;
-                finger_image_location = R.drawable.l_middle;
+                label = String.format("%s %s %s", res.getString(R.string.left), res.getString(R.string.middle), res.getString(R.string.finger));
+                drawableId = R.drawable.l_middle;
                 break;
             case right_middle:
-                finger_name = String.format("%s %s %s", res.getString(R.string.right), res.getString(R.string.middle), res.getString(R.string.finger));
-                finger_code = 7;
-                finger_image_location = R.drawable.r_middle;
+                label = String.format("%s %s %s", res.getString(R.string.right), res.getString(R.string.middle), res.getString(R.string.finger));
+                drawableId = R.drawable.r_middle;
                 break;
             case left_ring:
-                finger_name = String.format("%s %s %s", res.getString(R.string.left), res.getString(R.string.ring), res.getString(R.string.finger));
-                finger_code = 1;
-                finger_image_location = R.drawable.l_ring;
+                label = String.format("%s %s %s", res.getString(R.string.left), res.getString(R.string.ring), res.getString(R.string.finger));
+                drawableId = R.drawable.l_ring;
                 break;
             case right_ring:
-                finger_name = String.format("%s %s %s", res.getString(R.string.right), res.getString(R.string.ring), res.getString(R.string.finger));
-                finger_code = 8;
-                finger_image_location = R.drawable.r_ring;
+                label = String.format("%s %s %s", res.getString(R.string.right), res.getString(R.string.ring), res.getString(R.string.finger));
+                drawableId = R.drawable.r_ring;
                 break;
             case left_pinky:
-                finger_name = String.format("%s %s %s", res.getString(R.string.left), res.getString(R.string.pinky), res.getString(R.string.finger));
-                finger_code = 0;
-                finger_image_location = R.drawable.l_pinky;
+                label = String.format("%s %s %s", res.getString(R.string.left), res.getString(R.string.pinky), res.getString(R.string.finger));
+                drawableId = R.drawable.l_pinky;
                 break;
             case right_pinky:
-                finger_name = String.format("%s %s %s", res.getString(R.string.right), res.getString(R.string.pinky), res.getString(R.string.finger));
-                finger_code = 9;
-                finger_image_location = R.drawable.r_pinky;
+                label = String.format("%s %s %s", res.getString(R.string.right), res.getString(R.string.pinky), res.getString(R.string.finger));
+                drawableId = R.drawable.r_pinky;
                 break;
         }
     }
 
-    private enum readable_finger {
+    /**
+     * Too many enums/constants for the same things. They all should be unified so that the purpose is not so muddled.
+     *
+     * @see bmtafis.simple.Finger
+     * @see sourceafis.simple.Finger
+     * @see com.openandid.core.SupportedFinger
+     */
+    private enum ReadableFinger {
         left_thumb,
         right_thumb,
         left_index,
