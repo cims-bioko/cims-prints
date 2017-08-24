@@ -16,7 +16,7 @@ public class SharedPreferencesManager {
     private static SharedPreferences preferences = null;
 
     public SharedPreferencesManager(Context mContext) {
-        preferences = mContext.getSharedPreferences("com.openandid.core", Context.MODE_PRIVATE);
+        preferences = mContext.getSharedPreferences(mContext.getApplicationContext().getPackageName(), Context.MODE_PRIVATE);
     }
 
     public boolean hasPreferences() {
