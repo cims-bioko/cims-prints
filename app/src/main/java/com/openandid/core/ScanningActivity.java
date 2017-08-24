@@ -39,6 +39,8 @@ import logic.HostUsbManager;
 import logic.Scanner;
 import logic.LumidigmMercuryScanner;
 
+import static com.openandid.core.Constants.INTERNAL_SCAN_ACTION;
+
 public class ScanningActivity extends Activity {
 
     private static final String ACTION_USB_PERMISSION = "com.openandid.screentest.ScanningActivity.USB_PERMISSION";
@@ -982,7 +984,7 @@ public class ScanningActivity extends Activity {
         }
 
         Intent result = new Intent();
-        result.setAction("com.openandid.internal.SCAN");
+        result.setAction(INTERNAL_SCAN_ACTION);
         result.putExtras(extras);
         return result;
     }
