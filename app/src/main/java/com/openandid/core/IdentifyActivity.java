@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import logic.Finger;
+
 public class IdentifyActivity extends Activity {
 
     private static final String TAG = "IdentifyActivity";
@@ -61,7 +63,7 @@ public class IdentifyActivity extends Activity {
 
             Map<String, String> templates = new HashMap<>();
 
-            for (SupportedFinger f : SupportedFinger.values()) {
+            for (Finger f : Finger.enrolledValues()) {
                 String temp = extras.getString(f.name());
                 if (temp != null) {
                     templates.put(f.name(), temp);

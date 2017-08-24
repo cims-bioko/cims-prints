@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import bmtafis.simple.AfisEngine;
 import bmtafis.simple.Fingerprint;
 import bmtafis.simple.Person;
+import logic.Finger;
 
 
 public class Engine {
@@ -97,7 +98,7 @@ public class Engine {
         Person whole_person = mapToPerson(999999999, templates);
         Map<String, Person> p_hold = new HashMap<>();
 
-        for (SupportedFinger finger : SupportedFinger.values()) {
+        for (Finger finger : Finger.enrolledValues()) {
             Map<String, String> f_hold = new HashMap<>();
             f_hold.put(finger.name(), templates.get(finger.name()));
             p_hold.put(finger.name(), mapToPerson(999999999, f_hold));
@@ -114,7 +115,7 @@ public class Engine {
         List<Integer> super_threshold = new ArrayList<>();
         for (int id : hits) {
             double score = 0.0;
-            for (SupportedFinger finger : SupportedFinger.values()) {
+            for (Finger finger : Finger.enrolledValues()) {
                 double f_score = verifyInCache(p_hold.get(finger.name()), id);
                 Log.i(TAG, "Verify finger for id: " + Integer.toString(id) + " : " + Double.toString(f_score));
                 score += f_score;
@@ -158,13 +159,13 @@ public class Engine {
 
         if (templates != null) {
             int c = 0;
-            for (SupportedFinger finger : SupportedFinger.values()) {
+            for (Finger finger : Finger.enrolledValues()) {
                 String temp = templates.get(finger.name());
                 if (temp != null) {
                     Fingerprint f = new Fingerprint();
                     try {
                         f.setIsoTemplate(hexToBytes(temp));
-                        f.setFinger(finger.getAFISFinger());
+                        f.setFinger(finger.afisValue());
                         prints.add(f);
                         c += 1;
                     } catch (Exception e) {

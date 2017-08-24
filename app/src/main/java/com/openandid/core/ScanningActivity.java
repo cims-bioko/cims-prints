@@ -34,7 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import logic.FingerType;
+import logic.Finger;
 import logic.HostUsbManager;
 import logic.Scanner;
 import logic.LumidigmMercuryScanner;
@@ -60,7 +60,7 @@ public class ScanningActivity extends Activity {
 
     private PendingIntent mPermissionIntent;
 
-    FingerType leftFinger, rightFinger;
+    Finger leftFinger, rightFinger;
     ImageButton leftButton, rightButton, proceedButton, skipButton;
     Button cancelPopupButton;
 
@@ -226,7 +226,7 @@ public class ScanningActivity extends Activity {
         }
     }
 
-    private OnClickListener getScanClickListener(final FingerType finger, final ImageButton btn) {
+    private OnClickListener getScanClickListener(final Finger finger, final ImageButton btn) {
         return new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -235,7 +235,7 @@ public class ScanningActivity extends Activity {
         };
     }
 
-    private Button.OnLongClickListener getScanLongClickListener(final FingerType finger, final ImageButton btn) {
+    private Button.OnLongClickListener getScanLongClickListener(final Finger finger, final ImageButton btn) {
         return new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -245,7 +245,7 @@ public class ScanningActivity extends Activity {
         };
     }
 
-    private void handleClick(final FingerType finger, final ImageButton btn, final boolean instant, View view) {
+    private void handleClick(final Finger finger, final ImageButton btn, final boolean instant, View view) {
         if (Controller.mScanner == null) {
             restartScanner(view);
             Toast.makeText(this, getResources().getString(R.string.scanner_not_connected), Toast.LENGTH_SHORT).show();
@@ -400,27 +400,27 @@ public class ScanningActivity extends Activity {
             if (leftVal == null) {
                 throw new NullPointerException();
             }
-            leftFinger = FingerType.valueOf(leftVal);
+            leftFinger = Finger.valueOf(leftVal);
         } catch (Exception e) {
             Log.i(TAG, "No assignment for left_finger, defaulting to thumb");
-            leftFinger = FingerType.left_thumb;
+            leftFinger = Finger.left_thumb;
         }
         try {
             String rightVal = opts.get("right_finger_assignment");
             if (rightVal == null) {
                 throw new NullPointerException();
             }
-            rightFinger = FingerType.valueOf(rightVal);
+            rightFinger = Finger.valueOf(rightVal);
         } catch (Exception e) {
             Log.i(TAG, "No assignment for right_finger, defaulting to thumb");
-            rightFinger = FingerType.right_thumb;
+            rightFinger = Finger.right_thumb;
         }
     }
 
     private void loadDefaultOptions() {
         easySkip = false;
-        leftFinger = FingerType.left_thumb;
-        rightFinger = FingerType.right_thumb;
+        leftFinger = Finger.left_thumb;
+        rightFinger = Finger.right_thumb;
     }
 
     public void highlightScannedFingers() {

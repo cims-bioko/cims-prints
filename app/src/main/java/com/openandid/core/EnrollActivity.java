@@ -10,6 +10,8 @@ import android.view.WindowManager;
 import java.util.HashMap;
 import java.util.Map;
 
+import logic.Finger;
+
 public class EnrollActivity extends Activity {
 
     private boolean enrolled = false;
@@ -55,7 +57,7 @@ public class EnrollActivity extends Activity {
             String uuid = extras.getString("uuid");
 
             Map<String, String> templates = new HashMap<>();
-            for (SupportedFinger f : SupportedFinger.values()) {
+            for (Finger f : Finger.enrolledValues()) {
                 String temp = extras.getString(f.name());
                 if (temp != null) {
                     templates.put(f.name(), temp);

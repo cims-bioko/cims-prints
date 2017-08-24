@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import logic.Finger;
+
 public class CCSyncActivity extends Activity {
 
     /**
@@ -78,10 +80,10 @@ public class CCSyncActivity extends Activity {
         caseSpinner.setAdapter(sca);
 
         fingerSpinners = new HashMap<String, Spinner>() {{
-            put("left_index", (Spinner) findViewById(R.id.sync_spin_li));
-            put("right_index", (Spinner) findViewById(R.id.sync_spin_ri));
-            put("left_thumb", (Spinner) findViewById(R.id.sync_spin_lt));
-            put("right_thumb", (Spinner) findViewById(R.id.sync_spin_rt));
+            put(Finger.left_index.name(), (Spinner) findViewById(R.id.sync_spin_li));
+            put(Finger.right_index.name(), (Spinner) findViewById(R.id.sync_spin_ri));
+            put(Finger.left_thumb.name(), (Spinner) findViewById(R.id.sync_spin_lt));
+            put(Finger.right_thumb.name(), (Spinner) findViewById(R.id.sync_spin_rt));
         }};
 
         caseSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {

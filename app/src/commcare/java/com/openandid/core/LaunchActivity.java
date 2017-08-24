@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import java.util.UUID;
 
+import logic.Finger;
+
 import static com.openandid.core.Constants.SCAN_ACTION;
 
 public class LaunchActivity extends Activity {
@@ -115,10 +117,10 @@ public class LaunchActivity extends Activity {
         i.putExtra("easy_skip_0", "true");
         i.putExtra("prompt_1", ".PIPE Test 2");
         i.putExtra("easy_skip_1", "true");
-        i.putExtra("left_finger_assignment_0", "left_index");
-        i.putExtra("right_finger_assignment_0", "right_middle");
-        i.putExtra("left_finger_assignment_1", "right_thumb");
-        i.putExtra("right_finger_assignment_1", "left_middle");
+        i.putExtra("left_finger_assignment_0", Finger.left_index.name());
+        i.putExtra("right_finger_assignment_0", Finger.right_middle.name());
+        i.putExtra("left_finger_assignment_1", Finger.right_thumb.name());
+        i.putExtra("right_finger_assignment_1", Finger.left_middle.name());
         startActivityForResult(i, 101);
     }
 
@@ -128,8 +130,8 @@ public class LaunchActivity extends Activity {
         i.putExtra("sessionID", UUID.randomUUID().toString());
         i.putExtra("prompt", ".SCAN Test");
         i.putExtra("easy_skip", "true");
-        i.putExtra("left_finger_assignment", "left_index");
-        i.putExtra("right_finger_assignment", "right_middle");
+        i.putExtra("left_finger_assignment", Finger.left_index.name());
+        i.putExtra("right_finger_assignment", Finger.right_middle.name());
         startActivityForResult(i, 101);
     }
 }
