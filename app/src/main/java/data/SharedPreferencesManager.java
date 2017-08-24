@@ -36,12 +36,12 @@ public class SharedPreferencesManager {
         return fields;
     }
 
-    public void putTemplateFields(String case_type, Map<String, String> fields) {
+    public void putTemplateFields(String caseType, Map<String, String> fields) {
         Set<String> keys = fields.keySet();
         for (String key : keys) {
             preferences.edit().putString(key, fields.get(key)).apply();
         }
-        preferences.edit().putString("case_type", case_type).apply();
+        preferences.edit().putString("case_type", caseType).apply();
         preferences.edit().putStringSet("template_keys", keys).apply();
         preferences.edit().putBoolean("saved_preferences", true).apply();
     }
