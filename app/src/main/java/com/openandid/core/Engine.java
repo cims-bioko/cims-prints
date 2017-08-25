@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,76 +18,50 @@ import bmtafis.simple.Fingerprint;
 import bmtafis.simple.Person;
 import logic.Finger;
 
+import static com.openandid.core.Fingerprints.makePrint;
+import static com.openandid.core.Fingerprints.populatePrints;
+
 
 public class Engine {
 
     private static final String TAG = "AFISEngine";
 
-    private static final double MATCH_THRESOLD = 70.0;
+    private static final double BEST_MATCH_THRESHOLD = 70.0;
 
     public static boolean ready = true;
 
-    private List<Person> candidates = null;
-    private Map<Integer, Person> candidatesMap = null;
-    private Map<String, Integer> intAlias = null;
-    private Map<Integer, String> stringAlias = null;
-    private AtomicInteger idGenerator = null;
+    private AfisEngine engine;
+    private PersonCache cache;
     private float threshold;
 
-    private AfisEngine mEngine;
-
-    public Engine(Context mContext, float threshold) {
+    Engine(Context context, float threshold) {
+        engine = new AfisEngine(context);
         this.threshold = threshold;
-        mEngine = new AfisEngine(mContext);
-        mEngine.setThreshold(threshold);
-        Log.i(TAG, "Engine Started");
-        candidates = new ArrayList<>();
-        candidatesMap = new HashMap<>();
-        intAlias = new HashMap<>();
-        stringAlias = new HashMap<>();
-        idGenerator = new AtomicInteger();
+        engine.setThreshold(this.threshold);
+        cache = new PersonCache();
     }
 
-    void addCandidateToCache(String uuid, Map<String, String> templates) {
-        try {
-            int _ref_id = idGenerator.getAndIncrement();
-            Person p = mapToPerson(_ref_id, templates);
-            intAlias.put(uuid, _ref_id);
-            stringAlias.put(_ref_id, uuid);
-            Log.i(TAG, "Adding uuid:" + uuid + " as _id" + Integer.toString(_ref_id));
-            candidates.add(p);
-            candidatesMap.put(_ref_id, p);
-        } catch (Exception e) {
-            Log.e(TAG, "Couldn't add " + uuid);
-            throw new IllegalArgumentException(e.toString());
-        }
-    }
-
-    public void cacheCandidates(Map<String, Map<String, String>> candidates) {
-        Log.i(TAG, "Loading Gallery with " + Integer.toString(candidates.size()) + " candidates.");
+    public void populateCache(Map<String, Map<String, String>> candidates) {
+        Log.i(TAG, "loading " + candidates.size() + " candidates");
         ready = false;
-        this.candidates = new ArrayList<>();
-        candidatesMap = new HashMap<>();
-        for (String uuid : candidates.keySet()) {
-            try {
-                addCandidateToCache(uuid, candidates.get(uuid));
-            } catch (IllegalArgumentException e) {
-                Log.e(TAG, e.getMessage());
-            }
-        }
+        cache.populate(candidates);
         ready = true;
     }
 
-    private double verifyInCache(Person p1, int uuid) {
-        Person p2 = candidatesMap.get(uuid);
-        if (p2 != null) {
-            return verify(p1, p2);
+    void addToCache(String uuid, Map<String, String> templates) {
+        cache.add(uuid, templates);
+    }
+
+    private double verifyInCache(Person p1, int afisId) {
+        Person p2 = cache.getPerson(afisId);
+        if (p2 == null) {
+            throw new IllegalArgumentException("person with id " + afisId + " is not in the database");
         }
-        throw new IllegalArgumentException("UUID " + uuid + " is not in the database");
+        return verify(p1, p2);
     }
 
     private double verify(Person p1, Person p2) {
-        return mEngine.verify(p1, p2);
+        return engine.verify(p1, p2);
     }
 
     List<Match> getBestMatches(Map<String, String> templates) {
@@ -95,102 +70,57 @@ public class Engine {
 
         Set<Integer> hits = new HashSet<>();
         Map<Integer, Double> scores = new HashMap<>();
-        Person whole_person = mapToPerson(999999999, templates);
-        Map<String, Person> p_hold = new HashMap<>();
+        Person wholePerson = new EphemeralPerson(templates);
+        Map<String, Person> personPerFinger = new HashMap<>();
 
+        // create single-finger persons for filtering
         for (Finger finger : Finger.enrolledValues()) {
-            Map<String, String> f_hold = new HashMap<>();
-            f_hold.put(finger.name(), templates.get(finger.name()));
-            p_hold.put(finger.name(), mapToPerson(999999999, f_hold));
+            personPerFinger.put(finger.name(), new EphemeralPerson(finger, templates.get(finger.name())));
         }
 
-        List<Person> spikes = identify(whole_person);
-        Log.i(TAG, "Found " + Integer.toString(spikes.size()) + " candidates for inspection.");
+        // identify potential matches based on all fingers
+        List<Person> spikes = identify(wholePerson);
+        Log.i(TAG, "identified " + spikes.size() + " candidates");
         for (Person p : spikes) {
             hits.add(p.getId());
             scores.put(p.getId(), 0.0);
         }
 
-        this.mEngine.setThreshold(0.0f);
-        List<Integer> super_threshold = new ArrayList<>();
+        engine.setThreshold(0.0f);
+
+        // filter those potentials based on sum of verification scores for individual fingers
+        List<Integer> filteredHits = new ArrayList<>();
         for (int id : hits) {
-            double score = 0.0;
+            double scoreSum = 0.0;
             for (Finger finger : Finger.enrolledValues()) {
-                double f_score = verifyInCache(p_hold.get(finger.name()), id);
-                Log.i(TAG, "Verify finger for id: " + Integer.toString(id) + " : " + Double.toString(f_score));
-                score += f_score;
+                Person singleFingerPerson = personPerFinger.get(finger.name());
+                scoreSum += verifyInCache(singleFingerPerson, id);
             }
-            if (score >= MATCH_THRESOLD) {
-                super_threshold.add(id);
-                scores.put(id, score);
+            if (scoreSum >= BEST_MATCH_THRESHOLD) {
+                filteredHits.add(id);
+                scores.put(id, scoreSum);
             }
         }
 
-        mEngine.setThreshold(threshold);
+        engine.setThreshold(threshold);
+
+        // create match list from the filtered set, sorted on score
         List<Engine.Match> matches = new ArrayList<>();
-        for (int id : super_threshold) {
-            String uuid = stringAlias.get(id);
-            double score = scores.get(id);
-            matches.add(new Match(uuid, score));
+        for (int id : filteredHits) {
+            matches.add(new Match(cache.getPerson(id).getUuid(), scores.get(id)));
         }
         Collections.sort(matches);
-        Log.i(TAG, "Returning " + Integer.toString(matches.size()) + " matches.");
 
         ready = true;
+
+        Log.i(TAG, "returning " + matches.size() + " matches");
 
         return matches;
     }
 
-    private ArrayList<Person> identify(Person probe) {
-        if (candidates.size() > 0) {
-            Log.i(TAG, "Starting Identify on gallery of " + Integer.toString(candidates.size()) + " candidates.");
-            return (ArrayList<Person>) mEngine.identify(probe, candidates.toArray(new Person[0]));
-        } else {
-            Log.i(TAG, "No Cohort to Search Returning Premptive empty set");
-            return new ArrayList<>();
-        }
-    }
-
-    private static Person mapToPerson(Integer uuid, Map<String, String> templates) {
-
-        Person p = new Person();
-        p.setId(uuid);
-        List<Fingerprint> prints = new ArrayList<>();
-
-        if (templates != null) {
-            int c = 0;
-            for (Finger finger : Finger.enrolledValues()) {
-                String temp = templates.get(finger.name());
-                if (temp != null) {
-                    Fingerprint f = new Fingerprint();
-                    try {
-                        f.setIsoTemplate(hexToBytes(temp));
-                        f.setFinger(finger.afisValue());
-                        prints.add(f);
-                        c += 1;
-                    } catch (Exception e) {
-                        Log.e(TAG, String.format("Error parsing iso template: %s | %s | size(%s)", finger, e.toString(), temp.length()));
-                    }
-                }
-            }
-            if (c == 0) {
-                throw new IllegalArgumentException("No Valid Fingerprints found for " + uuid);
-            }
-            p.setFingerprints(prints);
-            return p;
-        }
-
-        return null;
-    }
-
-    private static byte[] hexToBytes(String s) {
-        int len = s.length();
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-                    + Character.digit(s.charAt(i + 1), 16));
-        }
-        return data;
+    @SuppressWarnings("unchecked")
+    private List<Person> identify(Person probe) {
+        return cache.isEmpty() ? Collections.EMPTY_LIST : (List<Person>) engine.identify(probe, cache.toArray());
     }
 
     class Match implements Comparable<Match> {
@@ -213,4 +143,131 @@ public class Engine {
         }
     }
 }
+
+class PersonCache {
+
+    private static final String TAG = PersonCache.class.getSimpleName();
+
+    private static final AtomicInteger ID_GEN = new AtomicInteger();
+
+    private Map<Integer, CachedPerson> candidates;
+
+    PersonCache() {
+        candidates = new LinkedHashMap<>();
+    }
+
+    private void clear() {
+        candidates.clear();
+    }
+
+    boolean isEmpty() {
+        return candidates.isEmpty();
+    }
+
+    CachedPerson getPerson(int afisId) {
+        return candidates.get(afisId);
+    }
+
+    void add(String uuid, Map<String, String> templates) {
+        try {
+            int afisId = ID_GEN.getAndIncrement();
+            CachedPerson person = new CachedPerson(afisId, uuid, templates);
+            candidates.put(afisId, person);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Couldn't add " + uuid, e);
+        }
+    }
+
+    Person[] toArray() {
+        return candidates.values().toArray(new Person[candidates.size()]);
+    }
+
+    void populate(Map<String, Map<String, String>> candidates) {
+        clear();
+        for (Map.Entry<String, Map<String, String>> entry : candidates.entrySet()) {
+            try {
+                add(entry.getKey(), entry.getValue());
+            } catch (IllegalArgumentException e) {
+                Log.e(TAG, e.getMessage());
+            }
+        }
+    }
+}
+
+class EphemeralPerson extends Person {
+
+    private static final int DEFAULT_AFIS_ID = 999999999;
+
+    private EphemeralPerson(int afisId) {
+        setId(afisId);
+    }
+
+    EphemeralPerson(Map<String, String> templates) {
+        this(DEFAULT_AFIS_ID, templates);
+    }
+
+    EphemeralPerson(int afisId, Map<String, String> templates) {
+        this(afisId);
+        populatePrints(getFingerprints(), templates, Finger.enrolledValues());
+        if (templates.isEmpty()) {
+            throw new IllegalArgumentException("No Valid Fingerprints found for " + DEFAULT_AFIS_ID);
+        }
+    }
+
+    EphemeralPerson(Finger finger, String template) {
+        this(DEFAULT_AFIS_ID);
+        getFingerprints().add(makePrint(finger, template));
+    }
+}
+
+class CachedPerson extends EphemeralPerson {
+
+    private String uuid;
+
+    CachedPerson(int afisId, String uuid, Map<String, String> templates) {
+        super(afisId, templates);
+        this.uuid = uuid;
+    }
+
+    String getUuid() {
+        return uuid;
+    }
+}
+
+class Fingerprints {
+
+    private static final String TAG = Fingerprints.class.getSimpleName();
+
+    static void populatePrints(List<Fingerprint> prints, Map<String, String> templates, Finger... fingers) {
+        for (Finger finger : fingers) {
+            String template = templates.get(finger.name());
+            if (template != null) {
+                try {
+                    prints.add(makePrint(finger, template));
+                } catch (Exception e) {
+                    Log.e(TAG, String.format("Error parsing iso template: %s | %s | size(%s)", finger, e.toString(), template.length()));
+                }
+            }
+        }
+    }
+
+    static Fingerprint makePrint(Finger finger, String template) {
+        Fingerprint print = new Fingerprint();
+        print.setIsoTemplate(hexDecode(template));
+        print.setFinger(finger.afisValue());
+        return print;
+    }
+
+    private static byte[] hexDecode(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                    + Character.digit(s.charAt(i + 1), 16));
+        }
+        return data;
+    }
+}
+
+
 

@@ -44,21 +44,7 @@ public class CommCareSyncService extends Service {
                     } catch (Exception e) {
                         Log.e(TAG, "Couldn't Sync to CC", e);
                         showNotification("Couldn't sync with Commcare.");
-                        try {
-                            if (handler != null) {
-                                Map<String, String> cc_instructions = handler.getInstructions();
-                                Log.i(TAG, "Commcare Instructions");
-                                if (cc_instructions != null) {
-                                    for (String key : cc_instructions.keySet()) {
-                                        Log.i(TAG, String.format("%s | %s", key, cc_instructions.get(key)));
-                                    }
-                                }
-                            }
-                        } catch (Exception e1) {
-                            Log.e(TAG, "Couldn't report CC Instruction set");
-                        }
                         CommCareContentHandler.setInSync(false);
-                        Log.i(TAG, "Sync Failed.");
                         stopSelf();
                     }
 

@@ -21,25 +21,25 @@ public class CommCareContentHandler {
 
     private static boolean inSync = false;
 
-    private Map<String, String> instructions;
+    private Map<String, String> syncSpec;
     private Set<String> caseIds;
 
-    public CommCareContentHandler(Map<String, String> instructions) {
-        this.instructions = instructions;
+    public CommCareContentHandler(Map<String, String> syncSpec) {
+        this.syncSpec = syncSpec;
         caseIds = new HashSet<>();
     }
 
     public void sync(CommCareSyncService mService) {
         inSync = true;
         loadRelevantCaseIds(mService);
-        Map<String, Map<String, String>> caseMap = loadCases(mService);
+        Map<String, Map<String, String>> caseMap = loadCaseTemplates(mService);
         translateTemplates(mService, caseMap);
         inSync = false;
     }
 
     private void translateTemplates(CommCareSyncService mService, Map<String, Map<String, String>> caseMap) {
         mService.showNotification("Translating Templates");
-        Controller.mEngine.cacheCandidates(caseMap);
+        Controller.mEngine.populateCache(caseMap);
         if (!Engine.ready) {
             Log.i(TAG, "engine is busy, waiting.");
         }
@@ -53,41 +53,44 @@ public class CommCareContentHandler {
         mService.showNotification("Service Ready.");
     }
 
-    private Map<String, Map<String, String>> loadCases(CommCareSyncService mService) {
+    private Map<String, Map<String, String>> loadCaseTemplates(CommCareSyncService mService) {
+
         mService.showNotification("Loading " + Integer.toString(caseIds.size()) + " cases from Commcare");
-        Set<String> values = new HashSet<>(instructions.keySet());
-        values.remove("case_type");
-        Map<String, Map<String, String>> caseMap = new HashMap<>();
-        Cursor c;
+
+        Set<String> templateKeys = new HashSet<>(syncSpec.keySet());
+        templateKeys.remove("case_type"); // dirty, dirty hack - this approach will sting someone later
+
+        Map<String, Map<String, String>> caseTemplates = new HashMap<>();
         for (String caseId : caseIds) {
-            Map<String, String> templates = null;
-            c = mService.getContentResolver().query(Uri.parse(CASE_DATA + caseId), null, null, null, null);
+
+            Map<String, String> templates = null; // only allocate map when there's data for the case
+            Cursor c = mService.getContentResolver().query(Uri.parse(CASE_DATA + caseId), null, null, null, null);
+
             if (c != null) {
                 try {
                     c.moveToFirst();
-                    int datum_pos = c.getColumnIndex("datum_id");
-                    int val_pos = c.getColumnIndex("value");
-                    String key = "";
+                    int datumKeyIdx = c.getColumnIndex("datum_id"), valueIdx = c.getColumnIndex("value");
                     do {
-                        key = c.getString(datum_pos);
-                        if (values.contains(key)) {
+                        String datumKey = c.getString(datumKeyIdx);
+                        if (templateKeys.contains(datumKey)) {
+                            // allocate the map now, if it doesn't already exist
                             if (templates == null) {
                                 templates = new HashMap<>();
                             }
-                            String value = c.getString(val_pos);
-                            templates.put(key, value);
-                            Log.i(TAG, "key:" + key + " | v: " + value);
+                            templates.put(datumKey, c.getString(valueIdx));
                         }
                     } while (c.moveToNext());
-                    if (templates != null) {
-                        caseMap.put(caseId, templates);
-                    }
                 } finally {
                     c.close();
                 }
             }
+
+            if (templates != null) {
+                caseTemplates.put(caseId, templates);
+            }
         }
-        return caseMap;
+
+        return caseTemplates;
     }
 
     private void loadRelevantCaseIds(CommCareSyncService mService) {
@@ -97,7 +100,7 @@ public class CommCareContentHandler {
                 c.moveToFirst();
                 int caseTypeIdx = c.getColumnIndex("case_type");
                 int caseIdIdx = c.getColumnIndex("case_id");
-                String caseType = instructions.get("case_type");
+                String caseType = syncSpec.get("case_type");
                 do {
                     if (c.getString(caseTypeIdx).equals(caseType)) {
                         caseIds.add(c.getString(caseIdIdx));
@@ -112,8 +115,8 @@ public class CommCareContentHandler {
         }
     }
 
-    public Map<String, String> getInstructions() {
-        return instructions;
+    public Map<String, String> getSyncSpec() {
+        return syncSpec;
     }
 
     public static boolean isInSync() {

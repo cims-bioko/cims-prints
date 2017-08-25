@@ -153,18 +153,18 @@ public class CCSyncActivity extends Activity {
 
     private boolean registerDatum(Spinner case_spinner, Map<String, Spinner> template_spinners) {
         try {
-            Map<String, String> output = new HashMap<>();
+            Map<String, String> syncPrefs = new HashMap<>();
             String caseType = (String) case_spinner.getSelectedItem();
             for (String key : template_spinners.keySet()) {
                 Spinner s = template_spinners.get(key);
                 String f = (String) s.getSelectedItem();
                 if (!f.equals("None")) {
-                    output.put(f, key);
+                    syncPrefs.put(f, key);
                 }
             }
-            Controller.prefsMgr.putTemplateFields(caseType, output);
-            output.put("case_type", caseType);
-            Controller.syncCommCare(output);
+            Controller.prefsMgr.putTemplateFields(caseType, syncPrefs);
+            syncPrefs.put("case_type", caseType);
+            Controller.syncCommCare(syncPrefs);
             return true;
         } catch (Exception e) {
             return false;

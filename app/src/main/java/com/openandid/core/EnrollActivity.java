@@ -64,7 +64,7 @@ public class EnrollActivity extends Activity {
                 }
             }
             try {
-                Controller.mEngine.addCandidateToCache(uuid, templates);
+                Controller.mEngine.addToCache(uuid, templates);
                 enrolled = true;
             } catch (Exception e) {
                 enrolled = false;

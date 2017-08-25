@@ -90,9 +90,9 @@ public class Controller extends Application {
         }
     }
 
-    public static void syncCommCare(Map<String, String> output) {
+    public static void syncCommCare(Map<String, String> syncSpec) {
         if (CommCareSyncService.isReady()) {
-            commCareHandler = new CommCareContentHandler(output);
+            commCareHandler = new CommCareContentHandler(syncSpec);
             Intent i = new Intent(context, CommCareSyncService.class);
             context.startService(i);
         } else {
