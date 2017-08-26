@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import logic.Finger;
 
+import static com.openandid.core.Constants.ODK_SENTINEL;
 import static com.openandid.core.Constants.SCAN_ACTION;
 
 public class LaunchActivity extends Activity {
@@ -40,7 +41,7 @@ public class LaunchActivity extends Activity {
                 Bundle extras = data.getExtras();
                 for (String key : extras.keySet()) {
                     try {
-                        if (Controller.ODK_SENTINEL.equals(key)) {
+                        if (ODK_SENTINEL.equals(key)) {
                             throw new IllegalArgumentException("Can't read bundle");
                         }
                         Log.d(TAG, String.format("%s | %s", key, extras.getString(key)));

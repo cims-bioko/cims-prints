@@ -16,4 +16,5 @@ public final class Constants {
     public static final String ENROLL = "ENROLL";
     public static final String IDENTIFY = "IDENTIFY";
 
+    public static final String ODK_SENTINEL = "odk_intent_bundle";
 }

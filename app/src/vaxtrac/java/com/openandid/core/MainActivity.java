@@ -13,6 +13,7 @@ import data.CommCareContentHandler;
 
 import static com.openandid.core.Constants.ENROLL_ACTION;
 import static com.openandid.core.Constants.IDENTIFY_ACTION;
+import static com.openandid.core.Constants.ODK_SENTINEL;
 import static com.openandid.core.Constants.PIPE_ACTION;
 import static com.openandid.core.Constants.SCAN_ACTION;
 
@@ -38,7 +39,7 @@ public class MainActivity extends Activity {
     private void finishCancel() {
         Intent resultIntent = new Intent();
         Bundle bundle = new Bundle();
-        resultIntent.putExtra(Controller.ODK_SENTINEL, bundle);
+        resultIntent.putExtra(ODK_SENTINEL, bundle);
         setResult(RESULT_CANCELED, resultIntent);
     }
 
@@ -83,7 +84,7 @@ public class MainActivity extends Activity {
         } else {
             try {
                 Bundle extras = data.getExtras();
-                data.putExtra(Controller.ODK_SENTINEL, extras);
+                data.putExtra(ODK_SENTINEL, extras);
             } catch (Exception e) {
                 Log.i(TAG, "No output from activity", e);
             }

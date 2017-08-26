@@ -10,6 +10,7 @@ import static com.openandid.core.Constants.ENROLL;
 import static com.openandid.core.Constants.IDENTIFY;
 import static com.openandid.core.Constants.INTERNAL_ENROLL_ACTION;
 import static com.openandid.core.Constants.INTERNAL_IDENTIFY_ACTION;
+import static com.openandid.core.Constants.ODK_SENTINEL;
 import static com.openandid.core.Constants.PIPE_ACTION;
 import static com.openandid.core.Constants.SCAN_ACTION;
 
@@ -178,7 +179,7 @@ class PipeSessionManager {
         }
         Bundle output = new Bundle();
         output.putAll(bindle);
-        output.putBundle(Controller.ODK_SENTINEL, bindle);
+        output.putBundle(ODK_SENTINEL, bindle);
         return output;
     }
 
