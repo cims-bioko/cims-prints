@@ -34,8 +34,8 @@ import java.util.Map;
 
 import logic.Finger;
 import logic.HostUsbManager;
-import logic.Scanner;
 import logic.LumidigmMercuryScanner;
+import logic.Scanner;
 
 import static com.openandid.core.Constants.EASY_SKIP_KEY;
 import static com.openandid.core.Constants.INTERNAL_SCAN_ACTION;
