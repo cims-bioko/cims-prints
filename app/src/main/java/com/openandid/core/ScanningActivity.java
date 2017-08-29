@@ -74,7 +74,6 @@ public class ScanningActivity extends Activity {
     TextView popupPrompt;
 
     Map<String, String> opts = null;
-    Map<String, Object> binaryOpts = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -112,7 +111,7 @@ public class ScanningActivity extends Activity {
 
         loadOptions(getIntent().getExtras());
         //If we have options from the intent Bundle, parse and enact them
-        if (opts != null || binaryOpts != null) {
+        if (opts != null) {
             applyOptions();
         } else {
             loadDefaultOptions();
@@ -347,9 +346,8 @@ public class ScanningActivity extends Activity {
 
     private void loadOptions(Bundle extras) {
         try {
-            if (opts == null || binaryOpts == null) {
+            if (opts == null) {
                 opts = new HashMap<>();
-                binaryOpts = new HashMap<>();
             }
             for (String key : extras.keySet()) {
                 try {
@@ -360,20 +358,12 @@ public class ScanningActivity extends Activity {
                     opts.put(key, val);
                 } catch (Exception e) {
                     Log.e(TAG, "Couldn't get string value for key " + key);
-                    try {
-                        binaryOpts.put(key, extras.getParcelable(key));
-                    } catch (Exception e2) {
-                        Log.i(TAG, "Couldn't get binary value for key " + key);
-                    }
                 }
             }
         } catch (Exception e) {
             Log.e(TAG, "Error parsing options from bundle", e);
             if (opts.isEmpty()) {
                 opts = null;
-            }
-            if (binaryOpts.isEmpty()) {
-                binaryOpts = null;
             }
         }
     }
