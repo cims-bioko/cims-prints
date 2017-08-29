@@ -12,12 +12,19 @@ import java.util.UUID;
 
 import logic.Finger;
 
+import static com.openandid.core.Constants.EASY_SKIP_KEY;
+import static com.openandid.core.Constants.LEFT_FINGER_ASSIGNMENT_KEY;
 import static com.openandid.core.Constants.ODK_SENTINEL;
+import static com.openandid.core.Constants.PROMPT_KEY;
+import static com.openandid.core.Constants.RIGHT_FINGER_ASSIGNMENT_KEY;
 import static com.openandid.core.Constants.SCAN_ACTION;
+import static com.openandid.core.Constants.SESSION_ID_KEY;
 
 public class LaunchActivity extends Activity {
 
     private static final String TAG = "LaunchActivity--CC";
+
+    public static final int REQUEST_CODE = 101;
 
     Button launchButton;
 
@@ -111,28 +118,39 @@ public class LaunchActivity extends Activity {
     }
 
     private void launchPipe() {
+
         Intent i = new Intent();
         i.setAction(SCAN_ACTION);
-        i.putExtra("sessionID", UUID.randomUUID().toString());
-        i.putExtra("prompt_0", ".PIPE Test 1");
-        i.putExtra("easy_skip_0", "true");
-        i.putExtra("prompt_1", ".PIPE Test 2");
-        i.putExtra("easy_skip_1", "true");
-        i.putExtra("left_finger_assignment_0", Finger.left_index.name());
-        i.putExtra("right_finger_assignment_0", Finger.right_middle.name());
-        i.putExtra("left_finger_assignment_1", Finger.right_thumb.name());
-        i.putExtra("right_finger_assignment_1", Finger.left_middle.name());
-        startActivityForResult(i, 101);
+
+        i.putExtra(SESSION_ID_KEY, UUID.randomUUID().toString());
+
+        // first scan setup
+        i.putExtra(PROMPT_KEY + "_0", ".PIPE Test 1");
+        i.putExtra(EASY_SKIP_KEY + "_0", "true");
+        i.putExtra(LEFT_FINGER_ASSIGNMENT_KEY + "_0", Finger.left_index.name());
+        i.putExtra(RIGHT_FINGER_ASSIGNMENT_KEY + "_0", Finger.right_middle.name());
+
+        // second scan setup
+        i.putExtra(PROMPT_KEY + "_1", ".PIPE Test 2");
+        i.putExtra(EASY_SKIP_KEY + "_1", "true");
+        i.putExtra(LEFT_FINGER_ASSIGNMENT_KEY + "_1", Finger.right_thumb.name());
+        i.putExtra(RIGHT_FINGER_ASSIGNMENT_KEY + "_1", Finger.left_middle.name());
+
+        startActivityForResult(i, REQUEST_CODE);
     }
 
     private void launchScan() {
+
         Intent i = new Intent();
         i.setAction(SCAN_ACTION);
-        i.putExtra("sessionID", UUID.randomUUID().toString());
-        i.putExtra("prompt", ".SCAN Test");
-        i.putExtra("easy_skip", "true");
-        i.putExtra("left_finger_assignment", Finger.left_index.name());
-        i.putExtra("right_finger_assignment", Finger.right_middle.name());
-        startActivityForResult(i, 101);
+
+        i.putExtra(SESSION_ID_KEY, UUID.randomUUID().toString());
+
+        i.putExtra(PROMPT_KEY, ".SCAN Test");
+        i.putExtra(EASY_SKIP_KEY, "true");
+        i.putExtra(LEFT_FINGER_ASSIGNMENT_KEY, Finger.left_index.name());
+        i.putExtra(RIGHT_FINGER_ASSIGNMENT_KEY, Finger.right_middle.name());
+
+        startActivityForResult(i, REQUEST_CODE);
     }
 }

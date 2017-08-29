@@ -8,28 +8,27 @@ import android.hardware.usb.UsbManager;
 import android.util.Log;
 
 import com.openandid.core.Controller;
-import com.openandid.core.ScannerCatcher;
 import com.openandid.core.ScanningActivity;
 
 import logic.Scanner;
 
+import static com.openandid.core.Constants.DEVICE_DETACHED;
+import static com.openandid.core.Constants.SCANNER_ATTACHED;
+
 
 public class USBReceiver extends BroadcastReceiver {
 
-    private static final String USB_ON = "android.hardware.usb.action.USB_DEVICE_ATTACHED";
-    private static final String USB_OFF = "android.hardware.usb.action.USB_DEVICE_DETACHED";
-    private static final String LOCAL_USB = ScannerCatcher.USB_ON_BROADCAST;
     private static final String TAG = "USBReceiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
         switch (action) {
-            case LOCAL_USB:
+            case SCANNER_ATTACHED:
                 UsbDevice incomingDevice = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                 ScanningActivity.setFreeDevice(incomingDevice);
                 break;
-            case USB_OFF:
+            case DEVICE_DETACHED:
                 try {
                     if (!Controller.mHostUsbManager.isPermittedDeviceConnected()) {
                         if (!Scanner.isInInit()) {

@@ -28,10 +28,8 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import logic.Finger;
@@ -39,7 +37,12 @@ import logic.HostUsbManager;
 import logic.Scanner;
 import logic.LumidigmMercuryScanner;
 
+import static com.openandid.core.Constants.EASY_SKIP_KEY;
 import static com.openandid.core.Constants.INTERNAL_SCAN_ACTION;
+import static com.openandid.core.Constants.LEFT_FINGER_ASSIGNMENT_KEY;
+import static com.openandid.core.Constants.PROMPT_KEY;
+import static com.openandid.core.Constants.RIGHT_FINGER_ASSIGNMENT_KEY;
+import static com.openandid.core.Constants.SCAN_FIELDS;
 
 public class ScanningActivity extends Activity {
 
@@ -377,7 +380,7 @@ public class ScanningActivity extends Activity {
 
     private void applyOptions() {
         try {
-            String promptVal = opts.get("prompt");
+            String promptVal = opts.get(PROMPT_KEY);
             TextView promptText = (TextView) findViewById(R.id.scanner_view_prompt);
             if (promptText != null) {
                 promptText.setText(promptVal);
@@ -386,7 +389,7 @@ public class ScanningActivity extends Activity {
             Log.i(TAG, "No prompt to load");
         }
         try {
-            String skipVal = opts.get("easy_skip");
+            String skipVal = opts.get(EASY_SKIP_KEY);
             if (skipVal != null) {
                 easySkip = Boolean.parseBoolean(skipVal);
             } else {
@@ -396,7 +399,7 @@ public class ScanningActivity extends Activity {
             Log.i(TAG, "Couldn't parse for Easy Skip");
         }
         try {
-            String leftVal = opts.get("left_finger_assignment");
+            String leftVal = opts.get(LEFT_FINGER_ASSIGNMENT_KEY);
             if (leftVal == null) {
                 throw new NullPointerException();
             }
@@ -406,7 +409,7 @@ public class ScanningActivity extends Activity {
             leftFinger = Finger.left_thumb;
         }
         try {
-            String rightVal = opts.get("right_finger_assignment");
+            String rightVal = opts.get(RIGHT_FINGER_ASSIGNMENT_KEY);
             if (rightVal == null) {
                 throw new NullPointerException();
             }
@@ -949,17 +952,10 @@ public class ScanningActivity extends Activity {
 
     public static Intent getNextScan(Bundle data, int index) {
 
-        List<String> fields = new ArrayList<String>() {{
-            add("prompt");
-            add("left_finger_assignment");
-            add("right_finger_assignment");
-            add("easy_skip");
-        }};
-
         Bundle extras = new Bundle();
 
         if (index == 0) {
-            for (String field : fields) {
+            for (String field : SCAN_FIELDS) {
                 try {
                     String value = data.getString(field);
                     if (value != null) {
@@ -973,7 +969,7 @@ public class ScanningActivity extends Activity {
         }
 
         if (extras.isEmpty()) {
-            for (String field : fields) {
+            for (String field : SCAN_FIELDS) {
                 try {
                     String value = data.getString(field + "_" + Integer.toString(index));
                     extras.putString(field, value);
