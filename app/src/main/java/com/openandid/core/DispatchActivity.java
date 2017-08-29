@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import static com.openandid.core.Constants.SESSION_ID_KEY;
+
 public class DispatchActivity extends Activity {
 
     private static final String TAG = "DispatchActivity";
@@ -31,7 +33,7 @@ public class DispatchActivity extends Activity {
             Log.e(TAG, "PipeSession Had no intent to dispatch", e);
         }
         try {
-            String sessionID = getIntent().getExtras().getString("sessionID");
+            String sessionID = getIntent().getExtras().getString(SESSION_ID_KEY);
             if (PipeSessionManager.isNewSession(sessionID)) {
                 Log.d(TAG, "New Session Found with ID " + sessionID);
                 PipeSessionManager.registerSession(sessionID, getIntent().getAction(), getIntent().getExtras());
@@ -46,7 +48,7 @@ public class DispatchActivity extends Activity {
     }
 
     private void finishCancel() {
-        PipeSessionManager.endSession(getIntent().getExtras().getString("sessionID"));
+        PipeSessionManager.endSession(getIntent().getExtras().getString(SESSION_ID_KEY));
         setResult(RESULT_CANCELED);
         finish();
     }
@@ -62,10 +64,10 @@ public class DispatchActivity extends Activity {
     }
 
     protected void finishSession() {
-        Bundle bindle = PipeSessionManager.getResults();
-        PipeSessionManager.endSession(getIntent().getExtras().getString("sessionID"));
+        Bundle results = PipeSessionManager.getResults();
+        PipeSessionManager.endSession(getIntent().getExtras().getString(SESSION_ID_KEY));
         Intent output = new Intent();
-        output.putExtras(bindle);
+        output.putExtras(results);
         setResult(RESULT_OK, output);
         finish();
     }

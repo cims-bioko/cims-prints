@@ -19,7 +19,7 @@ public final class Constants {
     public static final String ENROLL = "ENROLL";
     public static final String IDENTIFY = "IDENTIFY";
 
-    public static final String ODK_SENTINEL = "odk_intent_bundle";
+    public static final String ODK_INTENT_BUNDLE_KEY = "odk_intent_bundle";
 
     public static final String SESSION_ID_KEY = "sessionID";
     public static final String PROMPT_KEY = "prompt";

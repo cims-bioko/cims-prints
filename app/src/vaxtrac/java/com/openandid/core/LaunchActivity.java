@@ -13,7 +13,7 @@ import logic.Finger;
 
 import static com.openandid.core.Constants.EASY_SKIP_KEY;
 import static com.openandid.core.Constants.LEFT_FINGER_ASSIGNMENT_KEY;
-import static com.openandid.core.Constants.ODK_SENTINEL;
+import static com.openandid.core.Constants.ODK_INTENT_BUNDLE_KEY;
 import static com.openandid.core.Constants.PROMPT_KEY;
 import static com.openandid.core.Constants.RIGHT_FINGER_ASSIGNMENT_KEY;
 import static com.openandid.core.Constants.SCAN_ACTION;
@@ -46,7 +46,7 @@ public class LaunchActivity extends Activity {
                 Bundle extras = data.getExtras();
                 for (String key : extras.keySet()) {
                     try {
-                        if (ODK_SENTINEL.equals(key)) {
+                        if (ODK_INTENT_BUNDLE_KEY.equals(key)) {
                             throw new IllegalArgumentException("Can't read bundle");
                         }
                         Log.d(TAG, String.format("%s | %s", key, extras.getString(key)));

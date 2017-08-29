@@ -10,7 +10,7 @@ import static com.openandid.core.Constants.ENROLL;
 import static com.openandid.core.Constants.IDENTIFY;
 import static com.openandid.core.Constants.INTERNAL_ENROLL_ACTION;
 import static com.openandid.core.Constants.INTERNAL_IDENTIFY_ACTION;
-import static com.openandid.core.Constants.ODK_SENTINEL;
+import static com.openandid.core.Constants.ODK_INTENT_BUNDLE_KEY;
 import static com.openandid.core.Constants.PIPE_ACTION;
 import static com.openandid.core.Constants.SCAN_ACTION;
 
@@ -78,7 +78,7 @@ class PipeSessionManager {
         int x = 0, actionCounter = 0;
         String action;
         do {
-            action = bundle.getString("action_" + Integer.toString(actionCounter));
+            action = bundle.getString("action_" + actionCounter);
             if (action != null) {
                 if (SCAN_ACTION.equals(action)) {
                     x += importScans(bundle, x);
@@ -97,8 +97,8 @@ class PipeSessionManager {
     }
 
     private static Integer importScans(Bundle bundle, int starting) {
-        int iter = ScanningActivity.getScanCount(bundle);
-        for (int x = 0; x < iter; x++) {
+        int scanCount = ScanningActivity.getScanCount(bundle);
+        for (int x = 0; x < scanCount; x++) {
             Intent i = ScanningActivity.getNextScan(bundle, x);
             if (i != null) {
                 Log.i(TAG, String.format("Stacking | .SCAN @ # %s ", Integer.toString(starting + x)));
@@ -107,7 +107,7 @@ class PipeSessionManager {
                 Log.i(TAG, "Scan Bundle Null");
             }
         }
-        return iter;
+        return scanCount;
     }
 
     static boolean isNewSession(String id) {
@@ -153,7 +153,7 @@ class PipeSessionManager {
     public static Intent getIntent() {
         if (hasIntent(currentSessionPosition)) {
             Intent outIntent = currentSession.get(currentSessionPosition);
-            outIntent.putExtras(aggregateResults());
+            outIntent.putExtras(getSessionResult());
             return outIntent;
         }
         return null;
@@ -167,25 +167,25 @@ class PipeSessionManager {
         bundle.putAll(input);
     }
 
-    private static Bundle aggregateResults() {
-        Bundle bindle = new Bundle();
-        for (Integer key : currentSessionResults.keySet()) {
-            Bundle current = currentSessionResults.get(key);
-            if (current != null) {
-                combineBundles(bindle, current);
-            } else {
-                Log.e(TAG, String.format("Result #%s was null and will not be combined", key));
+    private static Bundle getSessionResult() {
+        Bundle capsule = new Bundle();
+        capsule.putBundle(ODK_INTENT_BUNDLE_KEY, combineBundles(currentSessionResults.values()));
+        return capsule;
+    }
+
+    private static Bundle combineBundles(Iterable<Bundle> bundles) {
+        Bundle result = new Bundle();
+        for (Bundle bundle : bundles) {
+            if (bundle != null) {
+                combineBundles(result, bundle);
             }
         }
-        Bundle output = new Bundle();
-        output.putAll(bindle);
-        output.putBundle(ODK_SENTINEL, bindle);
-        return output;
+        return result;
     }
 
     public static Bundle getResults() {
         if (!hasNextIntent()) {
-            return aggregateResults();
+            return getSessionResult();
         } else {
             Log.e(TAG, "getResult called before session was complete. Returning null");
             return null;
