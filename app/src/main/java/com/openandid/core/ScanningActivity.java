@@ -438,19 +438,12 @@ public class ScanningActivity extends Activity {
         Map<String, String> isoTemplates = Controller.mScanner.getIsoTemplates();
 
         Map<String, String> scans = new HashMap<>();
-        for (String key : isoTemplates.keySet()) {
-            String isoKey = key + "_iso";
-            if (opts != null) {
-                if (opts.get(key) != null) {
-                    String newName = opts.get(isoKey);
-                    scans.put(newName, isoTemplates.get(key));
-                } else {
-                    Log.d(TAG, "No rename rule for " + key);
-                    scans.put(key, isoTemplates.get(key));
-                }
+        for (Map.Entry<String, String> templateEntry : isoTemplates.entrySet()) {
+            String key = templateEntry.getKey(), value = templateEntry.getValue();
+            if (opts != null && opts.get(key) != null) {
+                scans.put(opts.get(key + "_iso"), value);
             } else {
-                Log.d(TAG, "No rename rule for " + key);
-                scans.put(key, isoTemplates.get(key));
+                scans.put(key, value);
             }
         }
 
@@ -475,8 +468,8 @@ public class ScanningActivity extends Activity {
 
     protected void finishOk(Map<String, String> scans) {
         Intent resultIntent = new Intent();
-        for (String key : scans.keySet()) {
-            resultIntent.putExtra(key, scans.get(key));
+        for (Map.Entry<String, String> scanEntry : scans.entrySet()) {
+            resultIntent.putExtra(scanEntry.getKey(), scanEntry.getValue());
         }
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
