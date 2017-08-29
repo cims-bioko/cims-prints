@@ -250,7 +250,7 @@ public class PipeActivity extends Activity {
             stack = new ArrayList<>();
         }
         for (int x = 0; x < iter; x++) {
-            Intent b = ScanningActivity.getNextScan(incoming, x);
+            Intent b = ScanningActivity.getNextScan(incoming.getExtras(), x);
             if (b != null) {
                 stack.add(b);
             } else {

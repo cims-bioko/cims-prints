@@ -69,7 +69,7 @@ public class LumidigmMercuryScanner extends Scanner {
         makeReady();
     }
 
-    private String toHex(byte[] in) {
+    private String hexEncode(byte[] in) {
         StringBuilder sb = new StringBuilder();
         for (byte b : in) {
             sb.append(String.format("%02X", b));
@@ -370,7 +370,7 @@ public class LumidigmMercuryScanner extends Scanner {
                                 System.arraycopy(header_finish, 0, iso_template, point, header_finish.length);
                                 point += header_finish.length;
                                 System.arraycopy(temp_body, 0, iso_template, point, temp_body.length);
-                                String iso_min_template = toHex(iso_template);
+                                String iso_min_template = hexEncode(iso_template);
                                 setIsoTemplate(finger, iso_min_template);
                                 Log.i("Template:", iso_min_template);
                                 setReady(true);

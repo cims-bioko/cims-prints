@@ -435,10 +435,8 @@ public class ScanningActivity extends Activity {
             return;
         }
 
-        Map<String, String> isoTemplates = Controller.mScanner.getIsoTemplates();
-
         Map<String, String> scans = new HashMap<>();
-        for (Map.Entry<String, String> templateEntry : isoTemplates.entrySet()) {
+        for (Map.Entry<String, String> templateEntry : Controller.mScanner.getIsoTemplates().entrySet()) {
             String key = templateEntry.getKey(), value = templateEntry.getValue();
             if (opts != null && opts.get(key) != null) {
                 scans.put(opts.get(key + "_iso"), value);
@@ -909,11 +907,11 @@ public class ScanningActivity extends Activity {
         protected void onPostExecute(Void res) {
             try {
                 if (Controller.mScanner != null) {
-                    for (String k : templateCache.keySet()) {
-                        Controller.mScanner.setBiometrics(k, templateCache.get(k));
+                    for (Map.Entry<String, String> template: templateCache.entrySet()) {
+                        Controller.mScanner.setBiometrics(template.getKey(), template.getValue());
                     }
-                    for (String k : isoTemplateCache.keySet()) {
-                        Controller.mScanner.setIsoTemplate(k, isoTemplateCache.get(k));
+                    for (Map.Entry<String, String> isoTemplate : isoTemplateCache.entrySet()) {
+                        Controller.mScanner.setIsoTemplate(isoTemplate.getKey(), isoTemplate.getValue());
                     }
                 }
                 dismissProgressDialog();
@@ -928,21 +926,16 @@ public class ScanningActivity extends Activity {
         }
     }
 
-    public static Intent getNextScan(Intent i, int index) {
-        Bundle extras = i.getExtras();
-        return getNextScan(extras, index);
-    }
+    public static Intent getNextScan(Bundle extrasIn, int index) {
 
-    public static Intent getNextScan(Bundle data, int index) {
-
-        Bundle extras = new Bundle();
+        Bundle extrasOut = new Bundle();
 
         if (index == 0) {
             for (String field : SCAN_FIELDS) {
                 try {
-                    String value = data.getString(field);
+                    String value = extrasIn.getString(field);
                     if (value != null) {
-                        extras.putString(field, value);
+                        extrasOut.putString(field, value);
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "error constructing intent extras from bundle", e);
@@ -951,11 +944,10 @@ public class ScanningActivity extends Activity {
             }
         }
 
-        if (extras.isEmpty()) {
+        if (extrasOut.isEmpty()) {
             for (String field : SCAN_FIELDS) {
                 try {
-                    String value = data.getString(field + "_" + Integer.toString(index));
-                    extras.putString(field, value);
+                    extrasOut.putString(field, extrasIn.getString(field + "_" + index));
                 } catch (Exception e) {
                     Log.i(TAG, "error constructing intent extras from bundle", e);
                     return null;
@@ -965,14 +957,14 @@ public class ScanningActivity extends Activity {
 
         Intent result = new Intent();
         result.setAction(INTERNAL_SCAN_ACTION);
-        result.putExtras(extras);
+        result.putExtras(extrasOut);
         return result;
     }
 
     public static int getScanCount(Bundle data) {
         int out = 1;
         for (int x = 0; x < 10; x++) {
-            String left = data.getString("left_finger_assignment_" + Integer.toString(x));
+            String left = data.getString(LEFT_FINGER_ASSIGNMENT_KEY + "_" + x);
             if (left == null) {
                 out = x;
                 break;
