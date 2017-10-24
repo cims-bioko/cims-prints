@@ -12,8 +12,6 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import java.util.Map;
-
 import data.CommCareContentHandler;
 
 public class CommCareSyncService extends Service {
