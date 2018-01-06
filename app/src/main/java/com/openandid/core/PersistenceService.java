@@ -23,7 +23,7 @@ public class PersistenceService extends Service {
     }
 
     private void showForeground() {
-        startForeground(NOTIFICATION_ID, buildNotification("Service Started."));
+        startForeground(NOTIFICATION_ID, buildNotification(getString(R.string.service_running)));
     }
 
     @Override
@@ -43,7 +43,7 @@ public class PersistenceService extends Service {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         Builder builder = new Builder(getApplicationContext());
-        builder.setContentTitle("OpenANDIDCore");
+        builder.setContentTitle(getText(R.string.app_name));
         builder.setContentText(message);
         builder.setSmallIcon(R.drawable.bmt_icon);
 
@@ -51,7 +51,7 @@ public class PersistenceService extends Service {
             Intent killIntent = new Intent(this, NotificationReceiver.class);
             killIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             killIntent.setAction("KILL");
-            builder.addAction(android.R.drawable.ic_input_delete, "Stop Service",
+            builder.addAction(android.R.drawable.ic_input_delete, getText(R.string.stop_service),
                     PendingIntent.getService(this, 0, killIntent, 0));
         }
 

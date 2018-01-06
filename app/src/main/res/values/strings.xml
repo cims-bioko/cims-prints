@@ -19,6 +19,8 @@
     <string name="scan_complete">Scan Complete.\nProcessing Image.</string>
     <string name="unplug_scanner">Please Unplug the Scanner</string>
     <string name="attach_scanner">Please Attach the Scanner</string>
+    <string name="stop_service">Stop Service</string>
+    <string name="service_running">Service running…</string>
     <string-array name="orientations">
         <item>Horizontal</item>
         <item>Vertical</item>
