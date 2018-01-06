@@ -16,24 +16,14 @@ android {
         applicationId 'com.github.cimsbioko.cimsprints'
         minSdkVersion 16
         targetSdkVersion 19
-        versionName 'OpenANDID Core'
+        versionName = "1.0"
+        versionCode = 1;
+        signingConfig signingConfigs.config
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-        }
-    }
-    productFlavors {
-        vaxtrac {
-            versionName = "2015.10.20.01" + ".vaxtrac"
-            versionCode = 17;
-            signingConfig signingConfigs.config
-        }
-        commcare {
-            versionName = "2015.10.20.01" + ".ccodk"
-            versionCode = 17;
-            signingConfig signingConfigs.config
         }
     }
     compileOptions {
