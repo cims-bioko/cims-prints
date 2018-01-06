@@ -42,12 +42,14 @@ public class PersistenceService extends Service {
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
+        boolean allowKill = sharedPref.getBoolean("bmt.allowkill", false);
+
         Builder builder = new Builder(getApplicationContext());
         builder.setContentTitle(getText(R.string.app_name));
         builder.setContentText(message);
         builder.setSmallIcon(R.drawable.bmt_icon);
 
-        if (sharedPref.getBoolean("bmt.allowkill", false)) {
+        if (allowKill) {
             Intent killIntent = new Intent(this, NotificationReceiver.class);
             killIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             killIntent.setAction("KILL");
