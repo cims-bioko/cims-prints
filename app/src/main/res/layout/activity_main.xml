@@ -15,7 +15,7 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_marginBottom="20dp"
-        android:text="Launch Scanning Demo" />
+        android:text="@string/launch_scan_demo"
         android:visibility="gone"/>
     
     <Button
@@ -26,7 +26,7 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/main_fire_btn"
         android:layout_marginBottom="20dp"
-        android:text="Modify CommCare Settings" />
+        android:text="@string/modify_commcare_settings"
         android:visibility="gone"/>
 
     <Button
@@ -37,7 +37,7 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/main_sync_settings_btn"
         android:layout_marginBottom="20dp"
-        android:text="Modify Advanced Settings" />
+        android:text="@string/modify_settings" />
 
     <Button
         android:id="@+id/main_sync_btn"
@@ -46,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/advanced_settings_btn"
-        android:text="Synchronize w/ CommCare" />
+        android:text="@string/synchronize_w_commcare"
         android:visibility="gone"/>
 
 </RelativeLayout>

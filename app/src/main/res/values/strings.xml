@@ -21,6 +21,10 @@
     <string name="attach_scanner">Please Attach the Scanner</string>
     <string name="stop_service">Stop Service</string>
     <string name="service_running">Service running…</string>
+    <string name="synchronize_w_commcare">Synchronize w/ CommCare</string>
+    <string name="modify_settings">Modify Settings</string>
+    <string name="modify_commcare_settings">Modify CommCare Settings</string>
+    <string name="launch_scan_demo">Launch Scan Demo</string>
     <string-array name="orientations">
         <item>Horizontal</item>
         <item>Vertical</item>
