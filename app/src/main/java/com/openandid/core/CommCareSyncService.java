@@ -12,6 +12,8 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.github.cimsbioko.cimsprints.R;
+
 import data.CommCareContentHandler;
 
 public class CommCareSyncService extends Service {

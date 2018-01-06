@@ -9,6 +9,8 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.cimsbioko.cimsprints.R;
+
 import java.util.ArrayList;
 import java.util.List;
 

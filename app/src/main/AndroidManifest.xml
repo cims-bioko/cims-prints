@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.openandid.core">
+<manifest package="com.github.cimsbioko.cimsprints"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
 
     <uses-feature android:name="android.hardware.usb.host" />
@@ -18,11 +18,11 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".Controller"
+        android:name="com.openandid.core.Controller"
         android:allowBackup="true"
         android:debuggable="true"
         android:icon="@drawable/ic_launcher"
-        android:label="OpenANDID Core"
+        android:label="@string/app_name"
         android:theme="@style/AppTheme"
         tools:ignore="HardcodedDebugMode" >
         <receiver android:name="broadcast.ScannerReceiver" >
@@ -41,7 +41,7 @@
                 android:resource="@xml/usb_filter" />
         </receiver>
         <receiver
-            android:name=".CommcareReceiver"
+            android:name="com.openandid.core.CommcareReceiver"
             android:enabled="true" >
             <intent-filter>
                 <action android:name="org.commcare.dalvik.api.action.data.update" />
@@ -56,7 +56,7 @@
             android:launchMode="singleInstance"
             android:theme="@style/Theme.Dialog" />
         <activity
-            android:name=".AdvancedPreferences"
+            android:name="com.openandid.core.AdvancedPreferences"
             android:label="Advanced Preferences" >
             <intent-filter>
                 <action android:name=".Preferences" />
@@ -64,14 +64,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CCSyncActivity"
+            android:name="com.openandid.core.CCSyncActivity"
             android:label="CCSynch" >
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".DispatchActivity"
+            android:name="com.openandid.core.DispatchActivity"
             android:exported="true"
             android:label="@string/app_name" >
             <intent-filter>
@@ -92,7 +92,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LaunchActivity"
+            android:name="com.openandid.core.LaunchActivity"
             android:exported="true"
             android:label="@string/app_name" >
             <intent-filter>
@@ -101,7 +101,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PipeActivity"
+            android:name="com.openandid.core.PipeActivity"
             android:label="VirtualCohort"
             android:launchMode="singleInstance"
             android:noHistory="false"
@@ -112,7 +112,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CleanupActivity"
+            android:name="com.openandid.core.CleanupActivity"
             android:label="VirtualCohort"
             android:noHistory="true"
             android:screenOrientation="portrait" >
@@ -122,7 +122,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ScanningActivity"
+            android:name="com.openandid.core.ScanningActivity"
             android:exported="true"
             android:label="VirtualCohort"
             android:launchMode="standard"
@@ -137,7 +137,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ScannerCatcher"
+            android:name="com.openandid.core.ScannerCatcher"
             android:excludeFromRecents="true"
             android:exported="false"
             android:label="@string/app_name"
@@ -153,7 +153,7 @@
                 android:resource="@xml/usb_filter" />
         </activity>
         <activity
-            android:name=".EnrollActivity"
+            android:name="com.openandid.core.EnrollActivity"
             android:label="VirtualCohort"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -162,7 +162,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".IdentifyActivity"
+            android:name="com.openandid.core.IdentifyActivity"
             android:label="VirtualCohort"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -171,9 +171,10 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".PersistenceService" />
-        <service android:name=".CommCareSyncService" />
-        <service android:name=".NotificationReceiver" />
+        <service android:name="com.openandid.core.PersistenceService" />
+        <service android:name="com.openandid.core.CommCareSyncService" />
+        <service android:name="com.openandid.core.NotificationReceiver" />
+
     </application>
 
 </manifest>

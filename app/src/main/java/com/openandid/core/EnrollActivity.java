@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.github.cimsbioko.cimsprints.R;
+
 import java.util.HashMap;
 import java.util.Map;
 

@@ -1,7 +1,8 @@
 package logic;
 
+import com.github.cimsbioko.cimsprints.R;
 import com.openandid.core.Controller;
-import com.openandid.core.R;
+
 
 /**
  * An enumeration for each finger. Not all fingers are supported currently for enrollment/identification.

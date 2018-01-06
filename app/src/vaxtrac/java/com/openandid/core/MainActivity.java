@@ -9,6 +9,8 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.cimsbioko.cimsprints.R;
+
 import data.CommCareContentHandler;
 
 import static com.openandid.core.Constants.ENROLL_ACTION;

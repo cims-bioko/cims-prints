@@ -28,6 +28,8 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.cimsbioko.cimsprints.R;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;

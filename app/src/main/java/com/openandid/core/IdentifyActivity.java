@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.github.cimsbioko.cimsprints.R;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

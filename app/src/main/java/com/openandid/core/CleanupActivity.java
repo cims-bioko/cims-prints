@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.github.cimsbioko.cimsprints.R;
+
 import static com.openandid.core.Constants.KILL_ACTION;
 
 public class CleanupActivity extends Activity {

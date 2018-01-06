@@ -9,6 +9,8 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 
+import com.github.cimsbioko.cimsprints.R;
+
 public class PersistenceService extends Service {
 
     public static final int NOTIFICATION_ID = 70503;

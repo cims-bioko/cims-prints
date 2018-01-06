@@ -13,7 +13,7 @@ android {
     compileSdkVersion 19
     buildToolsVersion '25.0.2'
     defaultConfig {
-        applicationId 'com.openandid.core'
+        applicationId 'com.github.cimsbioko.cimsprints'
         minSdkVersion 16
         targetSdkVersion 19
         versionName 'OpenANDID Core'

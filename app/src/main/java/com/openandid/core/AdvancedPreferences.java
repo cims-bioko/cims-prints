@@ -3,6 +3,8 @@ package com.openandid.core;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
+import com.github.cimsbioko.cimsprints.R;
+
 
 public class AdvancedPreferences extends PreferenceActivity {
     @Override

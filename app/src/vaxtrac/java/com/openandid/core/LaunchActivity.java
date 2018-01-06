@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.github.cimsbioko.cimsprints.R;
+
 import java.util.UUID;
 
 import logic.Finger;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">OpenANDID Core</string>
+    <string name="app_name" translatable="false">CIMS Prints</string>
     <string name="action_settings">Settings</string>
     <string name="left_thumb">Left Thumb</string>
     <string name="right_thumb">Right Thumb</string>

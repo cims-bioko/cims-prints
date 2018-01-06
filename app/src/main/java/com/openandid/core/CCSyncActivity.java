@@ -16,6 +16,8 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.github.cimsbioko.cimsprints.R;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
