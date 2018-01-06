@@ -55,14 +55,6 @@ public class PersistenceService extends Service {
                     PendingIntent.getService(this, 0, killIntent, 0));
         }
 
-        if (sharedPref.getBoolean("acra.verbose", false)) {
-            Intent crashIntent = new Intent(this, NotificationReceiver.class);
-            crashIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            crashIntent.setAction("CRASH");
-            builder.addAction(android.R.drawable.ic_delete, "Send Error Report",
-                    PendingIntent.getService(this, 0, crashIntent, 0));
-        }
-
         Intent persistIntent = new Intent(this, PersistenceService.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, persistIntent, 0);
         builder.setContentIntent(pendingIntent);

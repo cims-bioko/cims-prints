@@ -9,16 +9,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.github.cimsbioko.cimsprints.R;
-
-import org.acra.ACRA;
-import org.acra.ACRAConfiguration;
-import org.acra.ACRAConfigurationException;
-import org.acra.ReportingInteractionMode;
-import org.acra.annotation.ReportsCrashes;
-import org.acra.sender.HttpSender.Method;
-import org.acra.sender.HttpSender.Type;
-
 import java.util.List;
 import java.util.Map;
 
@@ -27,18 +17,6 @@ import data.SharedPreferencesManager;
 import logic.HostUsbManager;
 import logic.Scanner;
 
-
-@ReportsCrashes(
-        httpMethod = Method.PUT,
-        reportType = Type.JSON,
-        formUri = "http://dev.biometrac.com:5984/acra-bmt/_design/acra-storage/_update/report",
-        formUriBasicAuthLogin = "acralog",
-        formUriBasicAuthPassword = "acralogging",
-        mode = ReportingInteractionMode.SILENT,
-        resNotifTitle = R.string.app_name,
-        resNotifText = R.string.crash_body,
-        logcatArguments = {"-t", "10000", "-v", "time"}
-)
 public class Controller extends Application {
 
     private static final String TAG = "ApplicationController";
@@ -60,10 +38,6 @@ public class Controller extends Application {
 
     public void onCreate() {
         super.onCreate();
-
-        //init the logging function
-        //check for preference?
-        ACRA.init(this);
 
         Controller.context = getApplicationContext();
         mEngine = new Engine(Controller.context, 27.0f);
@@ -111,37 +85,6 @@ public class Controller extends Application {
             Log.d(TAG, "interrupted during sleep");
         }
         System.exit(0);
-    }
-
-    public static void enableCrashDialog() {
-        ACRAConfiguration config = ACRA.getConfig();
-        config.setLogcatArguments(new String[]{"-t", "20000", "-v", "time"});
-        try {
-            config.setResNotifTitle(R.string.app_name);
-            config.setResNotifText(R.string.crash_body);
-            config.setResToastText(R.string.crash_toast);
-            config.setResDialogText(R.string.crash_body);
-            config.setResDialogCommentPrompt(R.string.crash_prompt);
-            config.setMode(ReportingInteractionMode.DIALOG);
-        } catch (ACRAConfigurationException e) {
-            Log.e(TAG, "Couldn't set Acra dialog options");
-            e.printStackTrace();
-        }
-    }
-
-    public static void disableCrashDialog() {
-        ACRAConfiguration config = ACRA.getConfig();
-        try {
-            config.setMode(ReportingInteractionMode.SILENT);
-        } catch (ACRAConfigurationException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void crash() {
-        enableCrashDialog();
-        ACRA.getErrorReporter().handleException(new Exception("Induced Crash"));
-        disableCrashDialog();
     }
 
     public static List<Intent> getPipeStack() {

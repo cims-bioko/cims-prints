@@ -15,9 +15,6 @@ public class NotificationReceiver extends Service {
             case "KILL":
                 killAll();
                 break;
-            case "CRASH":
-                crash();
-                break;
         }
         return super.onStartCommand(intent, flags, startId);
     }
@@ -29,11 +26,6 @@ public class NotificationReceiver extends Service {
 
     private void killAll() {
         Controller.killAll();
-        stopSelf();
-    }
-
-    private void crash() {
-        Controller.crash();
         stopSelf();
     }
 }

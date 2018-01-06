@@ -50,12 +50,6 @@
         </receiver>
 
         <activity
-            android:name="org.acra.CrashReportDialog"
-            android:excludeFromRecents="true"
-            android:finishOnTaskLaunch="true"
-            android:launchMode="singleInstance"
-            android:theme="@style/Theme.Dialog" />
-        <activity
             android:name="com.openandid.core.AdvancedPreferences"
             android:label="Advanced Preferences" >
             <intent-filter>

@@ -7,16 +7,6 @@
                         android:entryValues="@array/orientations"
                         android:defaultValue="Horizontal"
                         android:summary="%s"/>
-    <CheckBoxPreference android:key="acra.disable"
-                        android:title="Disable Error Reporting"
-                        android:summaryOn="Error reporting is currently DISABLED"
-                        android:summaryOff="Error reporting is currently enabled"
-                        android:defaultValue="false"/>
-    <CheckBoxPreference android:key="acra.verbose"
-                        android:title="Allow manual user issue reports"
-                        android:summaryOn="User reports are enabled"
-                        android:summaryOff="User reports are disabled"
-                        android:defaultValue="false"/>
     <CheckBoxPreference android:key="bmt.allowkill"
                         android:title="Allow user to force-stop process"
                         android:summaryOn="Enabled"
