@@ -13,8 +13,8 @@
     <string name="left_pinky">Left Pinky Finger</string>
     <string name="right_pinky">Right Pinky Finger</string>
     <string name="scan_prompt">Please Scan the</string>
-    <string name="scanner_not_connected">Scanner isn\'t connected...</string>
-    <string name="please_wait">Please Wait...</string>
+    <string name="scanner_not_connected">Scanner isn\'t connected…</string>
+    <string name="please_wait">Please Wait…</string>
     <string name="scan_all_fingers">Please ensure all fingers\nhave been scanned.</string>
     <string name="scan_complete">Scan Complete.\nProcessing Image.</string>
     <string name="unplug_scanner">Please Unplug the Scanner</string>
