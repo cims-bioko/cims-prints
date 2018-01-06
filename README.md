@@ -1,29 +1,32 @@
-# OpenANDID
+# CIMS Prints
 
-FOSS Biometric Identification Tools for Android; primarily geared towards global health applications.
+Application to support biometric identification requirements for Medical Care Development
+International's campaign information management system for their Bioko Island campaigns (CIMS Bioko).
 
-Copyright (c) 2012-2016, Shawn Sarwar and contributors. All rights reserved.
-
-OpenANDID was created by Biometrac LLC [Shawn Sarwar, Trisha Finnegan, Heath Gross] as proprietary software under the name BiometracCore.
-OpenANDID is now available under a GPLv3 License. Any linked libraries may contain their own licenses.
+It is a blatant fork of OpenANDID cleaned up a bit and fixed for slightly older versions of Android.
+Notably, the fork removes support for VaxTrac and limits it focus to use with CommCare and ODK Collect.
+Also, the Bozorth binaries and libraries have been removed.
 
 # Requirements:
 
   Scanning:
-    Lumidigm Mercury 301-00 scanner is the only one supported. New scanners can be integrated by subclassing Scanner and providing usb instructions. USB Host mode is required of the Android Device. Android 4.4+ is supported.
+    Lumidigm Mercury 301-00 scanner is the only one supported. New scanners can be integrated by
+    subclassing Scanner and providing usb instructions. USB Host mode is required of the Android
+    Device. Android 4.4+ is supported.
   
   Matching:
-    OpenANDID Engine is a fork of SourceAFIS, optimized for android. Templates sent via intent must be in ISO format.
-    NBIS Bozorth3 is also included in the package in /assets as a binary, but no examples are currently included.
-
+    OpenANDID Engine is a fork of SourceAFIS, optimized for android. Templates sent via intent must
+    be in ISO format.
 
 # Current API for calls via Intent:
   
-  Once installed, you can communicate with ANDID via intent. You must always include a unique sessionID with each intent call. We use this to deal with duplicate intent calls.
+  Once installed, you can communicate with the application via Intents. You must always include a
+  unique sessionID with each intent call. We use this to deal with duplicate intent calls.
   
   com.openandid.core.SCAN
   
-      call multiple scans with a single intent. Starting with 0 index add a "_n" to the end of each key to group them together into screens of two scans.
+      call multiple scans with a single intent. Starting with 0 index add a "_n" to the end of each
+      key to group them together into screens of two scans.
     
     InputKeys:
     
@@ -93,11 +96,5 @@ OpenANDID is now available under a GPLv3 License. Any linked libraries may conta
       i.putExtra("right_finger_assignment_1", "right_thumb");
       i.putExtra("easy_skip_1", "false");
 
-# Acknowledgements
-    OpenANDID engine is a fork of SourceAFIS by Robert Važan and contributors:
-    http://www.sourceafis.org
-    
-    OpenANDID contains the NIST NBIS package, compiled for your convenience:
-    http://www.nist.gov/itl/iad/ig/nbis.cfm
 
 
