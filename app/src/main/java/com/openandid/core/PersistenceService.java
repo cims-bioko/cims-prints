@@ -15,20 +15,14 @@ public class PersistenceService extends Service {
 
     public static final int NOTIFICATION_ID = 70503;
 
-    public boolean foreground = false;
-
     @Override
     public void onCreate() {
-        showForeground();
-    }
-
-    private void showForeground() {
         startForeground(NOTIFICATION_ID, buildNotification(getString(R.string.service_running)));
     }
 
     @Override
     public void onDestroy() {
-        stop();
+        stopForeground(true);
     }
 
     @Override
@@ -37,8 +31,6 @@ public class PersistenceService extends Service {
     }
 
     public Notification buildNotification(String message) {
-
-        foreground = true;
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -64,10 +56,4 @@ public class PersistenceService extends Service {
         return builder.build();
     }
 
-    private void stop() {
-        if (foreground) {
-            foreground = false;
-            stopForeground(true);
-        }
-    }
 }
