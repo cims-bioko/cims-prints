@@ -23,8 +23,8 @@
             android:layout_marginTop="10dip"
             android:textColor="@color/text_color"
 	   	    android:textStyle="bold" 
-	   	    android:textSize="20dp" 
-            android:text="Please Wait" />
+	   	    android:textSize="20sp"
+            android:text="@string/please_wait" />
 
         <ProgressBar
             android:id="@+id/progressBar1"
@@ -32,14 +32,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal" />
+
 		</LinearLayout>
-	        <Button
-	            style="@style/button_red"
-	            android:id="@+id/pop_up_wait_cancel_btn"
-	            android:layout_margin="10dp"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_gravity="center_horizontal"
-	            android:text="Cancel" />
+
+		<Button
+			style="@style/button_red"
+			android:id="@+id/pop_up_wait_cancel_btn"
+			android:layout_margin="10dp"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_horizontal"
+			android:text="@string/cancel" />
 
     </LinearLayout>

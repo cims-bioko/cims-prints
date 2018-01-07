@@ -25,6 +25,7 @@
     <string name="modify_settings">Modify Settings</string>
     <string name="modify_commcare_settings">Modify CommCare Settings</string>
     <string name="launch_scan_demo">Launch Scan Demo</string>
+    <string name="cancel">Cancel</string>
     <string-array name="orientations">
         <item>Horizontal</item>
         <item>Vertical</item>
