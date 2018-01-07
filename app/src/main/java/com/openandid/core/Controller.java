@@ -44,9 +44,6 @@ public class Controller extends Application {
         prefsMgr = new SharedPreferencesManager(context);
         PipeSessionManager.init();
 
-        //Start foreground service
-        Intent i = new Intent(context, PersistenceService.class);
-        context.startService(i);
         syncCommCareDefault();
     }
 
@@ -77,7 +74,6 @@ public class Controller extends Application {
 
     public static void killAll() {
         prefsMgr.notifyFalseStart();
-        context.stopService(new Intent(context, PersistenceService.class));
         context.stopService(new Intent(context, NotificationReceiver.class));
         try {
             Thread.sleep(500);

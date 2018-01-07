@@ -164,7 +164,6 @@
             </intent-filter>
         </activity>
 
-        <service android:name="com.openandid.core.PersistenceService" />
         <service android:name="com.openandid.core.CommCareSyncService" />
         <service android:name="com.openandid.core.NotificationReceiver" />
 

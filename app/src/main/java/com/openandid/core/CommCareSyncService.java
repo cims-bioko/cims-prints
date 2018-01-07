@@ -19,7 +19,7 @@ import data.CommCareContentHandler;
 public class CommCareSyncService extends Service {
 
     private static final String TAG = "CCSyncService";
-    private static final int NOTIFICATION_ID = PersistenceService.NOTIFICATION_ID;
+    private static final int NOTIFICATION_ID = 70503;
 
     private static boolean resync = false;
     private static boolean ready = true;
@@ -104,11 +104,6 @@ public class CommCareSyncService extends Service {
             builder.addAction(android.R.drawable.ic_delete, "Send Error Report",
                     PendingIntent.getService(this, 0, crashIntent, 0));
         }
-
-        Intent persistIntent = new Intent(this, PersistenceService.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, persistIntent, 0);
-        builder.setContentIntent(pendingIntent);
-
         return builder.build();
     }
 
