@@ -85,7 +85,7 @@ public class CommCareSyncService extends Service {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         Builder builder = new Builder(getApplicationContext());
-        builder.setContentTitle("OpenANDIDCore");
+        builder.setContentTitle(getText(R.string.app_name));
         builder.setContentText(message);
         builder.setSmallIcon(R.drawable.bmt_icon);
 
