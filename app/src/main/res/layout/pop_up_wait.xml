@@ -3,7 +3,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/bg_shape_blue_round" >
+    android:background="@drawable/bg_shape_blue_round">
+
    	<ImageView
         android:id="@+id/imageView1"
         android:layout_width="wrap_content"
@@ -16,6 +17,7 @@
 	    android:layout_height="wrap_content"
 	    android:orientation="vertical"
 	    android:background="@color/light_blue">
+
         <TextView
             android:id="@+id/pop_up_wait_title"
             android:layout_width="wrap_content"

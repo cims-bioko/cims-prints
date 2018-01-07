@@ -4,6 +4,7 @@
     android:layout_height="60dip"
     android:orientation="horizontal"
     android:background="@color/dark_blue">
+
     <ImageView
         android:id="@+id/headbar_bmtlogo"
         android:layout_height="match_parent"
@@ -16,6 +17,5 @@
         android:src="@drawable/cims_prints"
         android:layout_alignParentRight="true" 
         />
-    
 
 </RelativeLayout>

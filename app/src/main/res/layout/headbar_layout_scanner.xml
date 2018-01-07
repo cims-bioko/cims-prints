@@ -4,6 +4,7 @@
     android:layout_height="60dip"
     android:orientation="horizontal"
     android:background="@color/dark_blue">
+
     <ImageView 
         android:id="@+id/headbar_scanner_btn"
         android:layout_width="wrap_content"
@@ -14,6 +15,7 @@
         android:src="@drawable/replug"
         android:layout_alignParentLeft="true"
         />
+
     <ImageView
         android:id="@+id/headbar_bmtlogo"
         android:layout_height="match_parent"
