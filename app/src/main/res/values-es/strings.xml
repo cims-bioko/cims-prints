@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="left_thumb">Pulgar izquierdo</string>
+    <string name="right_thumb">Pulgar derecho</string>
+    <string name="left_index">Dedo índice izquierdo</string>
+    <string name="right_index">Dedo índice derecho</string>
+    <string name="action_settings">Ajustes</string>
+    <string name="please_wait">Por favor espera…</string>
+    <string name="scan_all_fingers">Por favor, asegúrese de que todos los dedos hayan sido escaneados…</string>
+    <string name="scan_complete">Escaneo completo. Procesando Imagen.</string>
+    <string name="scanner_not_connected">El escáner no está conectado…</string>
+    <string name="scan_prompt">Por favor escanea el</string>
+    <string name="unplug_scanner">Desenchufe el escáner por favor</string>
+    <string name="attach_scanner">Conecte el escáner por favor</string>
+    <string name="left_middle">Dedo medio izquierdo</string>
+    <string name="right_middle">Dedo medio derecho</string>
+    <string name="left_ring">Dedo anular izquierdo</string>
+    <string name="right_ring">Dedo anular derecho</string>
+    <string name="left_pinky">Dedo meñique izquierdo</string>
+    <string name="right_pinky">Dedo meñique derecho</string>
+    <string name="stop_service">Detener el servicio</string>
+    <string name="service_running">El servicio se está ejecutando…</string>
+    <string name="synchronize_w_commcare">Sincronizar con CommCare</string>
+    <string name="modify_settings">Modificar configuración</string>
+    <string name="modify_commcare_settings">Modificar la configuración de CommCare</string>
+    <string name="launch_scan_demo">Inicie la demostración de escaneo</string>
+    <string name="cancel">Cancelar</string>
+    <string-array name="orientations">
+        <item>Horizontal</item>
+        <item>Vertical</item>
+    </string-array>
+</resources>
