@@ -23,7 +23,7 @@
         android:paddingTop="7dp"
         android:paddingBottom="7dp"
         android:paddingRight="7dp"
-        android:src="@drawable/openanddid_logo_white_sm"
+        android:src="@drawable/cims_prints"
         android:layout_alignParentRight="true" 
         />
     
