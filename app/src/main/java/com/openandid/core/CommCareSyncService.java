@@ -87,7 +87,7 @@ public class CommCareSyncService extends Service {
         Builder builder = new Builder(getApplicationContext());
         builder.setContentTitle(getText(R.string.app_name));
         builder.setContentText(message);
-        builder.setSmallIcon(R.drawable.bmt_icon);
+        builder.setSmallIcon(R.drawable.ic_launcher);
 
         if (sharedPref.getBoolean("bmt.allowkill", false)) {
             Intent killIntent = new Intent(this, NotificationReceiver.class);
