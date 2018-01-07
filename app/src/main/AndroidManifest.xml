@@ -19,11 +19,9 @@
     <application
         android:name="com.openandid.core.Controller"
         android:allowBackup="true"
-        android:debuggable="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        tools:ignore="HardcodedDebugMode" >
+        android:theme="@style/AppTheme">
         <receiver android:name="broadcast.ScannerReceiver" >
             <intent-filter>
                 <action android:name="com.openandid.screentest.ScanningActivity.USB_PERMISSION" />
