@@ -29,4 +29,5 @@
         <item>Horizontal</item>
         <item>Vertical</item>
     </string-array>
+    <string name="commcare_settings_unset">Sincronización de CommCare no disponible: configuración desarmada</string>
 </resources>

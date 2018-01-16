@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.github.cimsbioko.cimsprints.R;
+
 import java.util.List;
 import java.util.Map;
 
@@ -57,7 +59,7 @@ public class Controller extends Application {
             data.put("case_type", prefsMgr.getCaseType());
             syncCommCare(data);
         } else {
-            Toast.makeText(context, "CommCare Setting are NOT SET. Check BMTCore.", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, context.getText(R.string.commcare_settings_unset), Toast.LENGTH_LONG).show();
         }
     }
 
