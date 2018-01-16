@@ -12,7 +12,7 @@ import com.openandid.core.Controller;
 public enum Finger {
 
     left_thumb(R.string.left_thumb, R.drawable.l_thumb, bmtafis.simple.Finger.LEFT_THUMB),
-    right_thumb(R.string.right_thumb, R.drawable.l_thumb, bmtafis.simple.Finger.RIGHT_THUMB),
+    right_thumb(R.string.right_thumb, R.drawable.r_thumb, bmtafis.simple.Finger.RIGHT_THUMB),
     left_index(R.string.left_index, R.drawable.l_index, bmtafis.simple.Finger.LEFT_INDEX),
     right_index(R.string.right_index, R.drawable.r_index, bmtafis.simple.Finger.RIGHT_INDEX),
     left_middle(R.string.left_middle, R.drawable.l_middle, bmtafis.simple.Finger.LEFT_MIDDLE),
