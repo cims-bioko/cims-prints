@@ -11,7 +11,6 @@ android {
         }
     }
     compileSdkVersion 19
-    buildToolsVersion '25.0.2'
     defaultConfig {
         applicationId 'com.github.cimsbioko.cimsprints'
         minSdkVersion 16
