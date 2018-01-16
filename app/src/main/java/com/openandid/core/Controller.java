@@ -40,13 +40,10 @@ public class Controller extends Application {
 
     public void onCreate() {
         super.onCreate();
-
         Controller.context = getApplicationContext();
         mEngine = new Engine(Controller.context, 27.0f);
         prefsMgr = new SharedPreferencesManager(context);
         PipeSessionManager.init();
-
-        syncCommCareDefault();
     }
 
     public static Context getAppContext() {
