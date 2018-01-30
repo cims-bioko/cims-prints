@@ -20,7 +20,7 @@ public enum Finger {
     left_ring(R.string.left_ring, R.drawable.l_middle, bmtafis.simple.Finger.LEFT_RING),
     right_ring(R.string.right_ring, R.drawable.r_middle, bmtafis.simple.Finger.LEFT_RING),
     left_pinky(R.string.left_pinky, R.drawable.l_pinky, bmtafis.simple.Finger.LEFT_LITTLE),
-    right_pink(R.string.right_pinky, R.drawable.r_pinky, bmtafis.simple.Finger.RIGHT_LITTLE);
+    right_pinky(R.string.right_pinky, R.drawable.r_pinky, bmtafis.simple.Finger.RIGHT_LITTLE);
 
     private static final Finger[] ENROLLED = {left_thumb, right_thumb, left_index, right_index};
 
